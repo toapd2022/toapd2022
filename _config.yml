@@ -3,7 +3,7 @@ description: "ドローン映像や防災無線などの活動報告"
 author: "toapd2022"
 
 # GitHub Pages用
-baseurl: ""
+baseurl: "/toapd2022"
 url: "https://toapd2022.github.io"
 
 # 日本時間で投稿日時などを表示したい場合
