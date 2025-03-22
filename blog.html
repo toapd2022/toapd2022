@@ -3,11 +3,9 @@ layout: default
 title: "ブログ一覧"
 ---
 
-<!-- ここから下は {{ content }} として埋め込まれる部分だけ -->
 <main>
   <h1>ブログ一覧</h1>
 
-  <!-- Jekyllのブログ記事一覧を表示 -->
   {% if site.posts.size > 0 %}
     <ul>
       {% for post in site.posts %}
