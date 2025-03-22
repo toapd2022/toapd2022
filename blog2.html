@@ -1,0 +1,1921 @@
+---
+layout: none
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>toapd2022 - 公式サイト</title>
+
+  <link rel="icon" type="image/png" href="icons/top-logo.png" />
+  <link rel="apple-touch-icon" href="icons/top-logo.png" />
+
+  <style>
+    /********************************
+     * 全体ベース
+     ********************************/
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: sans-serif, Arial, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
+      background-size: 300% 300%;
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+      animation: bgAnimation 15s ease infinite;
+      position: relative;
+    }
+    @keyframes bgAnimation {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* body背景用のふわふわ円アニメを2つ */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -80px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+      animation: floatCircle 20s linear infinite alternate;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+      animation: floatCircle2 30s linear infinite alternate;
+    }
+    @keyframes floatCircle {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(60vw, 40vh) scale(1.2); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+    @keyframes floatCircle2 {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(-40vw, -30vh) scale(1.1); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    a {
+      color: #333;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: #666;
+    }
+
+    /********************************
+     * ヘッダー
+     ********************************/
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid #eee;
+      z-index: 999;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      margin-left: auto; /* 右側寄せ */
+      gap: 1rem;
+    }
+
+    .logo img {
+      margin-top: 8px;
+      height: 40px;
+    }
+
+    /* メニュー全体 */
+    nav {
+      display: flex;
+      align-items: center;
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+      justify-content: flex-end;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav li {
+      cursor: pointer;
+      font-weight: 500;
+    }
+    nav li a {
+      position: relative;
+      padding: 0.5rem 0 4px 0;
+    }
+    nav li a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0%;
+      height: 2px;
+      background-color: orange;
+      transition: width 0.3s ease;
+    }
+    nav li a:hover::after {
+      width: 100%;
+    }
+
+    /* 言語切り替えボタンとリスト */
+    .lang-switch {
+      position: relative;
+    }
+    .lang-switch button {
+      cursor: pointer;
+      padding: 0.5rem 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      font-size: 0.9rem;
+      transition: background 0.3s;
+    }
+    .lang-switch button:hover {
+      background: #f0f0f0;
+    }
+    .lang-switch ul {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      list-style: none;
+      margin: 0;
+      padding: 0.5rem;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      display: none;
+      width: 130px;
+    }
+    .lang-switch ul li {
+      padding: 0.3rem;
+      cursor: pointer;
+    }
+    .lang-switch ul li:hover {
+      background: #eee;
+    }
+
+    /********************************
+     * ハンバーガーボタン（スマホ専用）
+     ********************************/
+    .hamburger {
+      display: none; /* PCでは非表示 */
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+    .hamburger span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: #333;
+      border-radius: 2px;
+    }
+
+    /*
+      画面幅が 1138px 以下ならハンバーガーメニューに切り替え
+    */
+    @media screen and (max-width: 1138px) {
+      .hamburger {
+        display: flex; /* ハンバーガーボタンを表示 */
+      }
+      nav {
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(6px);
+        border: 1px solid #eee;
+        padding: 1rem;
+        border-radius: 6px;
+        display: none;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav li {
+        text-align: right;
+      }
+    }
+
+    /********************************
+     * PC用：#hero セクション（スライドショー）
+     ********************************/
+    #hero {
+      width: 100%;
+      max-width: 1100px;
+      margin: 20px auto 0 auto;
+      position: relative;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .hero-animation-wrapper {
+      opacity: 0;
+      transform: translateY(-20px);
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    .hero-fadein {
+      animation: heroFadeIn 1s ease forwards;
+    }
+    @keyframes heroFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-slides {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s ease;
+    }
+    .hero-slide {
+      flex: 0 0 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+
+    .hero-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 1rem 2rem;
+      border-radius: 6px;
+      color: #fff;
+    }
+    .hero-logo-wrap {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .hero-logo {
+      width: 250px;
+      height: auto;
+    }
+    .hero-text-block {
+      text-align: center;
+    }
+    .hero-mincho-text {
+      font-family: "ヒラギノ明朝 ProN", "Hiragino Mincho ProN",
+                   "MS PMincho", "MS Mincho", serif;
+      color: #fff;
+      padding: 1.2rem 1.6rem;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      background: rgba(0,0,0,0.4);
+    }
+
+    .hero-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      z-index: 2;
+      opacity: 0.6;
+      transition: opacity 0.3s, border-color 0.3s;
+      border-style: solid;
+    }
+    .hero-arrow:hover {
+      opacity: 1;
+    }
+    .hero-arrow--prev {
+      left: 20px;
+      border-width: 10px 15px 10px 0;
+      border-color: transparent rgba(255,255,255,0.6) transparent transparent;
+    }
+    .hero-arrow--prev:hover {
+      border-color: transparent #fff transparent transparent;
+    }
+    .hero-arrow--next {
+      right: 20px;
+      border-width: 10px 0 10px 15px;
+      border-color: transparent transparent transparent rgba(255,255,255,0.6);
+    }
+    .hero-arrow--next:hover {
+      border-color: transparent transparent transparent #fff;
+    }
+
+    .hero-dots {
+      position: absolute;
+      bottom: 20px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      z-index: 2;
+    }
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0.5;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+    .dot.active {
+      opacity: 1;
+    }
+
+    /********************************
+     * スマホ用：.mobile-hero セクション
+     ********************************/
+    .mobile-hero {
+      display: none;
+      height: 100vh;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .mobile-hero-animation-wrapper {
+      opacity: 0;
+      transform: translateY(-20px);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .mobile-hero-slides {
+      flex: 2;
+      width: 100%;
+      position: relative;
+      display: flex;
+      transition: transform 0.8s ease;
+    }
+    .mobile-hero-slide {
+      flex: 0 0 100%;
+      background-size: contain !important;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .mobile-hero-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 1rem;
+    }
+    .mobile-hero-logo {
+      width: 200px;
+      height: auto;
+    }
+    .mobile-hero-content p {
+      margin: 1rem 0;
+      line-height: 1.6;
+    }
+
+    @media screen and (max-width: 768px) {
+      #hero {
+        display: none;
+      }
+      .mobile-hero {
+        display: flex;
+      }
+    }
+
+    /********************************
+     * セクション & フェードインベース
+     ********************************/
+    section {
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 4rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    section h2 {
+      font-size: 1.6rem;
+      margin-bottom: 2rem;
+      letter-spacing: 0.05em;
+      position: relative;
+      display: inline-block;
+      padding-bottom: 0.5rem;
+    }
+    section h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 50px;
+      height: 2px;
+      background-color: #ffcc00;
+    }
+    .fade-in,
+    .fade-in-up,
+    .fade-in-left,
+    .fade-in-right {
+      opacity: 0;
+      transition: all 0.8s ease;
+    }
+    .fade-in {
+      transform: translateY(30px);
+    }
+    .fade-in.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-in-up {
+      transform: translateY(60px);
+    }
+    .fade-in-up.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-in-left {
+      transform: translateX(-60px);
+    }
+    .fade-in-left.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .fade-in-right {
+      transform: translateX(60px);
+    }
+    .fade-in-right.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /********************************
+     * 各セクションに載せる円形アニメ
+     ********************************/
+    #greeting::before {
+      content: "";
+      position: absolute;
+      top: -100px;
+      left: -50px;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(255,150,150,0.25) 0%, transparent 80%);
+      animation: swirlGreeting 8s infinite ease-in-out;
+    }
+    @keyframes swirlGreeting {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(80px, 50px) scale(1.3); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+    #works::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 80%;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(255,200,150,0.3) 0%, transparent 80%);
+      animation: swirlWorks 10s infinite ease-in-out;
+    }
+    @keyframes swirlWorks {
+      0%   { transform: translate(-50px, -80px) scale(1); }
+      50%  { transform: translate(0, 0) scale(1.4); }
+      100% { transform: translate(-50px, -80px) scale(1); }
+    }
+    #sns::before {
+      content: "";
+      position: absolute;
+      bottom: -50px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(150,200,255,0.3) 0%, transparent 75%);
+      animation: swirlSNS 12s infinite ease-in-out;
+    }
+    @keyframes swirlSNS {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(100px, 80px) scale(1.2); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* ★ ギャラリー -> ブログ化 */
+    #blog::before {
+      content: "";
+      position: absolute;
+      top: -70px;
+      right: -70px;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(150,255,150,0.3) 0%, transparent 80%);
+      animation: swirlGallery 9s infinite ease-in-out;
+    }
+    @keyframes swirlGallery {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(-60px, 120px) scale(1.2); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    #media::before {
+      content: "";
+      position: absolute;
+      bottom: -60px;
+      right: 40%;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(200,150,255,0.3) 0%, transparent 75%);
+      animation: swirlMedia 10s infinite ease-in-out;
+    }
+    @keyframes swirlMedia {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(60px, 60px) scale(1.1); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+    #history::before {
+      content: "";
+      position: absolute;
+      top: 50px;
+      left: 20px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(255,255,150,0.3) 0%, transparent 80%);
+      animation: swirlHistory 11s infinite ease-in-out;
+    }
+    @keyframes swirlHistory {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(80px, 60px) scale(1.2); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+    #contact::before {
+      content: "";
+      position: absolute;
+      bottom: -60px;
+      right: -40px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(255,120,255,0.2), rgba(255,120,255,0.05));
+      animation: swirlContact 13s infinite ease-in-out;
+    }
+    @keyframes swirlContact {
+      0%   { transform: translate(0,0) scale(1); }
+      50%  { transform: translate(-60px, -40px) scale(1.3); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+
+    /********************************
+     * ご挨拶
+     ********************************/
+    #greeting {
+      padding-top: 6rem;
+    }
+    .greeting-section {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 2rem;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+    .greeting-img {
+      width: 350px;
+      height: auto;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      flex-shrink: 0;
+    }
+    .greeting-text {
+      flex: 1;
+      max-width: 600px;
+    }
+    .greeting-text p {
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+    @media screen and (max-width: 768px) {
+      .greeting-section {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+      .greeting-img {
+        width: 100%;
+        max-width: 400px;
+      }
+    }
+
+    /********************************
+     * 活動内容
+     ********************************/
+    #works {}
+    .works-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .works-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(6px);
+      transition: background 0.3s ease;
+    }
+    .works-item:hover {
+      background: rgba(255,255,255,0.4);
+    }
+    .works-content {
+      flex: 1;
+    }
+    .works-item h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      color: #333;
+    }
+    .works-item p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .works-item a {
+      color: #0066cc;
+      text-decoration: underline;
+    }
+    .works-item a:hover {
+      color: #003399;
+    }
+    .works-img {
+      width: 240px;
+      height: auto;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+    }
+    .works-images-2 {
+      display: flex;
+      gap: 1rem;
+    }
+    @media screen and (max-width: 600px) {
+      .works-item {
+        flex-direction: column;
+        text-align: center;
+      }
+      .works-img {
+        width: 100%;
+        max-width: 400px;
+        margin: 1rem auto 0;
+      }
+      .works-images-2 {
+        flex-direction: column;
+      }
+    }
+
+    /********************************
+     * 関連SNS
+     ********************************/
+    #sns {}
+    .sns-container {
+      text-align: center;
+    }
+    .sns-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    .sns-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #333;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .sns-item span {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    .sns-item img {
+      width: 220px;
+      height: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      outline: none;
+      border: none;
+    }
+    .sns-item img:hover {
+      transform: scale(1.1);
+    }
+    @media screen and (max-width: 480px) {
+      .sns-item img {
+        width: 140px;
+      }
+    }
+    @media screen and (max-width: 700px) {
+      .sns-list {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+      }
+      .sns-item {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+
+    /********************************
+     * ★ ブログ (旧ギャラリー)
+     ********************************/
+    #blog {}
+    .blog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .blog-item {
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(6px);
+      padding: 1rem;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+    .blog-item:hover {
+      background: rgba(255,255,255,0.4);
+    }
+    .blog-item h3 {
+      margin-bottom: 0.4rem;
+      font-size: 1.1rem;
+    }
+    .blog-item p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /********************************
+     * メディア出演
+     ********************************/
+    #media {}
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .media-item {
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+    .media-item:hover {
+      transform: translateY(-2px);
+    }
+    .media-item img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+    .media-text {
+      padding: 1rem;
+    }
+    .media-text h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    .media-text p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .media-text a {
+      color: #0066cc;
+      text-decoration: underline;
+    }
+    .media-text a:hover {
+      color: #003399;
+    }
+    @media screen and (max-width: 768px) {
+      .media-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+    }
+
+    /********************************
+     * 自分史（History）
+     ********************************/
+    #history {
+      padding: 4rem 0;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 100px;
+      margin-top: 2rem;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 50px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: #ccc;
+      z-index: 1;
+    }
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      z-index: 2;
+    }
+    .timeline-year {
+      position: relative;
+      margin-left: -20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #0077CC;
+      margin-bottom: 0.3rem;
+    }
+    .timeline-year::before {
+      content: "";
+      position: absolute;
+      left: -44px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      border: 3px solid #ffcc00;
+      background: #fff;
+      border-radius: 50%;
+      box-sizing: border-box;
+      z-index: 2;
+    }
+    .timeline-desc {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    .timeline-img img {
+      width: 220px;
+      height: auto;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    @media screen and (max-width: 600px) {
+      .timeline {
+        padding-left: 40px;
+      }
+      .timeline::before {
+        left: 20px;
+      }
+      .timeline-year {
+        margin-left: 0;
+      }
+      .timeline-year::before {
+        left: -34px;
+      }
+      .timeline-item {
+        display: block;
+      }
+      .timeline-img {
+        margin: 0.5rem 0;
+      }
+    }
+
+    /********************************
+     * お問い合わせ
+     ********************************/
+    #contact {}
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 2rem auto 0 auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .contact-form label {
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.7rem;
+      font-size: 0.95rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      outline: none;
+    }
+    .contact-form button {
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: none;
+      background: #ffcc00;
+      color: #333;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-weight: bold;
+    }
+    .contact-form button:hover {
+      background: #ffda32;
+    }
+
+    /********************************
+     * フッター
+     ********************************/
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+    footer p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ヘッダー -->
+  <header>
+    <!-- 左側：ロゴのみ -->
+    <div class="header-left">
+      <div class="logo">
+        <img src="icons/logo.png" alt="toapd2022">
+      </div>
+    </div>
+
+    <!-- 右側：ナビ + 言語切り替えボタン + ハンバーガーメニュー -->
+    <div class="header-right">
+      <nav>
+        <ul>
+          <li><a href="#hero" id="navHome"></a></li>
+          <li><a href="#greeting" id="navGreeting"></a></li>
+          <li><a href="#works" id="navWorks"></a></li>
+          <li><a href="#sns" id="navSNS"></a></li>
+          <!-- ★ ギャラリー -> ブログへ差し替え -->
+          <li><a href="#blog" id="navGallery"></a></li>
+          <li><a href="#media" id="navMedia"></a></li>
+          <li><a href="#history" id="navHistory"></a></li>
+          <li><a href="#contact" id="navContact"></a></li>
+        </ul>
+      </nav>
+      <div class="lang-switch">
+        <button id="langToggleBtn">🌐 Language</button>
+        <ul id="langList">
+          <li data-lang="ja">日本語</li>
+          <li data-lang="en">English</li>
+          <li data-lang="zh">中文</li>
+        </ul>
+      </div>
+      <!-- ハンバーガーメニュー（右寄せ） -->
+      <button class="hamburger" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- PC用スライドショー #hero -->
+  <section id="hero">
+    <div class="hero-animation-wrapper" id="heroAnimationWrapper">
+      <div class="hero-slides" id="heroSlides">
+        <div class="hero-slide" style="background-image: url('icons/slide1.png');"></div>
+        <div class="hero-slide" style="background-image: url('icons/slide2.png');"></div>
+        <div class="hero-slide" style="background-image: url('icons/slide3.png');"></div>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-logo-wrap">
+          <img src="icons/logo.png" alt="toapd2022" class="hero-logo" id="heroLogo">
+        </div>
+        <div class="hero-text-block">
+          <div class="hero-mincho-text" id="heroSubtitle"></div>
+        </div>
+      </div>
+
+      <div class="hero-arrow hero-arrow--prev" id="prevBtn"></div>
+      <div class="hero-arrow hero-arrow--next" id="nextBtn"></div>
+
+      <div class="hero-dots" id="heroDots">
+        <span class="dot active" data-slide="0"></span>
+        <span class="dot" data-slide="1"></span>
+        <span class="dot" data-slide="2"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- スマホ用 .mobile-hero -->
+  <div class="mobile-hero">
+    <div class="mobile-hero-animation-wrapper" id="mobileHeroAnimationWrapper">
+      <div class="mobile-hero-slides" id="mobileHeroSlides">
+        <div class="mobile-hero-slide" style="background-image: url('icons/slide1.png');"></div>
+        <div class="mobile-hero-slide" style="background-image: url('icons/slide2.png');"></div>
+        <div class="mobile-hero-slide" style="background-image: url('icons/slide3.png');"></div>
+      </div>
+      <div class="mobile-hero-content">
+        <img src="icons/logo.png" alt="toapd2022" class="mobile-hero-logo">
+        <p>
+          防災行政無線や放送設備に魅了され<br>
+          ドローンによる映像制作など幅広く活動しています。<br>
+          <br><br>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ご挨拶 -->
+  <section id="greeting">
+    <h2 class="fade-in-left" id="sectionGreetingTitle"></h2>
+    <div class="greeting-section">
+      <img class="greeting-img fade-in-left" src="icons/profile.png" alt="プロフィール画像">
+      <div class="greeting-text fade-in-right" id="sectionGreetingText"></div>
+    </div>
+  </section>
+
+  <!-- 活動内容 -->
+  <section id="works">
+    <h2 class="fade-in-up" id="sectionWorksTitle"></h2>
+    <div class="works-list">
+      <div class="works-item fade-in">
+        <div class="works-content">
+          <h3 id="worksItem1Title"></h3>
+          <p id="worksItem1Text"></p>
+        </div>
+        <div class="works-images-2">
+          <img class="works-img" src="icons/youtube活動イメージ1.jpg" alt="YouTube1">
+          <img class="works-img" src="icons/youtube活動イメージ2.jpg" alt="YouTube2">
+        </div>
+      </div>
+      <div class="works-item fade-in">
+        <div class="works-content">
+          <h3 id="worksItem2Title"></h3>
+          <p id="worksItem2Text"></p>
+        </div>
+        <img class="works-img" src="icons/映像制作イメージ.jpg" alt="映像制作">
+      </div>
+      <div class="works-item fade-in">
+        <div class="works-content">
+          <h3 id="worksItem3Title"></h3>
+          <p id="worksItem3Text"></p>
+        </div>
+        <img class="works-img" src="icons/ドローン空撮.gif" alt="ドローン空撮イメージ">
+      </div>
+      <div class="works-item fade-in">
+        <div class="works-content">
+          <h3 id="worksItem4Title"></h3>
+          <p id="worksItem4Text"></p>
+        </div>
+        <img class="works-img" src="icons/防災無線チャイムの世界.jpg" alt="防災無線チャイムの世界">
+      </div>
+    </div>
+  </section>
+
+  <!-- 関連SNS -->
+  <section id="sns" class="fade-in">
+    <h2 class="fade-in-left" id="sectionSNSTitle"></h2>
+    <div class="sns-container fade-in-up">
+      <p id="sectionSNSIntro"></p>
+      <div class="sns-list">
+        <a class="sns-item fade-in" href="https://youtube.com/@toapd2017_Hiro" target="_blank">
+          <img src="icons/youtube.png" alt="YouTube">
+          <span id="snsLabelYoutube"></span>
+        </a>
+        <a class="sns-item fade-in" href="https://x.com/himarin015" target="_blank">
+          <img src="icons/x.png" alt="X">
+          <span id="snsLabelX"></span>
+        </a>
+        <a class="sns-item fade-in" href="https://instagram.com/toapd2024" target="_blank">
+          <img src="icons/instagram.png" alt="Instagram">
+          <span id="snsLabelInstagram"></span>
+        </a>
+        <a class="sns-item fade-in" href="https://radiotower.theblog.me/" target="_blank">
+          <img src="icons/chimeworld.png" alt="防災無線チャイムの世界">
+          <span id="snsLabelChime"></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ★ ブログ (旧ギャラリー) -->
+  <section id="blog" class="fade-in">
+    <!-- h2と p は翻訳で書き換えられるが、デフォルトのテキストは削除 -->
+    <h2 class="fade-in-right" id="sectionGalleryTitle"></h2>
+
+    <div class="fade-in">
+      {% if site.posts.size > 0 %}
+        <div class="blog-list">
+          {% for post in site.posts limit:5 %}
+          <article class="blog-item">
+            <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+            <p style="color:#666; font-size:0.85rem;">
+              投稿日: {{ post.date | date: "%Y-%m-%d" }}
+            </p>
+            <p>
+              {{ post.excerpt | strip_html }} ...
+            </p>
+          </article>
+          {% endfor %}
+        </div>
+
+        <!-- 「すべての記事を見る」 ボタン -->
+        <p style="margin-top:1rem;">
+          <a href="{{ 'blog.html' | relative_url }}" style="text-decoration:underline;">
+            すべての記事を見る
+          </a>
+        </p>
+
+      {% else %}
+        <p>まだブログ投稿がありません。</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- メディア出演 -->
+  <section id="media">
+    <h2 class="fade-in-up" id="sectionMediaTitle"></h2>
+    <p class="fade-in" id="sectionMediaIntro"></p>
+    <div class="media-grid fade-in-up">
+      <div class="media-item">
+        <img src="icons/tv1.png" alt="テレビ朝日 ナニコレ珍百景 出演シーン">
+        <div class="media-text">
+          <h3 id="mediaItem1Title"></h3>
+          <p id="mediaItem1Text"></p>
+        </div>
+      </div>
+      <div class="media-item">
+        <img src="icons/tv2.png" alt="TBS イキスギさんについてった 出演シーン">
+        <div class="media-text">
+          <h3 id="mediaItem2Title"></h3>
+          <p id="mediaItem2Text"></p>
+        </div>
+      </div>
+      <div class="media-item">
+        <img src="icons/tv3.png" alt="姫路CATV ウィークリー姫路 出演シーン">
+        <div class="media-text">
+          <h3 id="mediaItem3Title"></h3>
+          <p id="mediaItem3Text"></p>
+        </div>
+      </div>
+      <div class="media-item">
+        <img src="icons/tv4.png" alt="TBS THE TIME, 中高生ニュース 出演シーン">
+        <div class="media-text">
+          <h3 id="mediaItem4Title"></h3>
+          <p id="mediaItem4Text"></p>
+        </div>
+      </div>
+      <div class="media-item">
+        <img src="icons/shimen.png" alt="神戸新聞 記事イメージ">
+        <div class="media-text">
+          <h3 id="mediaItem5Title"></h3>
+          <p id="mediaItem5Text"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 自分史（History） -->
+  <section id="history" class="fade-in">
+    <h2 class="fade-in-up" id="sectionHistoryTitle"></h2>
+    <div class="timeline fade-in">
+      <div class="timeline-item">
+        <div class="timeline-text">
+          <div class="timeline-year">2005</div>
+          <div class="timeline-desc" id="history2005"></div>
+        </div>
+        <div class="timeline-img">
+          <img src="icons/2005.jpg" alt="2005年の様子">
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-text">
+          <div class="timeline-year">2010</div>
+          <div class="timeline-desc" id="history2010"></div>
+        </div>
+        <div class="timeline-img">
+          <img src="icons/2010.jpg" alt="2010年の様子">
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-text">
+          <div class="timeline-year">2015</div>
+          <div class="timeline-desc" id="history2015"></div>
+        </div>
+        <div class="timeline-img">
+          <img src="icons/2015.jpg" alt="2015年の様子">
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-text">
+          <div class="timeline-year">2021</div>
+          <div class="timeline-desc" id="history2021"></div>
+        </div>
+        <div class="timeline-img">
+          <img src="icons/2021.jpg" alt="2021年の様子">
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-text">
+          <div class="timeline-year">2024</div>
+          <div class="timeline-desc" id="history2024"></div>
+        </div>
+        <div class="timeline-img">
+          <img src="icons/2024.jpg" alt="2024年の様子">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- お問い合わせ -->
+  <section id="contact" class="fade-in">
+    <h2 class="fade-in-left" id="sectionContactTitle"></h2>
+    <p class="fade-in" id="sectionContactIntro"></p>
+    <div class="contact-form fade-in-up">
+      <label for="name" id="contactLabelName"></label>
+      <input type="text" id="name" placeholder="" required />
+
+      <label for="email" id="contactLabelEmail"></label>
+      <input type="email" id="email" placeholder="" required />
+
+      <label for="message" id="contactLabelMessage"></label>
+      <textarea id="message" rows="5" placeholder=""></textarea>
+
+      <button type="submit" id="contactSubmitBtn"></button>
+    </div>
+  </section>
+
+  <!-- フッター -->
+  <footer>
+    <p id="footerText"></p>
+  </footer>
+
+  <!-- =========================
+       JS（自動スライド + ハンバーガーメニュー + 多言語対応 ほか）
+  ========================== -->
+  <script>
+    /********************************
+     * 1) 多言語テキスト定義
+     ********************************/
+    const translations = {
+      ja: {
+        langSwitchBtn: "言語切り替え",
+        navHome: "ホーム",
+        navGreeting: "ご挨拶",
+        navWorks: "活動内容",
+        navSNS: "関連SNS",
+        navGallery: "ブログ",
+        navMedia: "メディア出演",
+        navHistory: "自分史",
+        navContact: "お問い合わせ",
+        heroSubtitle: "防災行政無線や放送設備に魅了され<br>ドローンによる映像制作など幅広く活動しています。",
+        sectionGreetingTitle: "ご挨拶",
+        sectionGreetingText:
+          `<p>幼少期より放送設備の世界に魅了され、防災無線や屋外拡声子局、校内放送などを収集・研究してきました。</p>
+           <p>「成田映像工房」を立ち上げ、ドローン空撮や動画編集、プログラム開発などのご依頼にも対応しております。</p>
+           <p style="text-align: right; margin-top: 1.5rem;">
+             toapd2022
+             <img src="icons/サイン.png" alt="サイン"
+                  style="width: 40px; height: auto; vertical-align: middle; margin-left: 8px;">
+           </p>`,
+        sectionWorksTitle: "活動内容",
+        worksItem1Title: "YouTube「toapd2022」",
+        worksItem1Text:
+          `各地の防災無線チャイムや屋外拡声システムを収録し、<br>
+           音色や機材について解説する動画を配信しています。`,
+        worksItem2Title: "成田映像工房（映像制作・編集）",
+        worksItem2Text:
+          `イベントや企業PR、個人の記念映像など様々なニーズに応じた映像を制作いたします。<br>
+           ドローン空撮による迫力ある映像表現も好評です。`,
+        worksItem3Title: "ドローン空撮",
+        worksItem3Text:
+          `ドローンを用いた上空撮影で、観光地やイベントの魅力をダイナミックに捉えます。<br>
+           安全管理を徹底し、高品質な映像を提供します。`,
+        worksItem4Title: "防災無線チャイムの世界",
+        worksItem4Text:
+          `全国各地の防災無線チャイムがいつ、どこで、どのメロディを奏でるのかを紹介する
+           「防災無線チャイム鳴動表サークル」にて、兵庫県の鳴動表を担当しています。`,
+        sectionSNSTitle: "関連SNS",
+        sectionSNSIntro: "各種SNSでも最新情報を随時配信しています。ぜひフォローをお願いいたします。",
+        snsLabelYoutube: "YouTube",
+        snsLabelX: "X（旧Twitter）",
+        snsLabelInstagram: "Instagram",
+        snsLabelChime: "防災無線チャイムの世界",
+        sectionGalleryTitle: "ブログ",
+        sectionGalleryIntro: "",
+        sectionMediaTitle: "メディア出演",
+        sectionMediaIntro: "各種テレビ番組や新聞などでご紹介いただきました。",
+        mediaItem1Title: "テレビ朝日「ナニコレ珍百景」",
+        mediaItem1Text:
+          `放送日：2023年7月30日(日)<br>
+           ◆自慢したいコレクション珍百景<br>
+           家の中に学校のスピーカーや会社の電話機がある！？<br>
+           高校生が伝えたい防災用スピーカーの重要性とは…`,
+        mediaItem2Title: "TBS「イキスギさんについてった」",
+        mediaItem2Text:
+          `放送日：2023年8月1日(火)<br>
+           ◆イキスギさんクイズ<br>
+           ジャニーズWESTが何のイキスギさんかを当てる企画！<br>
+           防災無線の収録が趣味のチャイムイキスギさん?!`,
+        mediaItem3Title: "姫路CATV「ウィークリー姫路」",
+        mediaItem3Text:
+          `放送日：2023年8月11日(金)<br>
+           ◆広報推進員のコーナー<br>
+           2022年度に実施された「魅せてMyHimeji姫路市動画コンテスト」での
+           動画編集や工夫した点などを紹介いただきました。`,
+        mediaItem4Title: "TBS「THE TIME, 中高生ニュース」",
+        mediaItem4Text:
+          `放送日：2023年11月21日(火)<br>
+           ◆自宅に設置！防災無線高校生<br>
+           家の中に3Dプリンターでミニチュア防災無線を製作・設置し、
+           呼び出し放送やチャイムを流してみる取り組みが紹介されました。`,
+        mediaItem5Title: "神戸新聞",
+        mediaItem5Text:
+          `2023年8月13日<br>
+           防災無線に魅了された高校生の活動が特集されました。<br>
+           <a href="https://www.kobe-np.co.jp/news/seiban/202308/0016706999.shtml"
+              target="_blank" rel="noopener noreferrer">
+             記事はこちら
+           </a>`,
+        sectionHistoryTitle: "自分史",
+        history2005:
+          `幼少期から「音」そのものに興味を持ち始め、家中にスピーカーを取り付けるほどの熱中ぶり。`,
+        history2010:
+          `防災無線のチャイム収録をスタート。パソコンでの音声編集にも取り組む。`,
+        history2015:
+          `YouTubeチャンネル「toapd2022」を開設。本格的に映像制作への関心を深める。`,
+        history2021:
+          `成田映像工房を本格的に始動。メディア出演を通じて防災無線の魅力を広く発信。`,
+        history2024:
+          `AIやプログラミングなど新技術を積極的に導入。映像制作や機材研究のさらなる発展を目指す。`,
+        sectionContactTitle: "お問い合わせ",
+        sectionContactIntro:
+          `お仕事のご相談やコラボレーション、その他ご質問など、<br>
+           下記フォームよりお気軽にお寄せください。`,
+        contactLabelName: "お名前",
+        contactLabelEmail: "メールアドレス",
+        contactLabelMessage: "お問い合わせ内容",
+        contactSubmitBtn: "送信",
+        footerText: "© 2025 toapd2022. All Rights Reserved."
+      },
+      en: {
+        langSwitchBtn: "Language",
+        navHome: "Home",
+        navGreeting: "Greeting",
+        navWorks: "Works",
+        navSNS: "SNS",
+        navGallery: "Blog",
+        navMedia: "Media",
+        navHistory: "History",
+        navContact: "Contact",
+        heroSubtitle: "Fascinated by disaster prevention radio systems and broadcast equipment, also involved in drone video production and more.",
+        sectionGreetingTitle: "Greeting",
+        sectionGreetingText:
+          `<p>Since childhood, I've been captivated by the world of broadcast equipment, collecting and researching systems like disaster prevention radios, outdoor PA, and school broadcasting setups.</p>
+           <p>Under the name 'Narita Video Studio', I work on drone aerial photography, video editing, and program development requests.</p>
+           <p style="text-align: right; margin-top: 1.5rem;">
+             toapd2022
+             <img src="icons/サイン.png" alt="Signature"
+                  style="width: 40px; height: auto; vertical-align: middle; margin-left: 8px;">
+           </p>`,
+        sectionWorksTitle: "Works",
+        worksItem1Title: `YouTube "toapd2022"`,
+        worksItem1Text:
+          `We record various local disaster prevention chimes and outdoor PA systems,
+           sharing videos that explain their sounds and equipment details.`,
+        worksItem2Title: "Narita Video Studio (Video Production)",
+        worksItem2Text:
+          `We produce videos for events, corporate PR, or personal commemorations, meeting various needs.
+           Our drone aerial footage offers dynamic visuals and is well-received.`,
+        worksItem3Title: "Drone Aerial Photography",
+        worksItem3Text:
+          `We capture tourist sites and events dynamically from above using drones.
+           With thorough safety management, we provide high-quality footage.`,
+        worksItem4Title: "Disaster Prevention Radio Chimes",
+        worksItem4Text:
+          `We participate in the "Disaster Prevention Radio Chime Timetable Circle," introducing when and where chimes play nationwide, handling Hyogo Prefecture's schedule.`,
+        sectionSNSTitle: "SNS",
+        sectionSNSIntro: "We regularly share the latest updates on various SNS. Please follow us!",
+        snsLabelYoutube: "YouTube",
+        snsLabelX: "X (formerly Twitter)",
+        snsLabelInstagram: "Instagram",
+        snsLabelChime: "Disaster Radio Chime World",
+        sectionGalleryTitle: "Blog",
+        sectionGalleryIntro: "",
+        sectionMediaTitle: "Media",
+        sectionMediaIntro: "Featured by various TV programs and newspapers.",
+        mediaItem1Title: `TV Asahi "Nanikore Chin Hyakkei"`,
+        mediaItem1Text:
+          `Aired on July 30, 2023 (Sun).  
+           ◆ Unique Collection Showcase  
+           A house with school speakers and office telephones!?  
+           A high school student who highlights the importance of disaster speakers...`,
+        mediaItem2Title: `TBS "Ikisugi-san"`,
+        mediaItem2Text:
+          `Aired on August 1, 2023 (Tue).  
+           ◆ Ikisugi-san Quiz  
+           Where Johnny's WEST guesses what the special hobby is!  
+           A "Chime Enthusiast" who records disaster prevention broadcasts?!`,
+        mediaItem3Title: `Himeji CATV "Weekly Himeji"`,
+        mediaItem3Text:
+          `Aired on August 11, 2023 (Fri).  
+           ◆ PR Supporter Corner  
+           Showcased the editing approach used in the "Show MyHimeji" 2022 contest.`,
+        mediaItem4Title: `TBS "THE TIME, High School News"`,
+        mediaItem4Text:
+          `Aired on November 21, 2023 (Tue).  
+           ◆ A high school student who set up a mini disaster radio at home  
+           Demonstrated a 3D-printed miniature system for calls and chimes.`,
+        mediaItem5Title: "Kobe Shimbun",
+        mediaItem5Text:
+          `August 13, 2023  
+           Featured a high school student's devotion to disaster prevention radios.<br>
+           <a href="https://www.kobe-np.co.jp/news/seiban/202308/0016706999.shtml"
+              target="_blank" rel="noopener noreferrer">
+             Read the article here
+           </a>`,
+        sectionHistoryTitle: "History",
+        history2005:
+          `Since childhood, I have been interested in "sound" and installed speakers all over the house.`,
+        history2010:
+          `I started recording disaster prevention radio chimes and learned audio editing on a PC.`,
+        history2015:
+          `Launched the YouTube channel "toapd2022" and deepened my interest in video production.`,
+        history2021:
+          `Formally started Narita Video Studio. Through media appearances, I widely promoted the charm of disaster prevention radios.`,
+        history2024:
+          `Actively incorporating new technologies such as AI and programming to further develop video production and equipment research.`,
+        sectionContactTitle: "Contact",
+        sectionContactIntro:
+          `For business inquiries, collaborations, or other questions,<br>
+           please feel free to reach out via the form below.`,
+        contactLabelName: "Name",
+        contactLabelEmail: "Email Address",
+        contactLabelMessage: "Message",
+        contactSubmitBtn: "Send",
+        footerText: "© 2025 toapd2022. All Rights Reserved."
+      },
+      zh: {
+        langSwitchBtn: "语言切换",
+        navHome: "主页",
+        navGreeting: "问候",
+        navWorks: "活动内容",
+        navSNS: "相关SNS",
+        navGallery: "博客",
+        navMedia: "媒体报道",
+        navHistory: "个人历程",
+        navContact: "联系我们",
+        heroSubtitle: "对防灾行政无线电和广播设备充满热情，并从事无人机影像制作等多方面活动。",
+        sectionGreetingTitle: "问候",
+        sectionGreetingText:
+          `<p>从童年开始就对广播设备充满兴趣，收集并研究了防灾无线电、室外扩音系统、校内广播等。</p>
+           <p>创立「成田映像工房」，提供无人机航拍、视频编辑、程序开发等多种服务。</p>
+           <p style="text-align: right; margin-top: 1.5rem;">
+             toapd2022
+             <img src="icons/サイン.png" alt="签名"
+                  style="width: 40px; height: auto; vertical-align: middle; margin-left: 8px;">
+           </p>`,
+        sectionWorksTitle: "活动内容",
+        worksItem1Title: "YouTube 「toapd2022」",
+        worksItem1Text:
+          `记录并介绍各地的防灾无线电报时旋律与室外扩音系统，<br>
+           以及它们的音色与设备详情。`,
+        worksItem2Title: "成田映像工房（视频制作/编辑）",
+        worksItem2Text:
+          `为活动、企业宣传、个人纪念等提供多样化的视频制作方案。<br>
+           同时支持无人机航拍，展现更具冲击力的影像效果。`,
+        worksItem3Title: "无人机航拍",
+        worksItem3Text:
+          `利用无人机从空中拍摄，为观光地和活动创造更多动感的视觉冲击。<br>
+           我们严格注重安全管理，力求提供高质量的航拍视频。`,
+        worksItem4Title: "防灾无线电报时乐曲的世界",
+        worksItem4Text:
+          `在「防灾无线电报时乐曲鸣动表」组织中介绍各地何时何地演奏何种旋律，<br>
+           并负责兵库县的鸣动表管理。`,
+        sectionSNSTitle: "相关SNS",
+        sectionSNSIntro: "我们在各类SNS上都会不定期发布最新消息，欢迎关注！",
+        snsLabelYoutube: "YouTube",
+        snsLabelX: "X（原Twitter）",
+        snsLabelInstagram: "Instagram",
+        snsLabelChime: "防灾无线电报时乐曲的世界",
+        sectionGalleryTitle: "博客",
+        sectionGalleryIntro: "",
+        sectionMediaTitle: "媒体报道",
+        sectionMediaIntro: "曾在各电视节目、报纸等媒体上多次亮相。",
+        mediaItem1Title: "朝日电视台《ナニコレ珍百景》",
+        mediaItem1Text:
+          `播出日期：2023年7月30日（周日）<br>
+           ◆令人惊叹的收藏珍百景<br>
+           屋内竟然装有学校广播扬声器和公司电话机？<br>
+           这位高中生希望传达防灾扬声器的重要性……`,
+        mediaItem2Title: "TBS《イキスギさんについてった》",
+        mediaItem2Text:
+          `播出日期：2023年8月1日（周二）<br>
+           ◆イキスギさん问答<br>
+           杰尼斯WEST成员猜测来宾的“特殊爱好”！<br>
+           原来有人爱好录制防灾无线电的旋律？`,
+        mediaItem3Title: "姬路CATV《ウィークリー姫路》",
+        mediaItem3Text:
+          `播出日期：2023年8月11日（周五）<br>
+           ◆广报推进员单元<br>
+           介绍了在2022年度「魅せてMyHimeji姫路市视频比赛」中进行视频编辑时的特色与亮点。`,
+        mediaItem4Title: "TBS《THE TIME, 中高生ニュース》",
+        mediaItem4Text:
+          `播出日期：2023年11月21日（周二）<br>
+           ◆在家中设置迷你防灾无线电的高中生<br>
+           利用3D打印制作的迷你扩音系统，以实现呼叫广播与旋律播放的尝试。`,
+        mediaItem5Title: "神户新闻",
+        mediaItem5Text:
+          `2023年8月13日<br>
+           报道了对防灾无线电深感兴趣的高中生的活动历程。<br>
+           <a href="https://www.kobe-np.co.jp/news/seiban/202308/0016706999.shtml"
+              target="_blank" rel="noopener noreferrer">
+             详情请见报道
+           </a>`,
+        sectionHistoryTitle: "个人历程",
+        history2005:
+          `自幼对“声音”着迷，甚至在家中安装了多个扬声器。`,
+        history2010:
+          `开始录制防灾无线电报时乐曲，同时尝试在电脑上进行音频编辑。`,
+        history2015:
+          `创建了YouTube频道“toapd2022”，对视频制作的兴趣持续加深。`,
+        history2021:
+          `正式创立成田映像工房，并通过多次媒体曝光，让更多人了解防灾无线电的魅力。`,
+        history2024:
+          `积极导入AI、编程等新技术，进一步拓展在视频制作与设备研究领域的深度与广度。`,
+        sectionContactTitle: "联系我们",
+        sectionContactIntro:
+          `如有业务合作、联合企划或其他疑问，欢迎通过下方表单随时与我们联系。`,
+        contactLabelName: "姓名",
+        contactLabelEmail: "邮箱地址",
+        contactLabelMessage: "咨询内容",
+        contactSubmitBtn: "发送",
+        footerText: "© 2025 toapd2022 版权所有"
+      }
+    };
+
+    /********************************
+     * 2) 言語適用用の関数
+     ********************************/
+    function applyTranslations(lang) {
+      const currentLangData = translations[lang] || translations["ja"];
+      for (const key in currentLangData) {
+        const element = document.getElementById(key);
+        if (element) {
+          element.innerHTML = currentLangData[key];
+        }
+      }
+      // プレースホルダ（input/textarea）切り替え
+      document.getElementById("name").placeholder = 
+        (lang === "ja") ? "例）山田 太郎" : 
+        (lang === "en") ? "e.g. John Smith" : 
+        (lang === "zh") ? "例如：张三" : 
+        "例）山田 太郎";
+
+      document.getElementById("email").placeholder = 
+        (lang === "ja") ? "example@example.com" :
+        (lang === "en") ? "example@example.com" :
+        (lang === "zh") ? "示例：example@example.com" :
+        "example@example.com";
+
+      document.getElementById("message").placeholder = 
+        (lang === "ja") ? "ご用件をお書きください..." :
+        (lang === "en") ? "Please enter your message..." :
+        (lang === "zh") ? "请输入您的留言..." :
+        "ご用件をお書きください...";
+    }
+
+    /********************************
+     * 3) ハンバーガーメニューの開閉
+     ********************************/
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const nav = document.querySelector('header nav');
+
+    hamburgerBtn.addEventListener('click', () => {
+      if (!nav.style.display || nav.style.display === 'none') {
+        nav.style.display = 'flex';
+      } else {
+        nav.style.display = 'none';
+      }
+    });
+
+    // 画面のどこかをクリックしたらメニューを閉じる
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 1138 && nav.style.display === 'flex') {
+        if (
+          !nav.contains(e.target) &&
+          e.target !== hamburgerBtn &&
+          !hamburgerBtn.contains(e.target)
+        ) {
+          nav.style.display = 'none';
+        }
+      }
+    });
+
+    // メニュー項目クリックで閉じる
+    nav.addEventListener('click', (e) => {
+      if (window.innerWidth <= 1138 && e.target.tagName === 'A') {
+        nav.style.display = 'none';
+      }
+    });
+
+    /********************************
+     * 4) PC用スライドショー (#hero)
+     ********************************/
+    const heroSlides = document.getElementById('heroSlides');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const dots = Array.from(document.querySelectorAll('.dot'));
+
+    let heroAutoPlayTimer = null;
+    let currentIndex = 1;
+    let originalSlides = [];
+    let allSlides = [];
+
+    function goToSlide(index) {
+      if (!heroSlides) return;
+      heroSlides.style.transition = 'transform 0.8s ease';
+      currentIndex = index;
+      heroSlides.style.transform = `translateX(-${currentIndex * 100}%)`;
+      updateDots();
+    }
+
+    function updateDots() {
+      let realIndex = currentIndex - 1;
+      if (realIndex >= originalSlides.length) realIndex = 0;
+      if (realIndex < 0) realIndex = originalSlides.length - 1;
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === realIndex);
+      });
+    }
+
+    function startHeroAutoPlay() {
+      if (heroAutoPlayTimer) return;
+      heroAutoPlayTimer = setInterval(() => {
+        goToSlide(currentIndex + 1);
+      }, 5000);
+    }
+
+    function stopHeroAutoPlay() {
+      if (heroAutoPlayTimer) {
+        clearInterval(heroAutoPlayTimer);
+        heroAutoPlayTimer = null;
+      }
+    }
+
+    if (heroSlides) {
+      originalSlides = Array.from(heroSlides.querySelectorAll('.hero-slide'));
+      const firstClone = originalSlides[0].cloneNode(true);
+      const lastClone  = originalSlides[originalSlides.length - 1].cloneNode(true);
+      firstClone.id = 'first-clone';
+      lastClone.id  = 'last-clone';
+      heroSlides.insertBefore(lastClone, originalSlides[0]);
+      heroSlides.appendChild(firstClone);
+
+      allSlides = Array.from(heroSlides.querySelectorAll('.hero-slide'));
+      currentIndex = 1;
+      heroSlides.style.transform = `translateX(-100%)`;
+
+      heroSlides.addEventListener('transitionend', () => {
+        allSlides = Array.from(heroSlides.querySelectorAll('.hero-slide'));
+        if (allSlides[currentIndex] && allSlides[currentIndex].id === 'first-clone') {
+          heroSlides.style.transition = 'none';
+          currentIndex = 1;
+          heroSlides.style.transform = `translateX(-100%)`;
+        }
+        if (allSlides[currentIndex] && allSlides[currentIndex].id === 'last-clone') {
+          heroSlides.style.transition = 'none';
+          currentIndex = allSlides.length - 2;
+          heroSlides.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+      });
+
+      // 矢印
+      prevBtn.addEventListener('click', () => {
+        stopHeroAutoPlay();
+        goToSlide(currentIndex - 1);
+      });
+      nextBtn.addEventListener('click', () => {
+        stopHeroAutoPlay();
+        goToSlide(currentIndex + 1);
+      });
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+          stopHeroAutoPlay();
+          goToSlide(i + 1);
+        });
+      });
+      updateDots();
+    }
+
+    /********************************
+     * 5) スマホ用スライドショー (.mobile-hero)
+     ********************************/
+    const mobileHeroSlides = document.getElementById('mobileHeroSlides');
+    let mobileAutoPlayTimer = null;
+    let currentIndex_m = 1;
+    let mobileOriginalSlides = [];
+    let allSlides_m = [];
+
+    function goToSlide_m(index) {
+      if (!mobileHeroSlides) return;
+      mobileHeroSlides.style.transition = 'transform 0.8s ease';
+      currentIndex_m = index;
+      mobileHeroSlides.style.transform = `translateX(-${currentIndex_m * 100}%)`;
+    }
+
+    function startMobileAutoPlay() {
+      if (mobileAutoPlayTimer) return;
+      mobileAutoPlayTimer = setInterval(() => {
+        goToSlide_m(currentIndex_m + 1);
+      }, 5000);
+    }
+
+    function stopMobileAutoPlay() {
+      if (mobileAutoPlayTimer) {
+        clearInterval(mobileAutoPlayTimer);
+        mobileAutoPlayTimer = null;
+      }
+    }
+
+    if (mobileHeroSlides) {
+      mobileOriginalSlides = Array.from(mobileHeroSlides.querySelectorAll('.mobile-hero-slide'));
+      const firstClone_m = mobileOriginalSlides[0].cloneNode(true);
+      const lastClone_m  = mobileOriginalSlides[mobileOriginalSlides.length - 1].cloneNode(true);
+      firstClone_m.id = 'mobile-first-clone';
+      lastClone_m.id  = 'mobile-last-clone';
+      mobileHeroSlides.insertBefore(lastClone_m, mobileOriginalSlides[0]);
+      mobileHeroSlides.appendChild(firstClone_m);
+
+      allSlides_m = Array.from(mobileHeroSlides.querySelectorAll('.mobile-hero-slide'));
+      currentIndex_m = 1;
+      mobileHeroSlides.style.transform = `translateX(-100%)`;
+
+      mobileHeroSlides.addEventListener('transitionend', () => {
+        allSlides_m = Array.from(mobileHeroSlides.querySelectorAll('.mobile-hero-slide'));
+        if (allSlides_m[currentIndex_m] && allSlides_m[currentIndex_m].id === 'mobile-first-clone') {
+          mobileHeroSlides.style.transition = 'none';
+          currentIndex_m = 1;
+          mobileHeroSlides.style.transform = `translateX(-100%)`;
+        }
+        if (allSlides_m[currentIndex_m] && allSlides_m[currentIndex_m].id === 'mobile-last-clone') {
+          mobileHeroSlides.style.transition = 'none';
+          currentIndex_m = allSlides_m.length - 2;
+          mobileHeroSlides.style.transform = `translateX(-${currentIndex_m * 100}%)`;
+        }
+      });
+    }
+
+    /********************************
+     * 6) PC版・スマホ版の自動再生を画面幅で切り替える
+     ********************************/
+    function checkScreenSize() {
+      if (window.innerWidth <= 768) {
+        stopHeroAutoPlay();
+        startMobileAutoPlay();
+      } else {
+        stopMobileAutoPlay();
+        startHeroAutoPlay();
+      }
+    }
+    window.addEventListener('resize', checkScreenSize);
+
+    /********************************
+     * 7) フェードイン制御 (Intersection Observer)
+     ********************************/
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        } else {
+          entry.target.classList.remove('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in, .fade-in-up, .fade-in-left, .fade-in-right')
+      .forEach(el => fadeObserver.observe(el));
+
+    /********************************
+     * 8) 言語切り替えボタンの動作
+     ********************************/
+    const langToggleBtn = document.getElementById("langToggleBtn");
+    const langList = document.getElementById("langList");
+
+    langToggleBtn.addEventListener("click", () => {
+      if (!langList.style.display || langList.style.display === "none") {
+        langList.style.display = "block";
+      } else {
+        langList.style.display = "none";
+      }
+    });
+    Array.from(langList.querySelectorAll("li")).forEach(li => {
+      li.addEventListener("click", () => {
+        const selectedLang = li.getAttribute("data-lang");
+        applyTranslations(selectedLang);
+        langList.style.display = "none";
+      });
+    });
+
+    // 初期表示（日本語）
+    applyTranslations("ja");
+
+    /********************************
+     * 9) ページロード時のアニメ・自動再生
+     ********************************/
+    window.addEventListener("DOMContentLoaded", () => {
+      // PC版ヒーローアニメ
+      const heroAnimationWrapper = document.getElementById('heroAnimationWrapper');
+      if (heroAnimationWrapper) {
+        heroAnimationWrapper.classList.add("hero-fadein");
+      }
+
+      // スマホ版ヒーローアニメ
+      const mobileHeroAnimationWrapper = document.getElementById('mobileHeroAnimationWrapper');
+      if (mobileHeroAnimationWrapper) {
+        mobileHeroAnimationWrapper.classList.add("hero-fadein");
+      }
+
+      // 画面幅に応じてPC版 or スマホ版を自動再生
+      checkScreenSize();
+    });
+  </script>
+</body>
+</html>
