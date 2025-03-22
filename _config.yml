@@ -1,0 +1,18 @@
+title: "toapd2022 Blog"
+description: "ドローン映像や防災無線などの活動報告"
+author: "toapd2022"
+
+# GitHub Pages用
+url: "https://toapd2022.github.io"    # 自分のユーザー名.github.io
+baseurl: "/toapd2022"                 # リポジトリ名 ( /から始める )
+
+# 日本時間で投稿日時などを表示したい場合
+timezone: "Asia/Tokyo"
+
+# ブログ投稿のURLをどうするか (例： /year/month/day/title/ )
+permalink: /:year/:month/:day/:title/
+
+# プラグイン (GitHub Pagesで使えるもののみ)
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
