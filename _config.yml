@@ -4,7 +4,7 @@ author: "toapd2022"
 
 # GitHub Pages用
 url: "https://toapd2022.github.io"    # 自分のユーザー名.github.io
-baseurl: "/toapd2022"                 # リポジトリ名 ( /から始める )
+baseurl: ""
 
 # 日本時間で投稿日時などを表示したい場合
 timezone: "Asia/Tokyo"
