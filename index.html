@@ -1,3 +1,7 @@
+---
+layout: none
+---
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -273,7 +277,6 @@
       width: 100%;
       height: 100%;
       transition: transform 0.8s ease;
-      will-change: transform; /* カクカク対策 */
     }
     .hero-slide {
       flex: 0 0 100%;
@@ -391,7 +394,6 @@
       position: relative;
       display: flex;
       transition: transform 0.8s ease;
-      will-change: transform; /* カクカク対策 */
     }
     .mobile-hero-slide {
       flex: 0 0 100%;
@@ -413,7 +415,6 @@
       width: 200px;
       height: auto;
     }
-    /* ▼ここを修正。pタグを空にしてIDを振り、JSで多言語切り替え */
     .mobile-hero-content p {
       margin: 1rem 0;
       line-height: 1.6;
@@ -1092,8 +1093,11 @@
       </div>
       <div class="mobile-hero-content">
         <img src="icons/logo.png" alt="toapd2022" class="mobile-hero-logo">
-        <!-- ここにIDを付与して、JS で翻訳テキストを反映させる -->
-        <p id="mobileHeroSubtitle"></p>
+        <p>
+          防災行政無線や放送設備に魅了され<br>
+          ドローンによる映像制作など幅広く活動しています。<br>
+          <br><br>
+        </p>
       </div>
     </div>
   </div>
@@ -1173,6 +1177,7 @@
 
   <!-- ★ ブログ (旧ギャラリー) -->
   <section id="blog" class="fade-in">
+    <!-- h2と p は翻訳で書き換えられるが、デフォルトのテキストは削除 -->
     <h2 class="fade-in-right" id="sectionGalleryTitle"></h2>
 
     <div class="fade-in">
@@ -1341,8 +1346,6 @@
         navHistory: "自分史",
         navContact: "お問い合わせ",
         heroSubtitle: "防災行政無線や放送設備に魅了され<br>ドローンによる映像制作など幅広く活動しています。",
-        /* ▼スマホ版のテキストも追加 */
-        mobileHeroSubtitle: "防災行政無線や放送設備に魅了され<br>ドローンによる映像制作など幅広く活動しています。",
         sectionGreetingTitle: "ご挨拶",
         sectionGreetingText:
           `<p>幼少期より放送設備の世界に魅了され、防災無線や屋外拡声子局、校内放送などを収集・研究してきました。</p>
@@ -1443,7 +1446,6 @@
         navHistory: "History",
         navContact: "Contact",
         heroSubtitle: "Fascinated by disaster prevention radio systems and broadcast equipment, also involved in drone video production and more.",
-        mobileHeroSubtitle: "Fascinated by disaster prevention radio systems and broadcast equipment, also involved in drone video production and more.",
         sectionGreetingTitle: "Greeting",
         sectionGreetingText:
           `<p>Since childhood, I've been captivated by the world of broadcast equipment, collecting and researching systems like disaster prevention radios, outdoor PA, and school broadcasting setups.</p>
@@ -1541,8 +1543,6 @@
         navHistory: "个人历程",
         navContact: "联系我们",
         heroSubtitle: "对防灾行政无线电和广播设备充满热情，并从事无人机影像制作等多方面活动。",
-        /* ▼スマホ版も追加 */
-        mobileHeroSubtitle: "对防灾行政无线电和广播设备充满热情，并从事无人机影像制作等多方面活动。",
         sectionGreetingTitle: "问候",
         sectionGreetingText:
           `<p>从童年开始就对广播设备充满兴趣，收集并研究了防灾无线电、室外扩音系统、校内广播等。</p>
@@ -1595,7 +1595,7 @@
         mediaItem3Text:
           `播出日期：2023年8月11日（周五）<br>
            ◆广报推进员单元<br>
-           介绍了在2022年度「魅せてMyHimeji姬路市视频比赛」中进行视频编辑时的特色与亮点。`,
+           介绍了在2022年度「魅せてMyHimeji姫路市视频比赛」中进行视频编辑时的特色与亮点。`,
         mediaItem4Title: "TBS《THE TIME, 中高生ニュース》",
         mediaItem4Text:
           `播出日期：2023年11月21日（周二）<br>
