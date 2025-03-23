@@ -435,7 +435,7 @@
       margin: 0 auto;
       padding: 4rem 0;
       position: relative;
-      /* ※overflow: hidden; を削除し、切れを防止 */
+      overflow: hidden;
     }
     section h2 {
       font-size: 1.6rem;
@@ -691,7 +691,6 @@
       font-size: 0.9rem;
       line-height: 1.6;
     }
-    /* もし活動内容のリンク下線も消したい場合は以下をコメントアウト */
     .works-item a {
       color: #0066cc;
       text-decoration: underline;
@@ -808,16 +807,6 @@
       margin-bottom: 0.4rem;
       font-size: 1.1rem;
     }
-    /* ブログタイトルのリンクを下線無し + ホバー時少し色変化 */
-    .blog-item h3 a {
-      color: #333;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .blog-item h3 a:hover {
-      color: #666;
-    }
-
     .blog-item p {
       font-size: 0.9rem;
       line-height: 1.6;
@@ -1039,7 +1028,7 @@
       border-radius: 9999px;
       background: #ffcc00;
       color: #333;
-      text-decoration: none; /* 下線を消す */
+      text-decoration: none;
       font-weight: bold;
       transition: transform 0.2s ease, background 0.3s ease;
       cursor: pointer;
@@ -1048,7 +1037,38 @@
     .btn-all-posts:hover {
       transform: translateY(-2px);
       background: #ffd933;
-      text-decoration: none; /* ホバー時も下線なし */
+    }
+
+    /********************************
+     * Fix for blog card cut-off on mobile
+     ********************************/
+    @media screen and (max-width: 768px) {
+      .blog-list {
+        /* 右端が切れないように横幅を確保 */
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 1rem;
+        box-sizing: border-box;
+      }
+    }
+
+    /********************************
+     * Fix link style for blog title & readmore
+     * （青文字と下線を外す）
+     ********************************/
+    .blog-item h3 a {
+      color: #333 !important;
+      text-decoration: none !important;
+    }
+    .blog-item h3 a:hover {
+      color: #666 !important;
+      text-decoration: none !important;
+    }
+    .btn-readmore {
+      text-decoration: none !important;
+    }
+    .btn-readmore:hover {
+      text-decoration: none !important;
     }
   </style>
 </head>
@@ -1138,7 +1158,7 @@
       <div class="mobile-hero-content">
         <img src="icons/logo.png" alt="toapd2022" class="mobile-hero-logo">
         <p id="mobileHeroSubtitle"></p>
-      </div>        
+      </div>
     </div>
   </div>
 
@@ -1442,7 +1462,6 @@
         snsLabelInstagram: "Instagram",
         snsLabelChime: "防災無線チャイムの世界",
         sectionGalleryTitle: "ブログ",
-        sectionGalleryIntro: "",
         sectionMediaTitle: "メディア出演",
         sectionMediaIntro: "各種テレビ番組や新聞などでご紹介いただきました。",
         mediaItem1Title: "テレビ朝日「ナニコレ珍百景」",
@@ -1521,7 +1540,7 @@
                   style="width: 40px; height: auto; vertical-align: middle; margin-left: 8px;">
            </p>`,
         sectionWorksTitle: "Works",
-        worksItem1Title: "YouTube \"toapd2022\"",
+        worksItem1Title: `YouTube "toapd2022"`,
         worksItem1Text:
           `We record various local disaster prevention chimes and outdoor PA systems,
            sharing videos that explain their sounds and equipment details.`,
@@ -1543,27 +1562,26 @@
         snsLabelInstagram: "Instagram",
         snsLabelChime: "Disaster Radio Chime World",
         sectionGalleryTitle: "Blog",
-        sectionGalleryIntro: "",
         sectionMediaTitle: "Media",
         sectionMediaIntro: "Featured by various TV programs and newspapers.",
-        mediaItem1Title: "TV Asahi \"Nanikore Chin Hyakkei\"",
+        mediaItem1Title: `TV Asahi "Nanikore Chin Hyakkei"`,
         mediaItem1Text:
           `Aired on July 30, 2023 (Sun).  
            ◆ Unique Collection Showcase  
            A house with school speakers and office telephones!?  
            A high school student who highlights the importance of disaster speakers...`,
-        mediaItem2Title: "TBS \"Ikisugi-san\"",
+        mediaItem2Title: `TBS "Ikisugi-san"`,
         mediaItem2Text:
           `Aired on August 1, 2023 (Tue).  
            ◆ Ikisugi-san Quiz  
            Where Johnny's WEST guesses what the special hobby is!  
            A "Chime Enthusiast" who records disaster prevention broadcasts?!`,
-        mediaItem3Title: "Himeji CATV \"Weekly Himeji\"",
+        mediaItem3Title: `Himeji CATV "Weekly Himeji"`,
         mediaItem3Text:
           `Aired on August 11, 2023 (Fri).  
            ◆ PR Supporter Corner  
            Showcased the editing approach used in the "Show MyHimeji" 2022 contest.`,
-        mediaItem4Title: "TBS \"THE TIME, High School News\"",
+        mediaItem4Title: `TBS "THE TIME, High School News"`,
         mediaItem4Text:
           `Aired on November 21, 2023 (Tue).  
            ◆ A high school student who set up a mini disaster radio at home  
@@ -1643,7 +1661,6 @@
         snsLabelInstagram: "Instagram",
         snsLabelChime: "防灾无线电报时乐曲的世界",
         sectionGalleryTitle: "博客",
-        sectionGalleryIntro: "",
         sectionMediaTitle: "媒体报道",
         sectionMediaIntro: "曾在各电视节目、报纸等媒体上多次亮相。",
         mediaItem1Title: "朝日电视台《ナニコレ珍百景》",
@@ -1818,14 +1835,14 @@
 
       allSlides = Array.from(heroSlides.querySelectorAll('.hero-slide'));
       currentIndex = 1;
-      heroSlides.style.transform = 'translateX(-100%)';
+      heroSlides.style.transform = `translateX(-100%)`;
 
       heroSlides.addEventListener('transitionend', () => {
         allSlides = Array.from(heroSlides.querySelectorAll('.hero-slide'));
         if (allSlides[currentIndex] && allSlides[currentIndex].id === 'first-clone') {
           heroSlides.style.transition = 'none';
           currentIndex = 1;
-          heroSlides.style.transform = 'translateX(-100%)';
+          heroSlides.style.transform = `translateX(-100%)`;
         }
         if (allSlides[currentIndex] && allSlides[currentIndex].id === 'last-clone') {
           heroSlides.style.transition = 'none';
@@ -1893,14 +1910,14 @@
 
       allSlides_m = Array.from(mobileHeroSlides.querySelectorAll('.mobile-hero-slide'));
       currentIndex_m = 1;
-      mobileHeroSlides.style.transform = 'translateX(-100%)';
+      mobileHeroSlides.style.transform = `translateX(-100%)`;
 
       mobileHeroSlides.addEventListener('transitionend', () => {
         allSlides_m = Array.from(mobileHeroSlides.querySelectorAll('.mobile-hero-slide'));
         if (allSlides_m[currentIndex_m] && allSlides_m[currentIndex_m].id === 'mobile-first-clone') {
           mobileHeroSlides.style.transition = 'none';
           currentIndex_m = 1;
-          mobileHeroSlides.style.transform = 'translateX(-100%)';
+          mobileHeroSlides.style.transform = `translateX(-100%)`;
         }
         if (allSlides_m[currentIndex_m] && allSlides_m[currentIndex_m].id === 'mobile-last-clone') {
           mobileHeroSlides.style.transition = 'none';
@@ -1985,9 +2002,9 @@
     });
 
     /***********************************************
-     * フォーム送信を fetch() で行う処理 (GASなど使用時)
+     * フォーム送信を fetch() で行う処理
      ***********************************************/
-    const GAS_ENDPOINT =
+     const GAS_ENDPOINT =
       "https://script.google.com/macros/s/AKfycbxaCCnu0Vf_aD0j4PHv0aMY_UCFt8G7QO8qcIn7yOjnhqk9PNGWrDP3hvDj_StaQGMWng/exec";
 
     const form      = document.getElementById('contactForm');
