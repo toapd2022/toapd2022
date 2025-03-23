@@ -131,7 +131,9 @@ permalink: /blog.html
     @media (max-width: 900px) {
       .hamburger { display: flex; }
       nav {
-        position: absolute; top: 60px; right: 20px;
+        position: absolute; 
+        top: 60px; 
+        right: 20px;
         background: rgba(255,255,255,0.95);
         backdrop-filter: blur(6px);
         border-radius: 6px; 
@@ -178,8 +180,6 @@ permalink: /blog.html
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      /* max-width: 600px;  ← 削除 */
-      /* margin: 0 auto;    ← 削除 */
       margin-bottom: 2rem; /* スマホでは記事ごとの下部余白 */
     }
     .blog-item:hover {
@@ -187,18 +187,29 @@ permalink: /blog.html
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    /* サムネイル: スマホで縦並びのとき、適度に小さくして画面に収める */
-    .blog-image img {
-      display: block;
-      width: 100%;
-      max-width: 150px;   /* これ以上大きくならないように制限 */
-      margin: 0 auto 1rem; 
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      object-fit: cover;
+    /* ---------- スマホ版 (幅900px以下) 用 サムネ表示 ---------- */
+    @media (max-width: 900px) {
+      .blog-image {
+        position: relative;
+        width: 100%;
+        max-width: 300px;        /* お好みで変更可 */
+        margin: 0 auto 1rem;
+        aspect-ratio: 16 / 9;    /* アスペクト比を16:9に固定 */
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+      .blog-image img {
+        position: absolute;
+        top: 0; 
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;       /* 中央を切り抜き */
+      }
     }
 
-    /* PC用(横幅900px～): 横並びに切り替え */
+    /* ---------- PC版 (幅900px以上) 用 サムネ表示 ---------- */
     @media (min-width: 900px) {
       .blog-item {
         flex-direction: row;
@@ -207,9 +218,11 @@ permalink: /blog.html
       }
       .blog-image img {
         width: 220px;      /* PC時の横幅 */
-        max-width: none;   /* PC時は上限を外す */
+        height: auto;
+        object-fit: cover; /* 必要に応じて調整 */
         margin-right: 1.5rem;
         margin-bottom: 0;
+        border-radius: 8px;
       }
     }
 
