@@ -25,13 +25,33 @@ permalink: /blog.html
     }
     body {
       font-family: sans-serif, Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+
+      /* ===== 背景のフォールバック＆ベンダープレフィックス対応 ===== */
+      /* 1. 単色フォールバック */
+      background: #FFEFEF; 
+      /* 2. 古いSafari/Chrome向け -webkit-線形グラデーション */
+      background: -webkit-linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
+      /* 3. 標準的な線形グラデーション */
       background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
+      
+      /* グラデーションを全体に拡大・アニメーション */
       background-size: 300% 300%;
+      
+      /* グラデーションアニメーション（ベンダープレフィックスも） */
+      -webkit-animation: bgAnimation 15s ease infinite;
+      animation: bgAnimation 15s ease infinite;
+
       color: #333;
       line-height: 1.6;
       overflow-x: hidden;
-      animation: bgAnimation 15s ease infinite;
       position: relative;
+    }
+
+    /* グラデーション用アニメ（ベンダープレフィックス対応） */
+    @-webkit-keyframes bgAnimation {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     @keyframes bgAnimation {
       0%   { background-position: 0% 50%; }
@@ -47,9 +67,14 @@ permalink: /blog.html
       left: -80px;
       width: 300px;
       height: 300px;
+
+      /* ===== radial-gradient もプレフィックス付きで書くとより安全 ===== */
+      background: -webkit-radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
       background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+
       border-radius: 50%;
       z-index: -1;
+      -webkit-animation: floatCircle 20s linear infinite alternate;
       animation: floatCircle 20s linear infinite alternate;
     }
     body::after {
@@ -59,20 +84,35 @@ permalink: /blog.html
       right: -100px;
       width: 400px;
       height: 400px;
+
+      background: -webkit-radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
       background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+
       border-radius: 50%;
       z-index: -1;
+      -webkit-animation: floatCircle2 30s linear infinite alternate;
       animation: floatCircle2 30s linear infinite alternate;
     }
+
+    @-webkit-keyframes floatCircle {
+      0%   { -webkit-transform: translate(0, 0) scale(1); transform: translate(0, 0) scale(1); }
+      50%  { -webkit-transform: translate(60vw, 40vh) scale(1.2); transform: translate(60vw, 40vh) scale(1.2); }
+      100% { -webkit-transform: translate(0, 0) scale(1); transform: translate(0, 0) scale(1); }
+    }
     @keyframes floatCircle {
-      0%   { transform: translate(0, 0) scale(1); }
-      50%  { transform: translate(60vw, 40vh) scale(1.2); }
-      100% { transform: translate(0, 0) scale(1); }
+      0%   { -webkit-transform: translate(0, 0) scale(1); transform: translate(0, 0) scale(1); }
+      50%  { -webkit-transform: translate(60vw, 40vh) scale(1.2); transform: translate(60vw, 40vh) scale(1.2); }
+      100% { -webkit-transform: translate(0, 0) scale(1); transform: translate(0, 0) scale(1); }
+    }
+    @-webkit-keyframes floatCircle2 {
+      0%   { -webkit-transform: translate(0, 0) scale(1); transform: translate(0, 0) scale(1); }
+      50%  { -webkit-transform: translate(-40vw, -30vh) scale(1.1); transform: translate(-40vw, -30vh) scale(1.1); }
+      100% { -webkit-transform: translate(0, 0) scale(1); transform: translate(0, 0) scale(1); }
     }
     @keyframes floatCircle2 {
-      0%   { transform: translate(0, 0) scale(1); }
-      50%  { transform: translate(-40vw, -30vh) scale(1.1); }
-      100% { transform: translate(0, 0) scale(1); }
+      0%   { -webkit-transform: translate(0, 0) scale(1); transform: translate(0, 0) scale(1); }
+      50%  { -webkit-transform: translate(-40vw, -30vh) scale(1.1); transform: translate(-40vw, -30vh) scale(1.1); }
+      100% { -webkit-transform: translate(0, 0) scale(1); transform: translate(0, 0) scale(1); }
     }
 
     a {
@@ -96,10 +136,15 @@ permalink: /blog.html
       display: flex;
       align-items: center;
       padding: 0 1.5rem;
+
+      /* ===== backdrop-filter 非対応の場合のフォールバック ===== */
       background: rgba(255,255,255,0.8);
-      backdrop-filter: blur(6px);
       border-bottom: 1px solid #eee;
       z-index: 999;
+
+      /* 対応ブラウザにはブラーを効かせる */
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
     }
 
     .header-left {
@@ -179,8 +224,12 @@ permalink: /blog.html
         position: absolute;
         top: 60px;
         right: 20px;
+
+        /* スマホ時も backdrop-filter が効かない場合を考慮してフォールバック */
         background: rgba(255,255,255,0.95);
+        -webkit-backdrop-filter: blur(6px);
         backdrop-filter: blur(6px);
+
         border: 1px solid #eee;
         padding: 1rem;
         border-radius: 6px;
@@ -221,8 +270,11 @@ permalink: /blog.html
 
     /* カード風背景 */
     .post-card {
+      /* backdrop-filter が効かない場合でも透明度のみでフォロー */
       background: rgba(255,255,255,0.8);
+      -webkit-backdrop-filter: blur(4px);
       backdrop-filter: blur(4px);
+
       border-radius: 6px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       padding: 2rem;
@@ -265,6 +317,7 @@ permalink: /blog.html
     }
     .blog-item {
       background: rgba(255,255,255,0.3);
+      -webkit-backdrop-filter: blur(6px);
       backdrop-filter: blur(6px);
       padding: 1rem;
       border-radius: 6px;
