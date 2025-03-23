@@ -11,65 +11,57 @@
 
   <style>
     /********************************
-     * 全体ベース
+     * 1) 全体ベース
      ********************************/
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+    html, body {
+      width: 100%;
+      min-height: 100vh; /* iOSで縦が切れないよう確保 */
+    }
     body {
       font-family: sans-serif, Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-      background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
-      background-size: 300% 300%;
       color: #333;
       line-height: 1.6;
       overflow-x: hidden;
-      animation: bgAnimation 15s ease infinite;
-      position: relative;
-    }
-    @keyframes bgAnimation {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      position: relative; /* 絶対配置の円を背面に敷くため */
+
+      /* ★ 静止した線形グラデーション */
+      background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
     }
 
-    /* body背景用のふわふわ円アニメ */
-    body::before {
-      content: "";
-      position: fixed;
-      top: -80px;
-      left: -80px;
-      width: 300px;
-      height: 300px;
+    /* ★ body::before / ::after を使わず、HTML要素で円を配置 */
+    .bg-circles {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;          /* コンテンツより背面 */
+      pointer-events: none; /* 背景クリックを妨げない */
+      overflow: hidden;     /* 画面外にはみ出す部分を非表示 */
+    }
+    .circle1, .circle2 {
+      position: absolute;
+      border-radius: 50%;
+    }
+    /* 大きめの白円を左上に */
+    .circle1 {
+      top: -80px; left: -80px;
+      width: 300px; height: 300px;
       background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-      border-radius: 50%;
-      z-index: -1;
-      animation: floatCircle 20s linear infinite alternate;
     }
-    body::after {
-      content: "";
-      position: fixed;
-      bottom: -100px;
-      right: -100px;
-      width: 400px;
-      height: 400px;
+    /* 大きめの白円を右下に */
+    .circle2 {
+      bottom: -100px; right: -100px;
+      width: 400px; height: 400px;
       background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
-      border-radius: 50%;
-      z-index: -1;
-      animation: floatCircle2 30s linear infinite alternate;
-    }
-    @keyframes floatCircle {
-      0%   { transform: translate(0, 0) scale(1); }
-      50%  { transform: translate(60vw, 40vh) scale(1.2); }
-      100% { transform: translate(0, 0) scale(1); }
-    }
-    @keyframes floatCircle2 {
-      0%   { transform: translate(0, 0) scale(1); }
-      50%  { transform: translate(-40vw, -30vh) scale(1.1); }
-      100% { transform: translate(0, 0) scale(1); }
     }
 
+    /********************************
+     * リンク
+     ********************************/
     a {
       color: #333;
       text-decoration: none;
@@ -80,13 +72,11 @@
     }
 
     /********************************
-     * ヘッダー
+     * 2) ヘッダー
      ********************************/
     header {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 60px;
       display: flex;
       align-items: center;
@@ -96,7 +86,6 @@
       border-bottom: 1px solid #eee;
       z-index: 999;
     }
-
     .header-left {
       display: flex;
       align-items: center;
@@ -108,12 +97,12 @@
       margin-left: auto;
       gap: 1rem;
     }
-
     .logo img {
       margin-top: 8px;
       height: 40px;
     }
 
+    /* ナビメニュー */
     nav {
       display: flex;
       align-items: center;
@@ -122,9 +111,7 @@
       display: flex;
       list-style: none;
       gap: 1.5rem;
-      justify-content: flex-end;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
     }
     nav li {
       cursor: pointer;
@@ -137,8 +124,7 @@
     nav li a::after {
       content: "";
       position: absolute;
-      left: 0;
-      bottom: 0;
+      left: 0; bottom: 0;
       width: 0%;
       height: 2px;
       background-color: orange;
@@ -148,11 +134,9 @@
       width: 100%;
     }
 
-    /********************************
-     * ハンバーガーボタン（スマホ専用）
-     ********************************/
+    /* ハンバーガーボタン（スマホ） */
     .hamburger {
-      display: none;
+      display: none; /* PCでは非表示 */
       flex-direction: column;
       justify-content: center;
       gap: 4px;
@@ -167,14 +151,14 @@
       background: #333;
       border-radius: 2px;
     }
+    /* スマホ幅でハンバーガー表示 */
     @media screen and (max-width: 900px) {
       .hamburger {
-        display: flex; /* ハンバーガーボタンを表示 */
+        display: flex;
       }
       nav {
         position: absolute;
-        top: 60px;
-        right: 20px;
+        top: 60px; right: 20px;
         background: rgba(255,255,255,0.95);
         backdrop-filter: blur(6px);
         border: 1px solid #eee;
@@ -194,17 +178,17 @@
     }
 
     /********************************
-     * メインコンテンツ
+     * 3) メインコンテンツ
      ********************************/
     main {
       width: 90%;
       max-width: 900px;
       margin: 0 auto;
       padding: 4rem 1rem;
-      margin-top: 60px; /* ヘッダー分のスペース */
+      margin-top: 60px; /* ヘッダー分 */
     }
 
-    /* fade-inアニメ用 */
+    /* fade-inアニメ */
     .fade-in {
       opacity: 0;
       transform: translateY(30px);
@@ -215,7 +199,7 @@
       transform: translateY(0);
     }
 
-    /* 記事全体を白背景のカード風に */
+    /* 記事全体をカード風に */
     .post-card {
       background: rgba(255,255,255,0.8);
       backdrop-filter: blur(4px);
@@ -223,7 +207,6 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       padding: 2rem;
     }
-
     .post-title {
       font-size: 1.8rem;
       line-height: 1.3;
@@ -236,14 +219,11 @@
     .post-title::after {
       content: "";
       position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 60px;
-      height: 2px;
+      left: 0; bottom: 0;
+      width: 60px; height: 2px;
       background-color: #ffcc00;
     }
 
-    /* 日付をバッジ風に */
     .post-date {
       display: inline-block;
       margin-bottom: 1.5rem;
@@ -281,7 +261,6 @@
       color: #666;
     }
 
-    /* 記事末尾のナビゲーション */
     .post-nav {
       margin-top: 2rem;
       text-align: center;
@@ -302,7 +281,7 @@
     }
 
     /********************************
-     * フッター
+     * 4) フッター
      ********************************/
     footer {
       text-align: center;
@@ -317,9 +296,14 @@
   </style>
 </head>
 <body>
+  <!-- ★ 静止円を配置する要素 -->
+  <div class="bg-circles">
+    <div class="circle1"></div>
+    <div class="circle2"></div>
+  </div>
+
   <!-- ヘッダー -->
   <header>
-    <!-- 左側：ロゴ（クリックでトップページへ） -->
     <div class="header-left">
       <div class="logo">
         <a href="{{ '/' | relative_url }}">
@@ -327,7 +311,6 @@
         </a>
       </div>
     </div>
-    <!-- 右側：ナビ + ハンバーガーメニュー -->
     <div class="header-right">
       <nav>
         <ul>
@@ -344,12 +327,11 @@
     </div>
   </header>
 
-  <!-- メインコンテンツ -->
+  <!-- メイン -->
   <main>
     <div class="post-card fade-in" id="postCard">
-      <!-- タイトル -->
+      <!-- 記事タイトル -->
       <h1 class="post-title">{{ page.title }}</h1>
-
       <!-- 日付がある場合のみ表示 -->
       {% if page.date %}
       <div class="post-date">
@@ -362,7 +344,7 @@
         {{ content }}
       </div>
 
-      <!-- 記事末尾のナビゲーション例 -->
+      <!-- 記事末尾のナビ -->
       <div class="post-nav">
         <a href="{{ '/blog.html' | relative_url }}">← ブログ一覧に戻る</a>
       </div>
@@ -374,7 +356,7 @@
     <p>© 2025 toapd2022. All Rights Reserved.</p>
   </footer>
 
-  <!-- JS（ハンバーガーメニュー + フェードイン） -->
+  <!-- スクリプト（ハンバーガーメニュー + フェードイン） -->
   <script>
     // ハンバーガーメニュー
     const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -386,7 +368,6 @@
         nav.style.display = 'none';
       }
     });
-    // 画面のどこかをクリックしたらメニューを閉じる
     document.addEventListener('click', (e) => {
       if (window.innerWidth <= 900 && nav.style.display === 'block') {
         if (!nav.contains(e.target) && e.target !== hamburgerBtn && !hamburgerBtn.contains(e.target)) {
@@ -395,17 +376,21 @@
       }
     });
 
-    // Intersection Observerによるフェードイン
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('active');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    const fadeInElement = document.getElementById('postCard');
-    if(fadeInElement) observer.observe(fadeInElement);
+    // フェードイン (Intersection Observer)
+    const target = document.getElementById('postCard');
+    if (target && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, { threshold: 0.1 });
+      observer.observe(target);
+    } else {
+      // IntersectionObserver非対応 or 要素なしなら、すぐに表示
+      if(target) target.classList.add('active');
+    }
   </script>
 </body>
 </html>
