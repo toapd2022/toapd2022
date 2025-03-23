@@ -2,7 +2,6 @@
 layout: none
 ---
 
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -793,11 +792,19 @@ layout: none
      ********************************/
     #blog {}
     .blog-list {
-      display: flex;
-      flex-direction: column;
+      /* PCでは2カラム、スマホでは1カラム */
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
       margin-top: 2rem;
     }
+    /* 幅768px以下なら1カラム */
+    @media screen and (max-width: 768px) {
+      .blog-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .blog-item {
       background: rgba(255,255,255,0.3);
       backdrop-filter: blur(6px);
@@ -817,13 +824,13 @@ layout: none
       line-height: 1.6;
     }
 
-    /* サムネイル表示 */
+    /* サムネイル表示(16:9) */
     .blog-thumbnail {
       margin: 0.5rem 0;
     }
     .blog-thumbnail img {
       width: 100%;
-      height: 160px;
+      aspect-ratio: 16 / 9;
       object-fit: cover;
       border-radius: 4px;
       display: block;
@@ -1049,7 +1056,6 @@ layout: none
      ********************************/
     @media screen and (max-width: 768px) {
       .blog-list {
-        /* 右端が切れないように横幅を確保 */
         width: 100%;
         margin: 0 auto;
         padding: 0 1rem;
@@ -1264,8 +1270,8 @@ layout: none
               {{ post.excerpt | strip_html }} ...
             </p>
 
-            <!-- 「続きを読む」ボタン -->
-            <p>
+            <!-- 「続きを読む」ボタン（右寄せ） -->
+            <p style="text-align: right;">
               <a href="{{ post.url | relative_url }}" class="btn-readmore">
                 続きを見る
               </a>
@@ -1274,8 +1280,8 @@ layout: none
           {% endfor %}
         </div>
 
-        <!-- 「すべての記事を見る」ボタン -->
-        <p style="margin-top:1rem;">
+        <!-- 「すべての記事を見る」ボタン（右寄せ） -->
+        <p style="margin-top:1rem; text-align: right;">
           <a href="{{ 'blog.html' | relative_url }}" class="btn-all-posts">
             すべての記事を見る
           </a>
@@ -1591,7 +1597,7 @@ layout: none
           `Aired on November 21, 2023 (Tue).  
            ◆ A high school student who set up a mini disaster radio at home  
            Demonstrated a 3D-printed miniature system for calls and chimes.`,
-        mediaItem5Title: "Kobe Shimbun",
+        mediaItem5Title: `"Kobe Shimbun"`,
         mediaItem5Text:
           `August 13, 2023  
            Featured a high school student's devotion to disaster prevention radios.<br>
