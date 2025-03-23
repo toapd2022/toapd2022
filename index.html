@@ -1048,7 +1048,7 @@ layout: none
     .btn-readmore:hover,
     .btn-all-posts:hover {
       transform: translateY(-2px);
-      background: #ffd933;
+      background: #00AAFF;
     }
 
     /********************************
@@ -1273,17 +1273,17 @@ layout: none
             <!-- 「続きを読む」ボタン（右寄せ） -->
             <p style="text-align: right;">
               <a href="{{ post.url | relative_url }}" class="btn-readmore">
-                続きを見る
+                続きを読む
               </a>
             </p>
           </article>
           {% endfor %}
         </div>
 
-        <!-- 「すべての記事を見る」ボタン（右寄せ） -->
-        <p style="margin-top:1rem; text-align: right;">
+        <!-- 「過去のブログ記事を見る」ボタン（左寄せ） -->
+        <p style="margin-top:1rem; text-align: left;">
           <a href="{{ 'blog.html' | relative_url }}" class="btn-all-posts">
-            すべての記事を見る
+            過去のブログ記事を見る
           </a>
         </p>
 
