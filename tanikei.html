@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>toapd2022 - 福島大学 行政政策学類 卒業単位計算</title>
+
+  <!-- スマホなど小さい画面対応 -->
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+  <!-- お好みでfaviconなど -->
+  <link rel="icon" type="image/png" href="icons/top-logo.png" />
+  <link rel="apple-touch-icon" href="icons/top-logo.png" />
+
+  <style>
+    /********************************
+     * 全体ベース
+     ********************************/
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: sans-serif, Arial, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
+      background-size: 300% 300%;
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+      animation: bgAnimation 15s ease infinite; /* 背景グラデーションが動く */
+      position: relative;
+    }
+    @keyframes bgAnimation {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* body背景用のふわふわ円アニメを2つ */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -80px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+      animation: floatCircle 20s linear infinite alternate;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+      animation: floatCircle2 30s linear infinite alternate;
+    }
+    @keyframes floatCircle {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(60vw, 40vh) scale(1.2); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+    @keyframes floatCircle2 {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(-40vw, -30vh) scale(1.1); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    a {
+      color: #333;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: #666;
+    }
+
+    /********************************
+     * ヘッダー
+     ********************************/
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid #eee;
+      z-index: 999;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      gap: 1rem;
+    }
+
+    .logo img {
+      margin-top: 8px;
+      height: 40px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+      justify-content: flex-end;
+      margin: 0;
+      padding: 0;
+    }
+    nav li {
+      cursor: pointer;
+      font-weight: 500;
+    }
+    nav li a {
+      position: relative;
+      padding: 0.5rem 0 4px 0;
+    }
+    nav li a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0%;
+      height: 2px;
+      background-color: orange;
+      transition: width 0.3s ease;
+    }
+    nav li a:hover::after {
+      width: 100%;
+    }
+
+    /* ハンバーガーボタン（スマホ用） */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+    .hamburger span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: #333;
+      border-radius: 2px;
+    }
+    @media screen and (max-width: 1138px) {
+      .hamburger {
+        display: flex;
+      }
+      nav {
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(6px);
+        border: 1px solid #eee;
+        padding: 1rem;
+        border-radius: 6px;
+        display: none;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav li {
+        text-align: right;
+      }
+    }
+
+    /********************************
+     * メイン（ここに卒業単位計算フォームを置く）
+     ********************************/
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 80px 1rem 2rem; /* 先頭の余白(80px)はヘッダー分 */
+    }
+    h1, h2 {
+      color: #333;
+      margin-top: 1.2em;
+      margin-bottom: 0.5em;
+    }
+    p {
+      margin: 0.5rem 0;
+      line-height: 1.6;
+    }
+
+    /* テーブル・フォームのデザイン */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 1rem;
+      background: rgba(255,255,255,0.9);
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    th {
+      background: #f5f5f5;
+    }
+    .required-cell {
+      background-color: #eef;
+    }
+    button {
+      font-size: 1rem;
+      padding: 8px 16px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 4px;
+      background-color: #4caf50;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 1rem;
+      font-size: 1.0rem;
+      color: #333;
+    }
+    .highlight {
+      color: red;
+      font-weight: bold;
+    }
+
+    /* 進捗バー */
+    .progress-bar-container {
+      width: 100%;
+      max-width: 400px;
+      background-color: #eee;
+      border-radius: 6px;
+      margin: 0.5rem 0;
+      height: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      background-color: #4caf50;
+      text-align: center;
+      color: #fff;
+      line-height: 24px;
+      font-weight: bold;
+      transition: width 0.4s ease;
+    }
+
+    /********************************
+     * フッター
+     ********************************/
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+    footer p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* スマホ対応 */
+    @media screen and (max-width: 600px) {
+      table, th, td {
+        font-size: 0.8rem;
+      }
+      input[type="number"] {
+        width: 50px;
+      }
+      h1 {
+        font-size: 1.2rem;
+      }
+      h2 {
+        font-size: 1.0rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ヘッダー -->
+  <header>
+    <div class="header-left">
+      <!-- ロゴ画像 -->
+      <div class="logo">
+        <a href="#">
+          <img src="icons/logo.png" alt="toapd2022">
+        </a>
+      </div>
+    </div>
+    <div class="header-right">
+      <!-- PC用ナビゲーション -->
+      <nav>
+        <ul>
+          <li><a href="#">トップ</a></li>
+          <li><a href="#calcArea">単位計算</a></li>
+          <!-- 必要なら他のリンクを追加 -->
+        </ul>
+      </nav>
+      <!-- ハンバーガーボタン -->
+      <button class="hamburger" id="hamburgerBtn">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- メイン内容： 卒業単位計算フォーム -->
+  <main>
+    <h1>福島大学 行政政策学類 卒業単位計算</h1>
+    <p>
+      福島大学 行政政策学類の履修単位をチェックする簡易ツールです。<br>
+      下記の必須区分ごとに、すでに修得している単位数を入力し「不足分を計算」を押してください。
+    </p>
+    <p style="color:red; font-weight:bold;">
+      ※実際の卒業判定は大学の正式な履修案内・教務担当の確認を優先してください
+    </p>
+
+    <!-- 接続領域(9単位) -->
+    <h2 id="calcArea">接続領域 (9単位必修)</h2>
+    <table>
+      <tr>
+        <th>科目名</th>
+        <th>必要単位</th>
+        <th>取得単位</th>
+      </tr>
+      <tr>
+        <td>スタートアップセミナー</td>
+        <td class="required-cell">2</td>
+        <td><input type="number" id="startupSeminar" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>キャリア形成論</td>
+        <td class="required-cell">2</td>
+        <td><input type="number" id="careerFormation" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>健康運動科学実習</td>
+        <td class="required-cell">1</td>
+        <td><input type="number" id="healthExercise" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>英語</td>
+        <td class="required-cell">4</td>
+        <td><input type="number" id="english" value="0" min="0"></td>
+      </tr>
+    </table>
+
+    <!-- 教養領域 -->
+    <h2>教養領域</h2>
+    <p>学術基礎科目(6単位) + キャリア設計科目(2単位) + 外国語(2単位)など合計10単位が必要。</p>
+    <table>
+      <tr>
+        <th>科目区分</th>
+        <th>必要単位</th>
+        <th>取得単位</th>
+      </tr>
+      <tr>
+        <td>社会科学分野</td>
+        <td class="required-cell">2</td>
+        <td><input type="number" id="socSci" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>人文科学分野</td>
+        <td class="required-cell">2</td>
+        <td><input type="number" id="humanSci" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>自然科学分野</td>
+        <td class="required-cell">2</td>
+        <td><input type="number" id="natSci" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>キャリアモデル学習</td>
+        <td class="required-cell">2</td>
+        <td><input type="number" id="careerModel" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>インターンシップ</td>
+        <td class="required-cell">1</td>
+        <td><input type="number" id="internship" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>英語以外の外国語</td>
+        <td class="required-cell">2</td>
+        <td><input type="number" id="foreignLang" value="0" min="0"></td>
+      </tr>
+    </table>
+
+    <!-- 問題探究領域 -->
+    <h2>問題探究領域 (4単位必修)</h2>
+    <table>
+      <tr>
+        <th>科目名</th>
+        <th>必要単位</th>
+        <th>取得単位</th>
+      </tr>
+      <tr>
+        <td>問題探究科目</td>
+        <td class="required-cell">2</td>
+        <td><input type="number" id="problemCourse" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>問題探究セミナーI</td>
+        <td class="required-cell">2</td>
+        <td><input type="number" id="problemSem1" value="0" min="0"></td>
+      </tr>
+    </table>
+
+    <!-- 専門領域(70単位) -->
+    <h2>専門領域 (計70単位)</h2>
+    <table>
+      <tr>
+        <th>科目名</th>
+        <th>必要単位</th>
+        <th>取得単位</th>
+      </tr>
+      <tr>
+        <td>共通科目</td>
+        <td class="required-cell">24</td>
+        <td><input type="number" id="commonNight" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>コース専門科目</td>
+        <td class="required-cell">30</td>
+        <td><input type="number" id="courseMajor" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>問題探究セミナーII</td>
+        <td class="required-cell">4</td>
+        <td><input type="number" id="problemSem2" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>協働演習I～IV</td>
+        <td class="required-cell">8</td>
+        <td><input type="number" id="practicum" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td>卒業研究</td>
+        <td class="required-cell">4</td>
+        <td><input type="number" id="gradResearch" value="0" min="0"></td>
+      </tr>
+    </table>
+
+    <!-- 自由選択領域 -->
+    <h2>自由選択領域（目安：20単位）</h2>
+    <table>
+      <tr>
+        <th>科目名</th>
+        <th>目安</th>
+        <th>取得単位</th>
+      </tr>
+      <tr>
+        <td>自由選択科目</td>
+        <td>20</td>
+        <td><input type="number" id="freeChoice" value="0" min="0"></td>
+      </tr>
+    </table>
+
+    <!-- ボタン & 結果表示 -->
+    <button onclick="calculateAll()">不足分を計算</button>
+    <div class="result" id="resultArea"></div>
+  </main>
+
+  <!-- フッター -->
+  <footer>
+    <p>© 2025 Narita Hiro. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+  /*******************************
+   * ハンバーガーメニュー
+   *******************************/
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const nav = document.querySelector('header nav');
+  hamburgerBtn.addEventListener('click', () => {
+    if (!nav.style.display || nav.style.display === 'none') {
+      nav.style.display = 'flex';
+    } else {
+      nav.style.display = 'none';
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 1138 && nav.style.display === 'flex') {
+      if (!nav.contains(e.target) && e.target !== hamburgerBtn && !hamburgerBtn.contains(e.target)) {
+        nav.style.display = 'none';
+      }
+    }
+  });
+
+  /*******************************
+   * 卒業単位計算ロジック
+   *******************************/
+  const TOTAL_REQUIRED = 124;
+  const REQUIRED = {
+    // 接続領域
+    startupSeminar: 2,
+    careerFormation: 2,
+    healthExercise: 1,
+    english: 4,
+    // 教養領域
+    socSci: 2,
+    humanSci: 2,
+    natSci: 2,
+    careerModel: 2,
+    internship: 1,
+    foreignLang: 2,
+    // 問題探究
+    problemCourse: 2,
+    problemSem1: 2,
+    // 専門領域
+    commonNight: 24,
+    courseMajor: 30,
+    problemSem2: 4,
+    practicum: 8,
+    gradResearch: 4,
+    // 自由選択
+    freeChoice: 20
+  };
+
+  function getLabel(key) {
+    const dict = {
+      startupSeminar: "スタートアップセミナー",
+      careerFormation: "キャリア形成論",
+      healthExercise: "健康運動科学実習",
+      english: "英語",
+      socSci: "社会科学分野",
+      humanSci: "人文科学分野",
+      natSci: "自然科学分野",
+      careerModel: "キャリアモデル学習",
+      internship: "インターンシップ",
+      foreignLang: "英語以外の外国語",
+      problemCourse: "問題探究科目",
+      problemSem1: "問題探究セミナーI",
+      commonNight: "共通科目",
+      courseMajor: "コース専門科目",
+      problemSem2: "問題探究セミナーII",
+      practicum: "協働演習I～IV",
+      gradResearch: "卒業研究",
+      freeChoice: "自由選択科目"
+    };
+    return dict[key] || key;
+  }
+
+  function calculateAll() {
+    let totalGot = 0;
+    let shortageList = [];
+
+    for (let key in REQUIRED) {
+      const need = REQUIRED[key];
+      const got = parseInt(document.getElementById(key).value, 10) || 0;
+      totalGot += got;
+      // 「自由選択科目」は不足リストには入れない（あくまで目安）
+      if (key !== 'freeChoice' && got < need) {
+        shortageList.push({ category: key, shortage: need - got });
+      }
+    }
+
+    const totalShortage = TOTAL_REQUIRED - totalGot;
+    let msg = `<p>合計修得単位：<strong>${totalGot}</strong> / ${TOTAL_REQUIRED}</p>`;
+
+    let percent = Math.floor((totalGot / TOTAL_REQUIRED) * 100);
+    if (percent > 100) percent = 100;
+    msg += `
+      <p>充足率：<strong>${percent}%</strong></p>
+      <div class="progress-bar-container">
+        <div class="progress-bar" style="width:${percent}%;">${percent}%</div>
+      </div>
+    `;
+
+    if (totalShortage > 0) {
+      msg += `<p>あと <span class="highlight">${totalShortage}</span> 単位不足しています。</p>`;
+    } else {
+      msg += `<p><strong>124単位以上に到達している可能性があります</strong></p>`;
+    }
+
+    if (shortageList.length > 0) {
+      msg += `<p>以下の必修区分が不足しています:</p><ul>`;
+      shortageList.forEach(item => {
+        msg += `<li>${getLabel(item.category)}： 
+                <span class="highlight">${item.shortage}</span> 単位不足</li>`;
+      });
+      msg += `</ul>`;
+    } else {
+      msg += `<p>必修区分の不足はありません。（要最終確認）</p>`;
+    }
+
+    document.getElementById("resultArea").innerHTML = msg;
+  }
+  </script>
+</body>
+</html>
