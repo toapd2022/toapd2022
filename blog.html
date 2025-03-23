@@ -47,21 +47,25 @@ permalink: /blog.html
     }
 
     /* 背景ふわふわ円アニメ */
-    body::before, body::after {
+    body::before,
+    body::after {
       content: "";
       position: fixed;
-      width: 300px; height: 300px;
+      width: 300px; 
+      height: 300px;
       border-radius: 50%;
       z-index: -1;
       opacity: 0.3;
     }
     body::before {
-      top: -80px; left: -80px;
+      top: -80px; 
+      left: -80px;
       background: radial-gradient(circle, #fff 0%, transparent 70%);
       animation: floatCircle 20s linear infinite alternate;
     }
     body::after {
-      bottom: -100px; right: -100px;
+      bottom: -100px; 
+      right: -100px;
       background: radial-gradient(circle, #fff 0%, transparent 70%);
       animation: floatCircle2 30s linear infinite alternate;
     }
@@ -121,13 +125,15 @@ permalink: /blog.html
       content: "";
       position: absolute;
       left: 0; bottom: 0;
-      width: 0%; height: 2px;
+      width: 0%; 
+      height: 2px;
       background: orange;
       transition: 0.3s ease;
     }
     nav li a:hover::after {
       width: 100%;
     }
+
     /* ハンバーガーメニュー */
     .hamburger {
       display: none;
@@ -138,7 +144,8 @@ permalink: /blog.html
       cursor: pointer;
     }
     .hamburger span {
-      width: 25px; height: 3px;
+      width: 25px; 
+      height: 3px;
       background: #333;
       border-radius: 2px;
     }
@@ -148,7 +155,8 @@ permalink: /blog.html
       }
       nav {
         position: absolute;
-        top: 60px; right: 20px;
+        top: 60px; 
+        right: 20px;
         background: rgba(255,255,255,0.95);
         backdrop-filter: blur(6px);
         border-radius: 6px;
@@ -180,24 +188,50 @@ permalink: /blog.html
     }
 
     /* =========================
-       4) ブログ一覧
+       4) ブログ一覧 (2カラム表示)
        ========================= */
     .blog-list {
       display: flex;
       flex-direction: column;
       gap: 2rem;
     }
+
+    /* カード本体 */
     .blog-item {
       background: rgba(255,255,255,0.8);
       backdrop-filter: blur(4px);
-      padding: 1.5rem;
+      padding: 1rem;  /* カラム間余白を確保する */
       border-radius: 12px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;          /* 2カラム */
+      gap: 1rem;
+      align-items: flex-start; /* 縦方向の揃え(先頭行を基準) */
     }
     .blog-item:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* 左カラム (画像) */
+    .blog-image {
+      flex-shrink: 0;
+    }
+    .blog-image img {
+      width: 200px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      object-fit: cover; /* 縦横比を保つ */
+    }
+
+    /* 右カラム (本文) */
+    .blog-content {
+      flex: 1;  /* こちらが可変幅 */
+      display: flex;
+      flex-direction: column; 
+      justify-content: space-between; /* 下部にボタンを寄せる場合 */
+      gap: 0.5rem;  /* タイトルや日付の隙間 */
     }
 
     .blog-title {
@@ -216,30 +250,18 @@ permalink: /blog.html
     .blog-date {
       font-size: 0.9rem;
       color: #999;
-      margin-bottom: 0.5rem;
-    }
-
-    /* サムネイルを右寄せ */
-    .thumbnail {
-      width: 180px;
-      float: right;
-      margin-left: 1rem;
-      margin-bottom: 0.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     .blog-excerpt {
       color: #555;
       line-height: 1.6;
-      margin-top: 0.5rem;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem; /* ボタンと少し余白 */
     }
 
-    /* ボタンを右揃え */
+    /* ボタン周り */
     .readmore-wrapper {
-      text-align: right;
-      margin-top: 1rem;
-      clear: both;
+      text-align: right; /* ボタンを右寄せ */
     }
     .btn-readmore {
       display: inline-block;
@@ -256,7 +278,7 @@ permalink: /blog.html
     }
 
     /* =========================
-       JSで擬似的ページネーション
+       ページネーション
        ========================= */
     .pagination {
       text-align: center;
@@ -318,7 +340,6 @@ permalink: /blog.html
       color: #666;
       font-size: 0.9rem;
     }
-
   </style>
 </head>
 <body>
@@ -351,33 +372,38 @@ permalink: /blog.html
     {% if site.posts.size > 0 %}
       <div class="blog-list" id="blogList">
         {% comment %}
-          全記事をループして出力。JSで「表示/非表示」を切り替えて疑似ページ送りする。
+          ▼ 「2カラム風」：画像は .blog-image、本文は .blog-content
         {% endcomment %}
         {% for post in site.posts %}
         <article class="blog-item">
+          <!-- 左カラム: サムネイル画像 -->
           {% if post.thumbnail %}
-            <!-- サムネイルがあれば右寄せ -->
-            <img src="{{ post.thumbnail | relative_url }}" class="thumbnail" alt="サムネ">
+          <div class="blog-image">
+            <img src="{{ post.thumbnail | relative_url }}" alt="サムネイル">
+          </div>
           {% endif %}
 
-          <h2 class="blog-title">
-            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-          </h2>
+          <!-- 右カラム: タイトル・日付・抜粋・ボタン -->
+          <div class="blog-content">
+            <h2 class="blog-title">
+              <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+            </h2>
 
-          {% if post.date %}
-            <p class="blog-date">
-              投稿日: {{ post.date | date: "%Y年%m月%d日" }}
+            {% if post.date %}
+              <p class="blog-date">
+                投稿日: {{ post.date | date: "%Y年%m月%d日" }}
+              </p>
+            {% endif %}
+
+            <p class="blog-excerpt">
+              {{ post.excerpt | strip_html | truncate: 100 }}
             </p>
-          {% endif %}
 
-          <p class="blog-excerpt">
-            {{ post.excerpt | strip_html | truncate: 100 }}
-          </p>
-
-          <div class="readmore-wrapper">
-            <a href="{{ post.url | relative_url }}" class="btn-readmore">
-              この記事を読む
-            </a>
+            <div class="readmore-wrapper">
+              <a href="{{ post.url | relative_url }}" class="btn-readmore">
+                続きを見る
+              </a>
+            </div>
           </div>
         </article>
         {% endfor %}
@@ -400,7 +426,7 @@ permalink: /blog.html
     <p>© 2025 toapd2022. All Rights Reserved.</p>
   </footer>
 
-  <!-- ハンバーガーメニューのJS + 疑似ページネーションJS -->
+  <!-- ハンバーガーメニューと擬似ページネーションのJS -->
   <script>
     // ハンバーガーメニュー
     const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -420,9 +446,9 @@ permalink: /blog.html
       }
     });
 
-    // ======================
+    //======================
     // JS擬似ページネーション
-    // ======================
+    //======================
     const blogList = document.getElementById('blogList');
     if (blogList) {
       const blogItems = Array.from(blogList.querySelectorAll('.blog-item'));
@@ -431,39 +457,32 @@ permalink: /blog.html
       // 1ページあたりの投稿数
       const postsPerPage = 5;
 
-      // 計算
       let currentPage = 1;
       const totalPosts = blogItems.length;
       const totalPages = Math.ceil(totalPosts / postsPerPage);
 
-      // 指定のページの投稿だけ表示
       function showPage(page) {
-        // 範囲内(1～totalPages)に収める
         if (page < 1) page = 1;
         if (page > totalPages) page = totalPages;
         currentPage = page;
 
-        // 全部非表示
+        // 全部非表示に
         blogItems.forEach(item => {
           item.style.display = 'none';
         });
-        // 今のページに該当する投稿だけ表示
+        // pageに該当する投稿を表示
         const startIndex = (currentPage - 1) * postsPerPage;
         const endIndex   = startIndex + postsPerPage;
         for (let i = startIndex; i < endIndex && i < totalPosts; i++) {
-          blogItems[i].style.display = 'block';
+          blogItems[i].style.display = 'flex'; // 2カラムなのでflex
         }
 
         updatePaginationUI();
       }
 
-      // ページネーションのボタン生成＆更新
       function updatePaginationUI() {
-        // 一旦クリア
         paginationContainer.innerHTML = '';
 
-        // 前へボタン (必要なら)
-        // ここを「<<」や「‹ 前」などに変えてもOK
         if (currentPage > 1) {
           const prevBtn = document.createElement('span');
           prevBtn.textContent = "← 前のページ";
@@ -472,7 +491,6 @@ permalink: /blog.html
           paginationContainer.appendChild(prevBtn);
         }
 
-        // ページ番号ボタン (1～totalPagesを並べる)
         for (let i = 1; i <= totalPages; i++) {
           const pageBtn = document.createElement('span');
           pageBtn.textContent = i;
@@ -484,7 +502,6 @@ permalink: /blog.html
           paginationContainer.appendChild(pageBtn);
         }
 
-        // 次へボタン
         if (currentPage < totalPages) {
           const nextBtn = document.createElement('span');
           nextBtn.textContent = "次のページ →";
@@ -494,7 +511,6 @@ permalink: /blog.html
         }
       }
 
-      // 初期表示
       showPage(1);
     }
   </script>
