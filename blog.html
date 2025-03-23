@@ -17,37 +17,25 @@ permalink: /blog.html
 
   <style>
     /********************************
-     * 全体ベース（iOS対策: min-height: 100vh;）
+     * 1) 全体ベース
      ********************************/
     html, body {
-      width: 100%;
-      min-height: 100vh; /* ← スマホでも高さが確保されるように */
       margin: 0;
       padding: 0;
+      width: 100%;
+      min-height: 100vh; /* iOSで背景が途切れないよう確保 */
     }
     body {
       font-family: sans-serif, Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-
-      /* 背景グラデーション */
-      background: #FFEFEF; /* fallback */
-      background: -webkit-linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
-      background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
-      background-size: 300% 300%;
-
-      /* アニメーション */
-      -webkit-animation: bgAnimation 15s ease infinite;
-      animation: bgAnimation 15s ease infinite;
-
       color: #333;
       line-height: 1.6;
-      overflow-x: hidden; /* 横スクロール抑制 */
+      overflow-x: hidden;
       position: relative;
-    }
 
-    @-webkit-keyframes bgAnimation {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      /* 背景グラデーション（アニメあり） */
+      background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
+      background-size: 300% 300%;
+      animation: bgAnimation 15s ease infinite;
     }
     @keyframes bgAnimation {
       0%   { background-position: 0% 50%; }
@@ -55,49 +43,37 @@ permalink: /blog.html
       100% { background-position: 0% 50%; }
     }
 
-    /* body背景の円アニメ（position: fixed は iOS で不安定な場合あり） */
-    body::before {
-      content: "";
-      position: fixed;
-      top: -80px;
-      left: -80px;
-      width: 300px;
-      height: 300px;
-      /* 少し透過率を下げて背景がはっきり見えるように */
-      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+    /********************************
+     * 2) 背景の円アニメ用ラッパ
+     ********************************/
+    /* body::before, ::after の代わりに専用のdivを用意 */
+    .bg-circles {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+      pointer-events: none; /* ユーザー操作を妨げない */
+      z-index: -1;          /* コンテンツより背面 */
+    }
+    .circle1, .circle2 {
+      position: absolute;
       border-radius: 50%;
-      z-index: -1;
-      -webkit-animation: floatCircle 20s linear infinite alternate;
+    }
+    .circle1 {
+      top: -80px; left: -80px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
       animation: floatCircle 20s linear infinite alternate;
     }
-    body::after {
-      content: "";
-      position: fixed;
-      bottom: -100px;
-      right: -100px;
-      width: 400px;
-      height: 400px;
-      /* こちらも透過度を下げる */
+    .circle2 {
+      bottom: -100px; right: -100px;
+      width: 400px; height: 400px;
       background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 70%);
-      border-radius: 50%;
-      z-index: -1;
-      -webkit-animation: floatCircle2 30s linear infinite alternate;
       animation: floatCircle2 30s linear infinite alternate;
-    }
-
-    @-webkit-keyframes floatCircle {
-      0%   { transform: translate(0, 0) scale(1); }
-      50%  { transform: translate(60vw, 40vh) scale(1.2); }
-      100% { transform: translate(0, 0) scale(1); }
     }
     @keyframes floatCircle {
       0%   { transform: translate(0, 0) scale(1); }
       50%  { transform: translate(60vw, 40vh) scale(1.2); }
-      100% { transform: translate(0, 0) scale(1); }
-    }
-    @-webkit-keyframes floatCircle2 {
-      0%   { transform: translate(0, 0) scale(1); }
-      50%  { transform: translate(-40vw, -30vh) scale(1.1); }
       100% { transform: translate(0, 0) scale(1); }
     }
     @keyframes floatCircle2 {
@@ -106,7 +82,9 @@ permalink: /blog.html
       100% { transform: translate(0, 0) scale(1); }
     }
 
-    /* リンク */
+    /********************************
+     * リンク（汎用）
+     ********************************/
     a {
       color: #333;
       text-decoration: none;
@@ -126,7 +104,6 @@ permalink: /blog.html
       display: flex;
       align-items: center;
       padding: 0 1.5rem;
-
       background: rgba(255,255,255,0.8);
       border-bottom: 1px solid #eee;
       z-index: 999;
@@ -151,15 +128,10 @@ permalink: /blog.html
       height: 40px;
     }
 
-    nav {
-      display: flex;
-      align-items: center;
-    }
     nav ul {
       display: flex;
       list-style: none;
       gap: 1.5rem;
-      justify-content: flex-end;
       margin: 0;
       padding: 0;
     }
@@ -186,7 +158,7 @@ permalink: /blog.html
     }
 
     /********************************
-     * ハンバーガーボタン（スマホ専用）
+     * ハンバーガーメニュー（スマホ専用）
      ********************************/
     .hamburger {
       display: none;
@@ -206,21 +178,19 @@ permalink: /blog.html
     }
     @media screen and (max-width: 900px) {
       .hamburger {
-        display: flex; /* ハンバーガーボタンを表示 */
+        display: flex;
       }
       nav {
         position: absolute;
         top: 60px;
         right: 20px;
-
         background: rgba(255,255,255,0.95);
         -webkit-backdrop-filter: blur(6px);
         backdrop-filter: blur(6px);
-
         border: 1px solid #eee;
         padding: 1rem;
         border-radius: 6px;
-        display: none;
+        display: none;  /* 初期は非表示 */
         flex-direction: column;
         gap: 1rem;
       }
@@ -244,7 +214,7 @@ permalink: /blog.html
       margin-top: 60px; /* ヘッダー分のスペース */
     }
 
-    /* fade-inアニメ用 */
+    /* フェードインアニメ */
     .fade-in {
       opacity: 0;
       transform: translateY(30px);
@@ -255,12 +225,11 @@ permalink: /blog.html
       transform: translateY(0);
     }
 
-    /* カード風 */
+    /* カード風 (ブログ一覧を包む) */
     .post-card {
-      background: rgba(255,255,255,0.6); /* 透過度を0.6に変更 */
+      background: rgba(255,255,255,0.6);
       -webkit-backdrop-filter: blur(4px);
       backdrop-filter: blur(4px);
-
       border-radius: 6px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       padding: 2rem;
@@ -269,20 +238,18 @@ permalink: /blog.html
     /* タイトル */
     .post-title {
       font-size: 1.8rem;
-      line-height: 1.3;
       margin-bottom: 1.5rem;
       color: #333;
       position: relative;
       display: inline-block;
       padding-bottom: 0.5rem;
+      line-height: 1.3;
     }
     .post-title::after {
       content: "";
       position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 60px;
-      height: 2px;
+      left: 0; bottom: 0;
+      width: 60px; height: 2px;
       background-color: #ffcc00;
     }
 
@@ -301,11 +268,9 @@ permalink: /blog.html
       }
     }
     .blog-item {
-      /* ちょっと薄め */
       background: rgba(255,255,255,0.4);
       -webkit-backdrop-filter: blur(4px);
       backdrop-filter: blur(4px);
-
       padding: 1rem;
       border-radius: 6px;
       transition: background 0.3s ease, transform 0.3s ease;
@@ -390,7 +355,6 @@ permalink: /blog.html
     footer {
       text-align: center;
       padding: 2rem;
-      /* 透過度を下げて背景が見えやすいように */
       background: rgba(255,255,255,0.6);
       border-top: 1px solid #eee;
       margin-top: 2rem;
@@ -421,10 +385,17 @@ permalink: /blog.html
   </style>
 </head>
 <body>
+
+  <!-- ▲ 背景円アニメ用のラッパを追加 -->
+  <div class="bg-circles">
+    <div class="circle1"></div>
+    <div class="circle2"></div>
+  </div>
+
   <!-- ヘッダー -->
   <header>
     <div class="header-left">
-      <!-- ロゴ（クリックでトップページへ） -->
+      <!-- ロゴ（クリックでトップへ） -->
       <div class="logo">
         <a href="{{ '/' | relative_url }}">
           <img src="{{ '/icons/logo.png' | relative_url }}" alt="toapd2022">
@@ -434,7 +405,6 @@ permalink: /blog.html
     <div class="header-right">
       <nav>
         <ul>
-          <!-- トップページへのリンクなど -->
           <li><a href="{{ '/' | relative_url }}">トップ</a></li>
         </ul>
       </nav>
@@ -448,9 +418,7 @@ permalink: /blog.html
 
   <!-- メインコンテンツ -->
   <main>
-    <!-- カード風コンテナ + フェードイン -->
     <div class="post-card fade-in" id="blogCard">
-      <!-- ページタイトル -->
       <h1 class="post-title">{{ page.title }}</h1>
 
       {% if site.posts.size > 0 %}
@@ -469,15 +437,12 @@ permalink: /blog.html
                 <img src="{{ post.thumbnail | relative_url }}" alt="{{ post.title }}">
               </div>
             {% else %}
-              <!-- サムネイルが無い場合のデフォルト画像 -->
               <div class="blog-thumbnail">
                 <img src="{{ '/icons/tv1.png' | relative_url }}" alt="{{ post.title }}">
               </div>
             {% endif %}
 
-            <p>
-              {{ post.excerpt | strip_html }} ...
-            </p>
+            <p>{{ post.excerpt | strip_html }} ...</p>
             <p style="text-align: right; margin-top: 1rem;">
               <a href="{{ post.url | relative_url }}" class="btn-readmore">続きを読む</a>
             </p>
@@ -491,7 +456,6 @@ permalink: /blog.html
         <p>まだ記事がありません。</p>
       {% endif %}
 
-      <!-- 下部の戻るボタンなど -->
       <div class="post-nav">
         <a href="{{ '/' | relative_url }}">← トップページに戻る</a>
       </div>
@@ -503,7 +467,7 @@ permalink: /blog.html
     <p>© 2025 toapd2022. All Rights Reserved.</p>
   </footer>
 
-  <!-- スクリプト（ハンバーガーメニュー + フェードイン + ページネーション） -->
+  <!-- ハンバーガーメニュー + フェードイン + ページネーション -->
   <script>
     // ハンバーガーメニュー
     const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -515,8 +479,7 @@ permalink: /blog.html
         nav.style.display = 'none';
       }
     });
-
-    // 画面のどこかをクリックしたらメニューを閉じる
+    // 画面のどこかをクリックしたら閉じる
     document.addEventListener('click', (e) => {
       if (window.innerWidth <= 900 && nav.style.display === 'block') {
         if (!nav.contains(e.target) && e.target !== hamburgerBtn && !hamburgerBtn.contains(e.target)) {
@@ -533,17 +496,15 @@ permalink: /blog.html
         }
       });
     }, { threshold: 0.1 });
-
     const fadeInTarget = document.getElementById('blogCard');
     if (fadeInTarget) observer.observe(fadeInTarget);
 
     // ページネーション
     const blogList = document.getElementById('blogList');
     const paginationContainer = document.getElementById('pagination');
-
     if (blogList && paginationContainer) {
       const blogItems = Array.from(blogList.querySelectorAll('.blog-item'));
-      const postsPerPage = 5; // 1ページに表示する記事数
+      const postsPerPage = 5;
       let currentPage = 1;
       const totalPosts = blogItems.length;
       const totalPages = Math.ceil(totalPosts / postsPerPage);
@@ -568,7 +529,7 @@ permalink: /blog.html
       function updatePaginationUI() {
         paginationContainer.innerHTML = '';
 
-        // 前のページ
+        // 前へ
         if (currentPage > 1) {
           const prevBtn = document.createElement('span');
           prevBtn.textContent = "← 前のページ";
@@ -577,7 +538,7 @@ permalink: /blog.html
           paginationContainer.appendChild(prevBtn);
         }
 
-        // ページ番号ボタン
+        // ページ番号
         for (let i = 1; i <= totalPages; i++) {
           const pageBtn = document.createElement('span');
           pageBtn.textContent = i;
@@ -587,7 +548,7 @@ permalink: /blog.html
           paginationContainer.appendChild(pageBtn);
         }
 
-        // 次のページ
+        // 次へ
         if (currentPage < totalPages) {
           const nextBtn = document.createElement('span');
           nextBtn.textContent = "次のページ →";
