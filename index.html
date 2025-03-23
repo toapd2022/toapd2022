@@ -820,14 +820,19 @@ layout: none
     /* サムネイル表示 */
     .blog-thumbnail {
       margin: 0.5rem 0;
+      /* ↓ ここから追記 ↓ */
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 4px; /* お好みで */
     }
+
     .blog-thumbnail img {
       width: 100%;
-      height: 160px;
+      height: 100%;
       object-fit: cover;
-      border-radius: 4px;
       display: block;
     }
+
 
     /********************************
      * メディア出演
@@ -1234,10 +1239,11 @@ layout: none
 
             <!-- 「続きを読む」ボタン -->
             <p>
-              <a href="{{ post.url | relative_url }}" class="btn-readmore">
-                続きを見る
-              </a>
-            </p>
+              <p style="text-align: right; margin-top: 1rem;">
+                <a href="{{ post.url | relative_url }}" class="btn-readmore">
+                  続きを見る
+                </a>
+              </p>
           </article>
           {% endfor %}
         </div>
@@ -1245,7 +1251,7 @@ layout: none
         <!-- 「すべての記事を見る」ボタン -->
         <p style="margin-top:1rem;">
           <a href="{{ 'blog.html' | relative_url }}" class="btn-all-posts">
-            すべての記事を見る
+            過去のブログ記事を読む
           </a>
         </p>
 
