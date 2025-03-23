@@ -2,18 +2,35 @@
 layout: none
 title: "ブログ一覧"
 permalink: /blog.html
+
+# jekyll-paginate-v2用のFront Matter設定
+pagination:
+  enabled: true      # このページでページネーションを有効にする
+  per_page: 5        # 1ページあたり記事5件
+  permalink: "/blog/page:num"
+  title: "ブログ一覧 (ページ :num)"
+  collection: "posts"
 ---
 
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>{{ page.title }} | toapd2022</title>
 
   <!-- ファビコンなど -->
   <link rel="icon" type="image/png" href="{{ '/icons/top-logo.png' | relative_url }}" />
   <link rel="apple-touch-icon" href="{{ '/icons/top-logo.png' | relative_url }}" />
+
+  <!-- （必要に応じて Font Awesome なども読み込む）
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    integrity="sha512-..."
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  /> -->
 
   <style>
     /* =========================
@@ -43,8 +60,7 @@ permalink: /blog.html
     }
 
     /* 背景のふわふわ円アニメ */
-    body::before,
-    body::after {
+    body::before, body::after {
       content: "";
       position: fixed;
       width: 300px; height: 300px;
@@ -95,7 +111,6 @@ permalink: /blog.html
       height: 40px;
       margin-top: 8px;
     }
-
     .header-right {
       display: flex;
       gap: 1rem;
@@ -123,8 +138,7 @@ permalink: /blog.html
     nav li a:hover::after {
       width: 100%;
     }
-
-    /* ハンバーガーメニュー(必要なら) */
+    /* ハンバーガー（必要なら） */
     .hamburger {
       display: none;
       flex-direction: column;
@@ -150,7 +164,7 @@ permalink: /blog.html
         border-radius: 6px;
         border: 1px solid #eee;
         padding: 1rem;
-        display: none; /* 初期非表示 */
+        display: none;
         flex-direction: column;
         gap: 1rem;
       }
@@ -166,7 +180,7 @@ permalink: /blog.html
     main {
       margin: 0 auto;
       padding: 4rem 1rem;
-      margin-top: 60px; /* ヘッダー分のスペース */
+      margin-top: 60px; /* ヘッダーの高さぶん */
       max-width: 920px;
     }
     h1.page-title {
@@ -175,19 +189,19 @@ permalink: /blog.html
       text-align: center;
     }
 
-    /* ================ 
-       ブログ一覧のカード
-       ================ */
+    /* =========================
+       4) ブログ一覧 (カード)
+       ========================= */
     .blog-list {
       display: flex;
       flex-direction: column;
-      gap: 2rem; /* 各記事の間隔 */
+      gap: 2rem; /* 記事間の余白 */
     }
     .blog-item {
       background: rgba(255,255,255,0.8);
       backdrop-filter: blur(4px);
       padding: 1.5rem;
-      border-radius: 20px; /* 角丸 */
+      border-radius: 12px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -215,11 +229,11 @@ permalink: /blog.html
       margin-bottom: 0.5rem;
     }
 
-    /* サムネイル */
+    /* サムネイルを右寄せ */
     .thumbnail {
       width: 180px;
-      float: right; /* 右寄せしてテキストに回り込み */
-      margin-left: 1rem;
+      float: right;
+      margin-left: 1rem; /* テキストとの間隔 */
       margin-bottom: 0.5rem;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -230,13 +244,18 @@ permalink: /blog.html
       line-height: 1.6;
       margin-top: 0.5rem;
     }
-    /* ボタン (「この記事をもっとみる」) */
+
+    /* 「この記事を読む」ボタンを右揃え */
+    .readmore-wrapper {
+      text-align: right; /* 右寄せ */
+      margin-top: 1rem;
+      clear: both;       /* float解除（必要なら） */
+    }
     .btn-readmore {
       display: inline-block;
-      margin-top: 1rem;
       padding: 0.6rem 1.2rem;
       border-radius: 20px;
-      background: #008CBA; /* 好みで色を変えて */
+      background: #008CBA;
       color: #fff;
       font-weight: bold;
       text-decoration: none;
@@ -247,7 +266,38 @@ permalink: /blog.html
     }
 
     /* =========================
-       4) フッター
+       5) ページネーション
+       ========================= */
+    .pagination {
+      text-align: center;
+      margin: 2rem auto 0;
+    }
+    .pagination a {
+      display: inline-block;
+      margin: 0.2rem;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #333;
+      transition: background 0.3s ease;
+    }
+    .pagination a:hover {
+      background: #f0f0f0;
+    }
+    .pagination .current-page {
+      display: inline-block;
+      margin: 0.2rem;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      background: #ffebcc;
+      color: #333;
+      font-weight: bold;
+    }
+
+    /* =========================
+       6) フッター
        ========================= */
     .footer-nav {
       margin-top: 3rem;
@@ -267,7 +317,6 @@ permalink: /blog.html
     .footer-nav a:hover {
       background: #f0f0f0;
     }
-
     footer {
       text-align: center;
       padding: 2rem;
@@ -284,20 +333,17 @@ permalink: /blog.html
 <body>
   <!-- ヘッダー -->
   <header>
-    <!-- 左上ロゴをブログ一覧へリンクする -->
+    <!-- ロゴクリックで再度ブログ一覧へ -->
     <div class="logo">
       <a href="{{ '/blog.html' | relative_url }}">
         <img src="{{ '/icons/logo.png' | relative_url }}" alt="toapd2022">
       </a>
     </div>
-
     <div class="header-right">
       <nav>
         <ul>
-          <!-- トップページへのリンクなど -->
           <li><a href="{{ '/' | relative_url }}">トップ</a></li>
           <li><a href="{{ '/blog.html' | relative_url }}">ブログ一覧</a></li>
-          <!-- 必要に応じて他メニューを追加 -->
         </ul>
       </nav>
       <button class="hamburger" id="hamburgerBtn">
@@ -310,75 +356,69 @@ permalink: /blog.html
 
   <!-- メインコンテンツ -->
   <main>
-    <h1 class="page-title">ブログ一覧</h1>
+    <h1 class="page-title">{{ page.title }}</h1>
 
     {% comment %}
-      もしページネーションを使う場合は 
-      site.posts -> paginator.posts に置き換える
-      例: {% for post in paginator.posts %} ...
+      jekyll-paginate-v2で pagination.enabled: true の場合、
+      paginator.posts によって1ページあたり(per_page)分だけ記事を取得
     {% endcomment %}
-    {% if site.posts.size > 0 %}
+    {% if paginator and paginator.posts %}
       <div class="blog-list">
-        {% for post in site.posts %}
+        {% for post in paginator.posts %}
         <article class="blog-item">
-          
           {% if post.thumbnail %}
-            <!-- サムネイルがあれば表示 (front matterに thumbnail: /path/to/img.jpg ) -->
-            <img src="{{ post.thumbnail | relative_url }}" class="thumbnail" alt="サムネイル">
+            <!-- サムネイルがあれば右寄せ表示 -->
+            <img src="{{ post.thumbnail | relative_url }}" class="thumbnail" alt="サムネ">
           {% endif %}
 
-          <!-- 記事タイトル -->
           <h2 class="blog-title">
             <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
           </h2>
 
-          <!-- 日付 -->
           {% if post.date %}
             <p class="blog-date">
               投稿日: {{ post.date | date: "%Y年%m月%d日" }}
             </p>
           {% endif %}
 
-          <!-- 抜粋 -->
           <p class="blog-excerpt">
             {{ post.excerpt | strip_html | truncate: 100 }}
           </p>
 
-          <!-- 「この記事をもっとみる」ボタン -->
-          <a href="{{ post.url | relative_url }}" class="btn-readmore">
-            この記事をもっとみる
-          </a>
+          <div class="readmore-wrapper">
+            <a href="{{ post.url | relative_url }}" class="btn-readmore">
+              この記事を読む
+            </a>
+          </div>
         </article>
         {% endfor %}
       </div>
+
+      <!-- ページネーション -->
+      {% if paginator.total_pages > 1 %}
+        <div class="pagination">
+          {% if paginator.previous_page %}
+            <a href="{{ paginator.previous_page_path }}">← 前のページ</a>
+          {% endif %}
+
+          <span class="current-page">
+            Page {{ paginator.page }} / {{ paginator.total_pages }}
+          </span>
+
+          {% if paginator.next_page %}
+            <a href="{{ paginator.next_page_path }}">次のページ →</a>
+          {% endif %}
+        </div>
+      {% endif %}
+
     {% else %}
       <p>まだ記事がありません。</p>
     {% endif %}
 
-    <!-- フッター手前のナビゲーション例 -->
+    <!-- フッター直前のナビゲーション -->
     <div class="footer-nav">
-      <!-- ブログ一覧へ戻る → 今回は要らないとのことなので削除 or 変える
-           代わりにトップページへ戻る、としておきます -->
       <a href="{{ '/' | relative_url }}">トップページに戻る</a>
     </div>
-
-    {%
-      comment
-      もしページネーションを使うなら、ここに
-      前へ/次へ ボタンやページ番号を入れる
-      ex:
-      {% if paginator.total_pages > 1 %}
-        <nav class="pagination">
-          {% if paginator.previous_page %}
-            <a href="{{ paginator.previous_page_path }}">← 前のページ</a>
-          {% endif %}
-          <span>Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
-          {% if paginator.next_page %}
-            <a href="{{ paginator.next_page_path }}">次のページ →</a>
-          {% endif %}
-        </nav>
-      {% endif %}
-    endcomment %}
   </main>
 
   <!-- フッター -->
@@ -386,7 +426,7 @@ permalink: /blog.html
     <p>© 2025 toapd2022. All Rights Reserved.</p>
   </footer>
 
-  <!-- ハンバーガーメニューのJS(任意) -->
+  <!-- ハンバーガーメニューのJS -->
   <script>
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const nav = document.querySelector('header nav');
