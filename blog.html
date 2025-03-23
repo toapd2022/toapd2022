@@ -1,120 +1,346 @@
 ---
-layout: default
+layout: none
 title: "ブログ一覧"
 permalink: /blog.html
 ---
 
-<main>
-  <h1>ブログ一覧</h1>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <!-- ページタイトル -->
+  <title>{{ page.title }} | toapd2022</title>
 
-  {% if site.posts.size > 0 %}
-    <div class="blog-cards">
-      {% for post in site.posts %}
-        <article class="blog-card">
+  <!-- ファビコン・アイコン -->
+  <link rel="icon" type="image/png" href="{{ '/icons/top-logo.png' | relative_url }}" />
+  <link rel="apple-touch-icon" href="{{ '/icons/top-logo.png' | relative_url }}" />
+
+  <style>
+    /* =========================
+       1) ベーススタイル
+       ========================= */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: sans-serif, Arial, "Hiragino Kaku Gothic ProN", Meiryo;
+      background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
+      background-size: 300% 300%;
+      animation: bgAnimation 15s ease infinite;
+      color: #333;
+      line-height: 1.6;
+    }
+    @keyframes bgAnimation {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    a {
+      color: #333;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: #666;
+    }
+
+    /* ふわふわ円アニメ（背景演出） */
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 0.3;
+    }
+    body::before {
+      top: -80px; left: -80px;
+      background: radial-gradient(circle, #fff 0%, transparent 70%);
+      animation: floatCircle 20s linear infinite alternate;
+    }
+    body::after {
+      bottom: -100px; right: -100px;
+      background: radial-gradient(circle, #fff 0%, transparent 70%);
+      animation: floatCircle2 30s linear infinite alternate;
+    }
+    @keyframes floatCircle {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(60vw, 40vh) scale(1.2); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+    @keyframes floatCircle2 {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(-40vw, -30vh) scale(1.1); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* =========================
+       2) ヘッダー
+       ========================= */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid #eee;
+      z-index: 999;
+    }
+    .logo img {
+      height: 40px;
+      margin-top: 8px;
+    }
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+      margin: 0; 
+      padding: 0;
+    }
+    nav li a {
+      position: relative;
+      font-weight: 500;
+      padding: 0.5rem 0;
+    }
+    nav li a::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 0%; height: 2px;
+      background: orange;
+      transition: 0.3s ease;
+    }
+    nav li a:hover::after {
+      width: 100%;
+    }
+
+    /* ハンバーガーメニュー（必要なら） */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+    .hamburger span {
+      width: 25px; height: 3px;
+      background: #333;
+      border-radius: 2px;
+    }
+    @media screen and (max-width: 900px) {
+      .hamburger {
+        display: flex;
+      }
+      nav {
+        position: absolute;
+        top: 60px; right: 20px;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(6px);
+        border-radius: 6px;
+        border: 1px solid #eee;
+        padding: 1rem;
+        display: none; /* 初期非表示 */
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav ul {
+        flex-direction: column; 
+        gap: 1rem;
+      }
+    }
+
+    /* =========================
+       3) メインコンテンツ
+       ========================= */
+    main {
+      margin: 0 auto;
+      padding: 4rem 1rem;
+      margin-top: 60px; /* ヘッダー分の余白 */
+      max-width: 920px; /* 少し広めにしてニュース風レイアウト */
+    }
+
+    /* 見出し（ページタイトル） */
+    h1.page-title {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    /* =========================
+       ブログ一覧のカード風デザイン
+       ========================= */
+    .blog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .blog-item {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(4px);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .blog-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .blog-title {
+      font-size: 1.4rem;
+      margin-bottom: 0.3rem;
+      line-height: 1.4;
+    }
+    .blog-title a {
+      color: #333;
+      text-decoration: none;
+    }
+    .blog-title a:hover {
+      color: #555;
+      text-decoration: underline;
+    }
+
+    .blog-date {
+      font-size: 0.9rem;
+      color: #999;
+      margin-bottom: 0.5rem;
+    }
+
+    .blog-excerpt {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .btn-more {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: #ff9800;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    .btn-more:hover {
+      background: #e68a00;
+    }
+
+    /* =========================
+       4) フッター
+       ========================= */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #fff;
+      border-top: 1px solid #eee;
+      margin-top: 3rem;
+    }
+    footer p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- ヘッダー -->
+  <header>
+    <div class="logo">
+      <img src="{{ '/icons/logo.png' | relative_url }}" alt="toapd2022">
+    </div>
+    <div class="header-right">
+      <nav>
+        <ul>
+          <li><a href="{{ '/' | relative_url }}">トップ</a></li>
+          <li><a href="{{ '/blog.html' | relative_url }}">ブログ一覧</a></li>
+          <!-- 必要に応じてメニュー項目を追加 -->
+        </ul>
+      </nav>
+      <button class="hamburger" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <main>
+    <!-- ページタイトル -->
+    <h1 class="page-title">{{ page.title }}</h1>
+
+    {% if site.posts.size > 0 %}
+      <section class="blog-list">
+        {% for post in site.posts %}
+        <article class="blog-item">
           <!-- タイトル -->
-          <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-          <!-- 日付表示したければ: 
-               <p class="blog-date">{{ post.date | date: "%Y年%m月%d日" }}</p> 
-            など追記もOK -->
+          <h2 class="blog-title">
+            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          </h2>
 
-          <!-- 抜粋（excerpt）があれば一部表示 -->
+          <!-- 日付があれば表示 -->
+          {% if post.date %}
+            <p class="blog-date">
+              公開日: {{ post.date | date: "%Y年%m月%d日" }}
+            </p>
+          {% endif %}
+
+          <!-- 抜粋(Excerpt)を表示 -->
           <p class="blog-excerpt">
-            {{ post.excerpt | strip_html | truncate: 100 }}
+            {{ post.excerpt | strip_html | truncate: 120 }}
           </p>
 
           <!-- もっとみるボタン -->
-          <a href="{{ post.url | relative_url }}" class="read-more">もっとみる &raquo;</a>
+          <a href="{{ post.url | relative_url }}" class="btn-more">もっとみる &raquo;</a>
         </article>
-      {% endfor %}
-    </div>
-  {% else %}
-    <p>まだ記事がありません。</p>
-  {% endif %}
+        {% endfor %}
+      </section>
+    {% else %}
+      <p>まだ記事はありません。</p>
+    {% endif %}
+  </main>
 
-  <!-- トップページに戻るボタン -->
-  <div class="back-to-top">
-    <a href="{{ '/' | relative_url }}">トップページに戻る</a>
-  </div>
-</main>
+  <!-- フッター -->
+  <footer>
+    <p>© 2025 toapd2022. All Rights Reserved.</p>
+  </footer>
 
-/* =========================
-   ブログ一覧の装飾を追加
-   ========================= */
+  <!-- ハンバーガーメニュー用スクリプト (任意) -->
+  <script>
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const nav = document.querySelector('header nav');
 
-/* 一覧全体を横並び・折り返し */
-.blog-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem; /* カード間の余白 */
-  margin-top: 2rem;
-}
+    hamburgerBtn.addEventListener('click', () => {
+      if (!nav.style.display || nav.style.display === 'none') {
+        nav.style.display = 'block';
+      } else {
+        nav.style.display = 'none';
+      }
+    });
 
-/* 各ブログカードの見た目 */
-.blog-card {
-  flex: 1 1 calc(50% - 2rem); /* 画面幅に応じて2列並ぶイメージ */
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(4px);
-  border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  padding: 1.5rem;
-  transition: transform 0.3s ease;
-}
-.blog-card:hover {
-  transform: translateY(-3px); /* ホバーで少し浮き上がる演出 */
-}
-
-.blog-card h2 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  line-height: 1.4;
-}
-.blog-card h2 a {
-  text-decoration: none;
-  color: #333;
-}
-.blog-card h2 a:hover {
-  color: #666;
-}
-
-/* 抜粋の文字 */
-.blog-excerpt {
-  margin-top: 0.5rem;
-  line-height: 1.6;
-  color: #555;
-}
-
-/* 「もっとみる」ボタン */
-.read-more {
-  display: inline-block;
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  text-decoration: none;
-  color: #333;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-.read-more:hover {
-  background: #f0f0f0;
-  color: #000;
-}
-
-/* トップに戻るボタン周り */
-.back-to-top {
-  margin-top: 2rem;
-  text-align: center;
-}
-.back-to-top a {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  text-decoration: none;
-  color: #333;
-  transition: background 0.3s ease;
-}
-.back-to-top a:hover {
-  background: #f0f0f0;
-}
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 900 && nav.style.display === 'block') {
+        if (!nav.contains(e.target) && e.target !== hamburgerBtn) {
+          nav.style.display = 'none';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
