@@ -11,19 +11,18 @@ permalink: /blog.html
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>{{ page.title }} | toapd2022</title>
 
-  <!-- ファビコンやアイコン類は適宜変更してください -->
   <link rel="icon" type="image/png" href="{{ '/icons/top-logo.png' | relative_url }}" />
   <link rel="apple-touch-icon" href="{{ '/icons/top-logo.png' | relative_url }}" />
 
   <style>
     /********************************
-     * 1) 全体ベース
+     * 1) ベース設定
      ********************************/
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
-      min-height: 100vh; /* iOSで背景が途切れないよう確保 */
+      min-height: 100vh;  /* iOSで切れないように確保 */
     }
     body {
       font-family: sans-serif, Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
@@ -32,58 +31,40 @@ permalink: /blog.html
       overflow-x: hidden;
       position: relative;
 
-      /* 背景グラデーション（アニメあり） */
+      /* ★ 動きをなくした単純グラデーション */
       background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
-      background-size: 300% 300%;
-      animation: bgAnimation 15s ease infinite;
-    }
-    @keyframes bgAnimation {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      /* ↓ アニメーション用の記述は削除 */
+      /* background-size: 300% 300%;
+         animation: bgAnimation 15s ease infinite; */
     }
 
-    /********************************
-     * 2) 背景の円アニメ用ラッパ
-     ********************************/
-    /* body::before, ::after の代わりに専用のdivを用意 */
+    /* bodyの円アニメも動かさない → HTML要素で静止させる */
     .bg-circles {
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
+      z-index: -1;
+      pointer-events: none; /* 背景クリックを通す */
       overflow: hidden;
-      pointer-events: none; /* ユーザー操作を妨げない */
-      z-index: -1;          /* コンテンツより背面 */
     }
     .circle1, .circle2 {
       position: absolute;
       border-radius: 50%;
     }
     .circle1 {
+      /* 静止したまま配置 */
       top: -80px; left: -80px;
       width: 300px; height: 300px;
       background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-      animation: floatCircle 20s linear infinite alternate;
     }
     .circle2 {
       bottom: -100px; right: -100px;
       width: 400px; height: 400px;
       background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 70%);
-      animation: floatCircle2 30s linear infinite alternate;
-    }
-    @keyframes floatCircle {
-      0%   { transform: translate(0, 0) scale(1); }
-      50%  { transform: translate(60vw, 40vh) scale(1.2); }
-      100% { transform: translate(0, 0) scale(1); }
-    }
-    @keyframes floatCircle2 {
-      0%   { transform: translate(0, 0) scale(1); }
-      50%  { transform: translate(-40vw, -30vh) scale(1.1); }
-      100% { transform: translate(0, 0) scale(1); }
     }
 
     /********************************
-     * リンク（汎用）
+     * リンク
      ********************************/
     a {
       color: #333;
@@ -111,7 +92,6 @@ permalink: /blog.html
       -webkit-backdrop-filter: blur(6px);
       backdrop-filter: blur(6px);
     }
-
     .header-left {
       display: flex;
       align-items: center;
@@ -127,7 +107,6 @@ permalink: /blog.html
       margin-top: 8px;
       height: 40px;
     }
-
     nav ul {
       display: flex;
       list-style: none;
@@ -146,8 +125,7 @@ permalink: /blog.html
     nav li a::after {
       content: "";
       position: absolute;
-      left: 0;
-      bottom: 0;
+      left: 0; bottom: 0;
       width: 0%;
       height: 2px;
       background-color: orange;
@@ -158,7 +136,7 @@ permalink: /blog.html
     }
 
     /********************************
-     * ハンバーガーメニュー（スマホ専用）
+     * ハンバーガーボタン
      ********************************/
     .hamburger {
       display: none;
@@ -190,7 +168,7 @@ permalink: /blog.html
         border: 1px solid #eee;
         padding: 1rem;
         border-radius: 6px;
-        display: none;  /* 初期は非表示 */
+        display: none;
         flex-direction: column;
         gap: 1rem;
       }
@@ -211,10 +189,10 @@ permalink: /blog.html
       max-width: 900px;
       margin: 0 auto;
       padding: 4rem 1rem;
-      margin-top: 60px; /* ヘッダー分のスペース */
+      margin-top: 60px; /* ヘッダー分 */
     }
 
-    /* フェードインアニメ */
+    /* fade-in 用 */
     .fade-in {
       opacity: 0;
       transform: translateY(30px);
@@ -225,7 +203,7 @@ permalink: /blog.html
       transform: translateY(0);
     }
 
-    /* カード風 (ブログ一覧を包む) */
+    /* カード風 */
     .post-card {
       background: rgba(255,255,255,0.6);
       -webkit-backdrop-filter: blur(4px);
@@ -234,8 +212,6 @@ permalink: /blog.html
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       padding: 2rem;
     }
-
-    /* タイトル */
     .post-title {
       font-size: 1.8rem;
       margin-bottom: 1.5rem;
@@ -294,13 +270,11 @@ permalink: /blog.html
     }
     .blog-thumbnail img {
       width: 100%;
-      aspect-ratio: 16 / 9;
+      aspect-ratio: 16/9;
       object-fit: cover;
       border-radius: 4px;
       display: block;
     }
-
-    /* 「続きを読む」ボタン */
     .btn-readmore {
       display: inline-block;
       padding: 0.4rem 1rem;
@@ -363,7 +337,6 @@ permalink: /blog.html
       font-size: 0.9rem;
       color: #666;
     }
-
     .post-nav {
       margin-top: 2rem;
       text-align: center;
@@ -385,8 +358,7 @@ permalink: /blog.html
   </style>
 </head>
 <body>
-
-  <!-- ▲ 背景円アニメ用のラッパを追加 -->
+  <!-- ★ 静止円用の要素（body::before ではなくHTML要素で） -->
   <div class="bg-circles">
     <div class="circle1"></div>
     <div class="circle2"></div>
@@ -395,7 +367,6 @@ permalink: /blog.html
   <!-- ヘッダー -->
   <header>
     <div class="header-left">
-      <!-- ロゴ（クリックでトップへ） -->
       <div class="logo">
         <a href="{{ '/' | relative_url }}">
           <img src="{{ '/icons/logo.png' | relative_url }}" alt="toapd2022">
@@ -416,7 +387,7 @@ permalink: /blog.html
     </div>
   </header>
 
-  <!-- メインコンテンツ -->
+  <!-- メイン -->
   <main>
     <div class="post-card fade-in" id="blogCard">
       <h1 class="post-title">{{ page.title }}</h1>
@@ -450,7 +421,6 @@ permalink: /blog.html
           {% endfor %}
         </div>
 
-        <!-- ページネーション -->
         <div class="pagination" id="pagination"></div>
       {% else %}
         <p>まだ記事がありません。</p>
@@ -467,7 +437,7 @@ permalink: /blog.html
     <p>© 2025 toapd2022. All Rights Reserved.</p>
   </footer>
 
-  <!-- ハンバーガーメニュー + フェードイン + ページネーション -->
+  <!-- ハンバーガー + フェードイン + ページネーション -->
   <script>
     // ハンバーガーメニュー
     const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -479,7 +449,6 @@ permalink: /blog.html
         nav.style.display = 'none';
       }
     });
-    // 画面のどこかをクリックしたら閉じる
     document.addEventListener('click', (e) => {
       if (window.innerWidth <= 900 && nav.style.display === 'block') {
         if (!nav.contains(e.target) && e.target !== hamburgerBtn && !hamburgerBtn.contains(e.target)) {
@@ -488,16 +457,21 @@ permalink: /blog.html
       }
     });
 
-    // フェードイン (Intersection Observer)
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('active');
-        }
-      });
-    }, { threshold: 0.1 });
+    // フェードイン
     const fadeInTarget = document.getElementById('blogCard');
-    if (fadeInTarget) observer.observe(fadeInTarget);
+    if ('IntersectionObserver' in window && fadeInTarget) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, { threshold: 0.1 });
+      observer.observe(fadeInTarget);
+    } else {
+      // IntersectionObserver非対応ブラウザ用フォールバック
+      fadeInTarget.classList.add('active');
+    }
 
     // ページネーション
     const blogList = document.getElementById('blogList');
@@ -514,10 +488,8 @@ permalink: /blog.html
         if (page > totalPages) page = totalPages;
         currentPage = page;
 
-        // 全記事を非表示
         blogItems.forEach(item => { item.style.display = 'none'; });
 
-        // ページ範囲の記事だけ表示
         const startIndex = (currentPage - 1) * postsPerPage;
         const endIndex   = startIndex + postsPerPage;
         for (let i = startIndex; i < endIndex && i < totalPosts; i++) {
