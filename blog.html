@@ -170,18 +170,20 @@ permalink: /blog.html
       border-radius: 12px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      /* ===== 変更ここから ===== */
       display: flex;
-      flex-direction: column; /* 画像→タイトル→日付→本文→ボタン */
-      align-items: flex-start; /* 左寄せ */
-      max-width: 600px; /* ★ カード幅を小さめにして中央寄せ */
-      margin: 0 auto;   /* 中央寄せ */
+      flex-direction: column; 
+      align-items: flex-start;
+      width: 100%;          /* カード幅100％ */
+      max-width: 600px;     /* PC時は最大600px */
+      margin: 0 auto 2rem;  /* カード下にも少し余白 */
+      /* ===== 変更ここまで ===== */
     }
     .blog-item:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    /* カード内の画像を上に */
     .blog-image img {
       width: 100%;
       height: auto;
@@ -215,8 +217,11 @@ permalink: /blog.html
     }
 
     .readmore-wrapper {
-      text-align: left; /* 左寄せ */
+      /* ===== 変更ここから ===== */
+      margin-top: auto;     /* カードの下付近に配置したい場合 */
       width: 100%;
+      text-align: left;     /* 左揃え */
+      /* ===== 変更ここまで ===== */
     }
     .btn-readmore {
       display: inline-block;
@@ -295,6 +300,17 @@ permalink: /blog.html
       color: #666;
       font-size: 0.9rem;
     }
+
+    /* =========================
+       追加: スマホ時のサムネ最大幅調整
+       ========================= */
+    @media (max-width: 600px) {
+      .blog-image img {
+        margin: 0 auto;
+        max-width: 90%; /* 画像を画面幅いっぱいよりやや小さめに */
+      }
+    }
+
   </style>
 </head>
 <body>
