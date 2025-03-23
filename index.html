@@ -1,7 +1,3 @@
----
-layout: none
----
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -439,7 +435,7 @@ layout: none
       margin: 0 auto;
       padding: 4rem 0;
       position: relative;
-      overflow: hidden;
+      /* ※overflow: hidden; を削除し、切れを防止 */
     }
     section h2 {
       font-size: 1.6rem;
@@ -695,6 +691,7 @@ layout: none
       font-size: 0.9rem;
       line-height: 1.6;
     }
+    /* もし活動内容のリンク下線も消したい場合は以下をコメントアウト */
     .works-item a {
       color: #0066cc;
       text-decoration: underline;
@@ -791,52 +788,51 @@ layout: none
      * ★ ブログ (旧ギャラリー)
      ********************************/
     #blog {}
-    /*
-      メディア出演と同じデザインを使いたいので、
-      .media-grid と似たgridレイアウトを定義
-    */
-    .blog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-      gap: 2rem;
+    .blog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
       margin-top: 2rem;
     }
     .blog-item {
-      display: flex;
-      flex-direction: column;
-      background: #fff;
-      border-radius: 4px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      overflow: hidden;
-      transition: transform 0.3s ease;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(6px);
+      padding: 1rem;
+      border-radius: 6px;
+      transition: background 0.3s ease;
     }
     .blog-item:hover {
-      transform: translateY(-2px);
+      background: rgba(255,255,255,0.4);
     }
-    .blog-item img {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-    }
-    .blog-item .media-text {
-      padding: 1rem;
-    }
-    .blog-item .media-text h3 {
+    .blog-item h3 {
+      margin-bottom: 0.4rem;
       font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-      color: #333;
     }
-    .blog-item .media-text p {
+    /* ブログタイトルのリンクを下線無し + ホバー時少し色変化 */
+    .blog-item h3 a {
+      color: #333;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .blog-item h3 a:hover {
+      color: #666;
+    }
+
+    .blog-item p {
       font-size: 0.9rem;
       line-height: 1.6;
-      margin-bottom: 0.5rem;
     }
-    .blog-item .media-text a {
-      color: #0066cc;
-      text-decoration: underline;
+
+    /* サムネイル表示 */
+    .blog-thumbnail {
+      margin: 0.5rem 0;
     }
-    .blog-item .media-text a:hover {
-      color: #003399;
+    .blog-thumbnail img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 4px;
+      display: block;
     }
 
     /********************************
@@ -1043,7 +1039,7 @@ layout: none
       border-radius: 9999px;
       background: #ffcc00;
       color: #333;
-      text-decoration: none;
+      text-decoration: none; /* 下線を消す */
       font-weight: bold;
       transition: transform 0.2s ease, background 0.3s ease;
       cursor: pointer;
@@ -1052,6 +1048,7 @@ layout: none
     .btn-all-posts:hover {
       transform: translateY(-2px);
       background: #ffd933;
+      text-decoration: none; /* ホバー時も下線なし */
     }
   </style>
 </head>
@@ -1224,39 +1221,38 @@ layout: none
 
     <div class="fade-in">
       {% if site.posts.size > 0 %}
-        <!-- メディア出演と同じgridレイアウトを用いる -->
-        <div class="blog-grid">
+        <div class="blog-list">
           {% for post in site.posts limit:5 %}
           <article class="blog-item">
+            <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+            <p style="color:#666; font-size:0.85rem;">
+              投稿日: {{ post.date | date: "%Y-%m-%d" }}
+            </p>
+
             {% if post.thumbnail %}
-              <img src="{{ post.thumbnail | relative_url }}" alt="{{ post.title }}">
-            {% else %}
-              <!-- サムネイルが無い場合の代替画像（必要に応じて差し替え） -->
-              <img src="icons/tv1.png" alt="{{ post.title }}">
+              <div class="blog-thumbnail">
+                <img src="{{ post.thumbnail | relative_url }}" alt="{{ post.title }}">
+              </div>
             {% endif %}
-            <div class="media-text">
-              <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-              <p style="color:#666; font-size:0.85rem;">
-                投稿日: {{ post.date | date: "%Y-%m-%d" }}
-              </p>
-              <p>
-                {{ post.excerpt | strip_html }} ...
-              </p>
-              <!-- 「続きを読む」ボタン -->
-              <p style="text-align: right; margin-top: 1rem;">
-                <a href="{{ post.url | relative_url }}" class="btn-readmore">
-                  続きを見る
-                </a>
-              </p>
-            </div>
+
+            <p>
+              {{ post.excerpt | strip_html }} ...
+            </p>
+
+            <!-- 「続きを読む」ボタン -->
+            <p>
+              <a href="{{ post.url | relative_url }}" class="btn-readmore">
+                続きを見る
+              </a>
+            </p>
           </article>
           {% endfor %}
         </div>
 
         <!-- 「すべての記事を見る」ボタン -->
-        <p style="margin-top:1rem; text-align: right;">
+        <p style="margin-top:1rem;">
           <a href="{{ 'blog.html' | relative_url }}" class="btn-all-posts">
-            過去のブログ記事を読む
+            すべての記事を見る
           </a>
         </p>
 
@@ -1525,7 +1521,7 @@ layout: none
                   style="width: 40px; height: auto; vertical-align: middle; margin-left: 8px;">
            </p>`,
         sectionWorksTitle: "Works",
-        worksItem1Title: `YouTube "toapd2022"`,
+        worksItem1Title: "YouTube \"toapd2022\"",
         worksItem1Text:
           `We record various local disaster prevention chimes and outdoor PA systems,
            sharing videos that explain their sounds and equipment details.`,
@@ -1550,24 +1546,24 @@ layout: none
         sectionGalleryIntro: "",
         sectionMediaTitle: "Media",
         sectionMediaIntro: "Featured by various TV programs and newspapers.",
-        mediaItem1Title: `TV Asahi "Nanikore Chin Hyakkei"`,
+        mediaItem1Title: "TV Asahi \"Nanikore Chin Hyakkei\"",
         mediaItem1Text:
           `Aired on July 30, 2023 (Sun).  
            ◆ Unique Collection Showcase  
            A house with school speakers and office telephones!?  
            A high school student who highlights the importance of disaster speakers...`,
-        mediaItem2Title: `TBS "Ikisugi-san"`,
+        mediaItem2Title: "TBS \"Ikisugi-san\"",
         mediaItem2Text:
           `Aired on August 1, 2023 (Tue).  
            ◆ Ikisugi-san Quiz  
            Where Johnny's WEST guesses what the special hobby is!  
            A "Chime Enthusiast" who records disaster prevention broadcasts?!`,
-        mediaItem3Title: `Himeji CATV "Weekly Himeji"`,
+        mediaItem3Title: "Himeji CATV \"Weekly Himeji\"",
         mediaItem3Text:
           `Aired on August 11, 2023 (Fri).  
            ◆ PR Supporter Corner  
            Showcased the editing approach used in the "Show MyHimeji" 2022 contest.`,
-        mediaItem4Title: `TBS "THE TIME, High School News"`,
+        mediaItem4Title: "TBS \"THE TIME, High School News\"",
         mediaItem4Text:
           `Aired on November 21, 2023 (Tue).  
            ◆ A high school student who set up a mini disaster radio at home  
@@ -1822,14 +1818,14 @@ layout: none
 
       allSlides = Array.from(heroSlides.querySelectorAll('.hero-slide'));
       currentIndex = 1;
-      heroSlides.style.transform = `translateX(-100%)`;
+      heroSlides.style.transform = 'translateX(-100%)';
 
       heroSlides.addEventListener('transitionend', () => {
         allSlides = Array.from(heroSlides.querySelectorAll('.hero-slide'));
         if (allSlides[currentIndex] && allSlides[currentIndex].id === 'first-clone') {
           heroSlides.style.transition = 'none';
           currentIndex = 1;
-          heroSlides.style.transform = `translateX(-100%)`;
+          heroSlides.style.transform = 'translateX(-100%)';
         }
         if (allSlides[currentIndex] && allSlides[currentIndex].id === 'last-clone') {
           heroSlides.style.transition = 'none';
@@ -1897,14 +1893,14 @@ layout: none
 
       allSlides_m = Array.from(mobileHeroSlides.querySelectorAll('.mobile-hero-slide'));
       currentIndex_m = 1;
-      mobileHeroSlides.style.transform = `translateX(-100%)`;
+      mobileHeroSlides.style.transform = 'translateX(-100%)';
 
       mobileHeroSlides.addEventListener('transitionend', () => {
         allSlides_m = Array.from(mobileHeroSlides.querySelectorAll('.mobile-hero-slide'));
         if (allSlides_m[currentIndex_m] && allSlides_m[currentIndex_m].id === 'mobile-first-clone') {
           mobileHeroSlides.style.transition = 'none';
           currentIndex_m = 1;
-          mobileHeroSlides.style.transform = `translateX(-100%)`;
+          mobileHeroSlides.style.transform = 'translateX(-100%)';
         }
         if (allSlides_m[currentIndex_m] && allSlides_m[currentIndex_m].id === 'mobile-last-clone') {
           mobileHeroSlides.style.transition = 'none';
@@ -1989,7 +1985,7 @@ layout: none
     });
 
     /***********************************************
-     * フォーム送信を fetch() で行う処理 (サンプル)
+     * フォーム送信を fetch() で行う処理 (GASなど使用時)
      ***********************************************/
     const GAS_ENDPOINT =
       "https://script.google.com/macros/s/AKfycbxaCCnu0Vf_aD0j4PHv0aMY_UCFt8G7QO8qcIn7yOjnhqk9PNGWrDP3hvDj_StaQGMWng/exec";
