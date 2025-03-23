@@ -11,12 +11,3 @@ permalink: /:year/:month/:day/:title/
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
-  # ▼ もしGitHub Pagesで許可されていれば
-  #   'jekyll-paginate' を追加（ただし現在は非推奨）
-  - jekyll-paginate
-
-# 1ページあたりの記事数
-paginate: 5
-
-# 2ページ目以降のURL例: /blog/page2, /blog/page3, ...
-paginate_path: "/blog/page:num"
