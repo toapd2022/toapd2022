@@ -36,3 +36,85 @@ permalink: /blog.html
     <a href="{{ '/' | relative_url }}">トップページに戻る</a>
   </div>
 </main>
+
+/* =========================
+   ブログ一覧の装飾を追加
+   ========================= */
+
+/* 一覧全体を横並び・折り返し */
+.blog-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem; /* カード間の余白 */
+  margin-top: 2rem;
+}
+
+/* 各ブログカードの見た目 */
+.blog-card {
+  flex: 1 1 calc(50% - 2rem); /* 画面幅に応じて2列並ぶイメージ */
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(4px);
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+}
+.blog-card:hover {
+  transform: translateY(-3px); /* ホバーで少し浮き上がる演出 */
+}
+
+.blog-card h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+.blog-card h2 a {
+  text-decoration: none;
+  color: #333;
+}
+.blog-card h2 a:hover {
+  color: #666;
+}
+
+/* 抜粋の文字 */
+.blog-excerpt {
+  margin-top: 0.5rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+/* 「もっとみる」ボタン */
+.read-more {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.read-more:hover {
+  background: #f0f0f0;
+  color: #000;
+}
+
+/* トップに戻るボタン周り */
+.back-to-top {
+  margin-top: 2rem;
+  text-align: center;
+}
+.back-to-top a {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+  transition: background 0.3s ease;
+}
+.back-to-top a:hover {
+  background: #f0f0f0;
+}
