@@ -1054,7 +1054,7 @@ layout: none
 /* 「すべての記事を見る」ボタン - 従来どおり、またはお好みで調整 */
 .btn-all-posts {
   display: inline-block;
-  padding: 0.5rem 1.2rem; /* 大きさを個別設定 */
+  padding: 0.5rem 1.0rem; /* 大きさを個別設定 */
   font-size: 1rem;        /* こちらは標準くらい */
   border-radius: 9999px;
   background: #00AAFF;    /* 背景色も従来通り */
@@ -1300,8 +1300,8 @@ layout: none
           {% endfor %}
         </div>
 
-        <!-- 「過去のブログ記事を見る」ボタン（左寄せ） -->
-        <p style="margin-top:1rem; text-align: left;">
+        <!-- 「過去のブログ記事を見る」ボタン（中央揃え） -->
+        <p style="margin-top:1rem; text-align: center;">
           <a href="{{ 'blog.html' | relative_url }}" class="btn-all-posts">
             過去のブログ記事を見る
           </a>
