@@ -156,7 +156,7 @@ permalink: /blog.html
     }
 
     /* =========================
-       4) ブログ一覧 (1カラム)
+       4) ブログ一覧
        ========================= */
     .blog-list {
       display: flex;
@@ -170,27 +170,54 @@ permalink: /blog.html
       border-radius: 12px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      /* ===== 変更ここから ===== */
+
+      /* スマホでは縦並びにする */
       display: flex;
-      flex-direction: column; 
+      flex-direction: column;
       align-items: flex-start;
-      width: 100%;          /* カード幅100％ */
-      max-width: 600px;     /* PC時は最大600px */
-      margin: 0 auto 2rem;  /* カード下にも少し余白 */
-      /* ===== 変更ここまで ===== */
+
+      width: 100%;
+      max-width: 600px; 
+      margin: 0 auto; 
+      margin-bottom: 2rem;
     }
     .blog-item:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
+    /* ---------------------
+       サムネイル (共通)
+       --------------------- */
     .blog-image img {
-      width: 100%;
+      display: block;
       height: auto;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      margin-bottom: 0.8rem; /* 下に少し余白 */
       object-fit: cover;
+    }
+
+    /* ---------------------
+       サムネイル (PC時 横並び)
+       --------------------- */
+    @media (min-width: 900px) {
+      .blog-item {
+        flex-direction: row;        /* 横並び */
+        align-items: flex-start;    /* 上揃え */
+      }
+      .blog-image img {
+        width: 200px;              /* サムネイルを小さめ固定 */
+        margin-right: 1.5rem;      /* テキストとの隙間 */
+      }
+    }
+
+    /* ---------------------
+       テキスト部分
+       --------------------- */
+    .blog-content {
+      flex: 1; /* 横並び時、残りスペースを使う */
+      display: flex;
+      flex-direction: column;
     }
 
     .blog-title {
@@ -213,15 +240,13 @@ permalink: /blog.html
     .blog-excerpt {
       color: #555;
       line-height: 1.6;
-      margin-bottom: 1rem; /* ボタンと余白 */
+      margin-bottom: 1rem; 
     }
 
     .readmore-wrapper {
-      /* ===== 変更ここから ===== */
-      margin-top: auto;     /* カードの下付近に配置したい場合 */
+      margin-top: auto;  /* 最下部に寄せる */
       width: 100%;
-      text-align: left;     /* 左揃え */
-      /* ===== 変更ここまで ===== */
+      text-align: left;  
     }
     .btn-readmore {
       display: inline-block;
@@ -300,17 +325,6 @@ permalink: /blog.html
       color: #666;
       font-size: 0.9rem;
     }
-
-    /* =========================
-       追加: スマホ時のサムネ最大幅調整
-       ========================= */
-    @media (max-width: 600px) {
-      .blog-image img {
-        margin: 0 auto;
-        max-width: 90%; /* 画像を画面幅いっぱいよりやや小さめに */
-      }
-    }
-
   </style>
 </head>
 <body>
@@ -344,32 +358,35 @@ permalink: /blog.html
       <div class="blog-list" id="blogList">
         {% for post in site.posts %}
         <article class="blog-item">
-          <!-- ★ 画像を上に配置 -->
+          <!-- 画像ブロック -->
           {% if post.thumbnail %}
           <div class="blog-image">
             <img src="{{ post.thumbnail | relative_url }}" alt="サムネイル">
           </div>
           {% endif %}
 
-          <h2 class="blog-title">
-            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-          </h2>
+          <!-- テキストブロック -->
+          <div class="blog-content">
+            <h2 class="blog-title">
+              <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+            </h2>
 
-          {% if post.date %}
-            <p class="blog-date">
-              投稿日: {{ post.date | date: "%Y年%m月%d日" }}
+            {% if post.date %}
+              <p class="blog-date">
+                投稿日: {{ post.date | date: "%Y年%m月%d日" }}
+              </p>
+            {% endif %}
+
+            <p class="blog-excerpt">
+              {{ post.excerpt | strip_html | truncate: 100 }}
             </p>
-          {% endif %}
 
-          <p class="blog-excerpt">
-            {{ post.excerpt | strip_html | truncate: 100 }}
-          </p>
-
-          <div class="readmore-wrapper">
-            <a href="{{ post.url | relative_url }}" class="btn-readmore">
-              続きを見る
-            </a>
-          </div>
+            <div class="readmore-wrapper">
+              <a href="{{ post.url | relative_url }}" class="btn-readmore">
+                続きを見る
+              </a>
+            </div>
+          </div><!-- /.blog-content -->
         </article>
         {% endfor %}
       </div>
@@ -431,7 +448,7 @@ permalink: /blog.html
         const startIndex = (currentPage - 1) * postsPerPage;
         const endIndex   = startIndex + postsPerPage;
         for (let i = startIndex; i < endIndex && i < totalPosts; i++) {
-          blogItems[i].style.display = 'flex'; // 1カラム縦並び
+          blogItems[i].style.display = 'flex'; // 横並び/縦並びをCSSに任せる
         }
 
         updatePaginationUI();
