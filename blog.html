@@ -2,14 +2,6 @@
 layout: none
 title: "ブログ一覧"
 permalink: /blog.html
-
-# jekyll-paginate-v2用のFront Matter設定
-pagination:
-  enabled: true      # このページでページネーションを有効にする
-  per_page: 5        # 1ページあたり記事5件
-  permalink: "/blog/page:num"
-  title: "ブログ一覧 (ページ :num)"
-  collection: "posts"
 ---
 
 <!DOCTYPE html>
@@ -23,20 +15,15 @@ pagination:
   <link rel="icon" type="image/png" href="{{ '/icons/top-logo.png' | relative_url }}" />
   <link rel="apple-touch-icon" href="{{ '/icons/top-logo.png' | relative_url }}" />
 
-  <!-- （必要に応じて Font Awesome なども読み込む）
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
-    integrity="sha512-..."
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  /> -->
-
   <style>
     /* =========================
        1) ベーススタイル
        ========================= */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box;
+    }
     body {
       font-family: sans-serif, Arial, "Hiragino Kaku Gothic ProN", Meiryo;
       background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
@@ -59,7 +46,7 @@ pagination:
       color: #666;
     }
 
-    /* 背景のふわふわ円アニメ */
+    /* 背景ふわふわ円アニメ */
     body::before, body::after {
       content: "";
       position: fixed;
@@ -94,7 +81,9 @@ pagination:
        ========================= */
     header {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0; 
+      left: 0; 
+      right: 0;
       height: 60px;
       display: flex;
       align-items: center;
@@ -120,7 +109,8 @@ pagination:
       display: flex;
       list-style: none;
       gap: 1.5rem;
-      margin: 0; padding: 0;
+      margin: 0; 
+      padding: 0;
     }
     nav li a {
       position: relative;
@@ -138,7 +128,7 @@ pagination:
     nav li a:hover::after {
       width: 100%;
     }
-    /* ハンバーガー（必要なら） */
+    /* ハンバーガーメニュー */
     .hamburger {
       display: none;
       flex-direction: column;
@@ -175,12 +165,12 @@ pagination:
     }
 
     /* =========================
-       3) メインコンテンツ
+       3) メイン
        ========================= */
     main {
       margin: 0 auto;
       padding: 4rem 1rem;
-      margin-top: 60px; /* ヘッダーの高さぶん */
+      margin-top: 60px;
       max-width: 920px;
     }
     h1.page-title {
@@ -190,12 +180,12 @@ pagination:
     }
 
     /* =========================
-       4) ブログ一覧 (カード)
+       4) ブログ一覧
        ========================= */
     .blog-list {
       display: flex;
       flex-direction: column;
-      gap: 2rem; /* 記事間の余白 */
+      gap: 2rem;
     }
     .blog-item {
       background: rgba(255,255,255,0.8);
@@ -233,7 +223,7 @@ pagination:
     .thumbnail {
       width: 180px;
       float: right;
-      margin-left: 1rem; /* テキストとの間隔 */
+      margin-left: 1rem;
       margin-bottom: 0.5rem;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -245,11 +235,11 @@ pagination:
       margin-top: 0.5rem;
     }
 
-    /* 「この記事を読む」ボタンを右揃え */
+    /* ボタンを右揃え */
     .readmore-wrapper {
-      text-align: right; /* 右寄せ */
+      text-align: right;
       margin-top: 1rem;
-      clear: both;       /* float解除（必要なら） */
+      clear: both;
     }
     .btn-readmore {
       display: inline-block;
@@ -266,13 +256,17 @@ pagination:
     }
 
     /* =========================
-       5) ページネーション
+       JSで擬似的ページネーション
        ========================= */
     .pagination {
       text-align: center;
       margin: 2rem auto 0;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
-    .pagination a {
+    .pagination .page-btn {
       display: inline-block;
       margin: 0.2rem;
       padding: 0.5rem 1rem;
@@ -281,23 +275,19 @@ pagination:
       border-radius: 4px;
       text-decoration: none;
       color: #333;
+      cursor: pointer;
       transition: background 0.3s ease;
     }
-    .pagination a:hover {
+    .pagination .page-btn:hover {
       background: #f0f0f0;
     }
-    .pagination .current-page {
-      display: inline-block;
-      margin: 0.2rem;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
+    .pagination .page-btn.active {
       background: #ffebcc;
-      color: #333;
       font-weight: bold;
     }
 
     /* =========================
-       6) フッター
+       フッター
        ========================= */
     .footer-nav {
       margin-top: 3rem;
@@ -328,12 +318,12 @@ pagination:
       color: #666;
       font-size: 0.9rem;
     }
+
   </style>
 </head>
 <body>
   <!-- ヘッダー -->
   <header>
-    <!-- ロゴクリックで再度ブログ一覧へ -->
     <div class="logo">
       <a href="{{ '/blog.html' | relative_url }}">
         <img src="{{ '/icons/logo.png' | relative_url }}" alt="toapd2022">
@@ -358,16 +348,15 @@ pagination:
   <main>
     <h1 class="page-title">{{ page.title }}</h1>
 
-    {% comment %}
-      jekyll-paginate-v2で pagination.enabled: true の場合、
-      paginator.posts によって1ページあたり(per_page)分だけ記事を取得
-    {% endcomment %}
-    {% if paginator and paginator.posts %}
-      <div class="blog-list">
-        {% for post in paginator.posts %}
+    {% if site.posts.size > 0 %}
+      <div class="blog-list" id="blogList">
+        {% comment %}
+          全記事をループして出力。JSで「表示/非表示」を切り替えて疑似ページ送りする。
+        {% endcomment %}
+        {% for post in site.posts %}
         <article class="blog-item">
           {% if post.thumbnail %}
-            <!-- サムネイルがあれば右寄せ表示 -->
+            <!-- サムネイルがあれば右寄せ -->
             <img src="{{ post.thumbnail | relative_url }}" class="thumbnail" alt="サムネ">
           {% endif %}
 
@@ -394,28 +383,13 @@ pagination:
         {% endfor %}
       </div>
 
-      <!-- ページネーション -->
-      {% if paginator.total_pages > 1 %}
-        <div class="pagination">
-          {% if paginator.previous_page %}
-            <a href="{{ paginator.previous_page_path }}">← 前のページ</a>
-          {% endif %}
-
-          <span class="current-page">
-            Page {{ paginator.page }} / {{ paginator.total_pages }}
-          </span>
-
-          {% if paginator.next_page %}
-            <a href="{{ paginator.next_page_path }}">次のページ →</a>
-          {% endif %}
-        </div>
-      {% endif %}
+      <!-- JSベースのページネーション領域 -->
+      <div class="pagination" id="pagination"></div>
 
     {% else %}
       <p>まだ記事がありません。</p>
     {% endif %}
 
-    <!-- フッター直前のナビゲーション -->
     <div class="footer-nav">
       <a href="{{ '/' | relative_url }}">トップページに戻る</a>
     </div>
@@ -426,8 +400,9 @@ pagination:
     <p>© 2025 toapd2022. All Rights Reserved.</p>
   </footer>
 
-  <!-- ハンバーガーメニューのJS -->
+  <!-- ハンバーガーメニューのJS + 疑似ページネーションJS -->
   <script>
+    // ハンバーガーメニュー
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const nav = document.querySelector('header nav');
     hamburgerBtn.addEventListener('click', () => {
@@ -444,6 +419,84 @@ pagination:
         }
       }
     });
+
+    // ======================
+    // JS擬似ページネーション
+    // ======================
+    const blogList = document.getElementById('blogList');
+    if (blogList) {
+      const blogItems = Array.from(blogList.querySelectorAll('.blog-item'));
+      const paginationContainer = document.getElementById('pagination');
+
+      // 1ページあたりの投稿数
+      const postsPerPage = 5;
+
+      // 計算
+      let currentPage = 1;
+      const totalPosts = blogItems.length;
+      const totalPages = Math.ceil(totalPosts / postsPerPage);
+
+      // 指定のページの投稿だけ表示
+      function showPage(page) {
+        // 範囲内(1～totalPages)に収める
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+        currentPage = page;
+
+        // 全部非表示
+        blogItems.forEach(item => {
+          item.style.display = 'none';
+        });
+        // 今のページに該当する投稿だけ表示
+        const startIndex = (currentPage - 1) * postsPerPage;
+        const endIndex   = startIndex + postsPerPage;
+        for (let i = startIndex; i < endIndex && i < totalPosts; i++) {
+          blogItems[i].style.display = 'block';
+        }
+
+        updatePaginationUI();
+      }
+
+      // ページネーションのボタン生成＆更新
+      function updatePaginationUI() {
+        // 一旦クリア
+        paginationContainer.innerHTML = '';
+
+        // 前へボタン (必要なら)
+        // ここを「<<」や「‹ 前」などに変えてもOK
+        if (currentPage > 1) {
+          const prevBtn = document.createElement('span');
+          prevBtn.textContent = "← 前のページ";
+          prevBtn.className = "page-btn";
+          prevBtn.addEventListener('click', () => showPage(currentPage - 1));
+          paginationContainer.appendChild(prevBtn);
+        }
+
+        // ページ番号ボタン (1～totalPagesを並べる)
+        for (let i = 1; i <= totalPages; i++) {
+          const pageBtn = document.createElement('span');
+          pageBtn.textContent = i;
+          pageBtn.className = "page-btn";
+          if (i === currentPage) {
+            pageBtn.classList.add('active');
+          }
+          pageBtn.addEventListener('click', () => showPage(i));
+          paginationContainer.appendChild(pageBtn);
+        }
+
+        // 次へボタン
+        if (currentPage < totalPages) {
+          const nextBtn = document.createElement('span');
+          nextBtn.textContent = "次のページ →";
+          nextBtn.className = "page-btn";
+          nextBtn.addEventListener('click', () => showPage(currentPage + 1));
+          paginationContainer.appendChild(nextBtn);
+        }
+      }
+
+      // 初期表示
+      showPage(1);
+    }
   </script>
 </body>
 </html>
