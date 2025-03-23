@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <!-- ページタイトルは記事タイトル＋サイト名など -->
   <title>{{ page.title }} | toapd2022</title>
 
@@ -10,51 +10,53 @@
   <link rel="apple-touch-icon" href="{{ '/icons/top-logo.png' | relative_url }}" />
 
   <style>
-    /* =========================
-       1) ベーススタイル
-       ========================= */
+    /********************************
+     * 全体ベース
+     ********************************/
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
     body {
-      font-family: sans-serif, Arial, "Hiragino Kaku Gothic ProN", Meiryo;
+      font-family: sans-serif, Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
       background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
       background-size: 300% 300%;
-      animation: bgAnimation 15s ease infinite;
       color: #333;
       line-height: 1.6;
+      overflow-x: hidden;
+      animation: bgAnimation 15s ease infinite;
+      position: relative;
     }
     @keyframes bgAnimation {
       0%   { background-position: 0% 50%; }
       50%  { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    a {
-      color: #333;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-    a:hover {
-      color: #666;
-    }
 
-    /* 背景のふわふわ円アニメは好みで継承してもOK */
-    body::before, body::after {
+    /* body背景用のふわふわ円アニメ */
+    body::before {
       content: "";
       position: fixed;
-      width: 300px; height: 300px;
+      top: -80px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
       border-radius: 50%;
       z-index: -1;
-      opacity: 0.3;
-    }
-    body::before {
-      top: -80px; left: -80px;
-      background: radial-gradient(circle, #fff 0%, transparent 70%);
       animation: floatCircle 20s linear infinite alternate;
     }
     body::after {
-      bottom: -100px; right: -100px;
-      background: radial-gradient(circle, #fff 0%, transparent 70%);
+      content: "";
+      position: fixed;
+      bottom: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
       animation: floatCircle2 30s linear infinite alternate;
     }
     @keyframes floatCircle {
@@ -68,12 +70,23 @@
       100% { transform: translate(0, 0) scale(1); }
     }
 
-    /* =========================
-       2) ヘッダー
-       ========================= */
+    a {
+      color: #333;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: #666;
+    }
+
+    /********************************
+     * ヘッダー
+     ********************************/
     header {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 60px;
       display: flex;
       align-items: center;
@@ -83,78 +96,176 @@
       border-bottom: 1px solid #eee;
       z-index: 999;
     }
-    .logo img {
-      height: 40px;
-      margin-top: 8px;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
     .header-right {
-      margin-left: auto;
       display: flex;
+      align-items: center;
+      margin-left: auto;
       gap: 1rem;
+    }
+
+    .logo img {
+      margin-top: 8px;
+      height: 40px;
+    }
+
+    nav {
+      display: flex;
       align-items: center;
     }
     nav ul {
-      display: flex; list-style: none; gap: 1.5rem; margin: 0; padding: 0;
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+      justify-content: flex-end;
+      margin: 0;
+      padding: 0;
+    }
+    nav li {
+      cursor: pointer;
+      font-weight: 500;
     }
     nav li a {
       position: relative;
-      font-weight: 500;
-      padding: 0.5rem 0;
+      padding: 0.5rem 0 4px 0;
     }
     nav li a::after {
       content: "";
       position: absolute;
-      left: 0; bottom: 0;
-      width: 0%; height: 2px;
-      background: orange;
-      transition: 0.3s ease;
+      left: 0;
+      bottom: 0;
+      width: 0%;
+      height: 2px;
+      background-color: orange;
+      transition: width 0.3s ease;
     }
     nav li a:hover::after {
       width: 100%;
     }
 
-    /* =========================
-       3) メインコンテンツ
-       ========================= */
+    /********************************
+     * ハンバーガーボタン（スマホ専用）
+     ********************************/
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+    .hamburger span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: #333;
+      border-radius: 2px;
+    }
+    @media screen and (max-width: 900px) {
+      .hamburger {
+        display: flex; /* ハンバーガーボタンを表示 */
+      }
+      nav {
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(6px);
+        border: 1px solid #eee;
+        padding: 1rem;
+        border-radius: 6px;
+        display: none;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav li {
+        text-align: right;
+      }
+    }
+
+    /********************************
+     * メインコンテンツ
+     ********************************/
     main {
+      width: 90%;
+      max-width: 900px;
       margin: 0 auto;
       padding: 4rem 1rem;
-      margin-top: 60px; /* ヘッダー分下げる */
-      max-width: 800px; /* 記事本文は中央寄せ＆幅を抑える */
+      margin-top: 60px; /* ヘッダー分のスペース */
     }
 
-    /* 記事タイトル・日付を大きく */
-    .post-header {
-      text-align: center;
-      margin-bottom: 2rem;
+    /* fade-inアニメ用 */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
     }
-    .post-title {
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
-      line-height: 1.2;
-    }
-    .post-date {
-      font-size: 0.9rem;
-      color: #999;
+    .fade-in.active {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    /* 記事本文を白背景の“カード”風にする */
-    .post-content {
-      background: rgba(255,255,255,0.7);
+    /* 記事全体を白背景のカード風に */
+    .post-card {
+      background: rgba(255,255,255,0.8);
       backdrop-filter: blur(4px);
-      padding: 2rem;
       border-radius: 6px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 2rem;
     }
-    .post-content h2 {
-      margin-top: 1.5rem;
-      font-size: 1.3rem;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 0.3rem;
+
+    .post-title {
+      font-size: 1.8rem;
+      line-height: 1.3;
+      margin-bottom: 1rem;
+      color: #333;
+      position: relative;
+      display: inline-block;
+      padding-bottom: 0.5rem;
+    }
+    .post-title::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 60px;
+      height: 2px;
+      background-color: #ffcc00;
+    }
+
+    /* 日付をバッジ風に */
+    .post-date {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      padding: 0.3rem 0.8rem;
+      background: #ffcc00;
+      color: #333;
+      font-size: 0.9rem;
+      font-weight: bold;
+      border-radius: 9999px;
+    }
+
+    .post-content {
+      line-height: 1.8;
+      color: #333;
+    }
+    .post-content h2,
+    .post-content h3,
+    .post-content h4 {
+      margin-top: 1.6rem;
     }
     .post-content p {
       margin-top: 1rem;
-      line-height: 1.8;
     }
     .post-content img {
       max-width: 100%;
@@ -170,7 +281,7 @@
       color: #666;
     }
 
-    /* 記事末尾に「一覧に戻る」や「次の記事」ボタン例 */
+    /* 記事末尾のナビゲーション */
     .post-nav {
       margin-top: 2rem;
       text-align: center;
@@ -182,17 +293,17 @@
       background: #fff;
       border: 1px solid #ddd;
       border-radius: 4px;
-      text-decoration: none;
       color: #333;
+      text-decoration: none;
       transition: background 0.3s ease;
     }
     .post-nav a:hover {
       background: #f0f0f0;
     }
 
-    /* =========================
-       4) フッター
-       ========================= */
+    /********************************
+     * フッター
+     ********************************/
     footer {
       text-align: center;
       padding: 2rem;
@@ -200,57 +311,29 @@
       border-top: 1px solid #eee;
     }
     footer p {
-      color: #666;
       font-size: 0.9rem;
-    }
-
-    /* =========================
-       5) ハンバーガーメニュー (お好みで)
-       ========================= */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-    }
-    .hamburger span {
-      width: 25px; height: 3px; background: #333; border-radius: 2px;
-    }
-    @media screen and (max-width: 900px) {
-      .hamburger {
-        display: flex;
-      }
-      nav {
-        position: absolute;
-        top: 60px; right: 20px;
-        background: rgba(255,255,255,0.95);
-        backdrop-filter: blur(6px);
-        border-radius: 6px;
-        border: 1px solid #eee;
-        padding: 1rem;
-        display: none; /* 初期非表示 */
-        flex-direction: column; gap: 1rem;
-      }
-      nav ul {
-        flex-direction: column; gap: 1rem;
-      }
+      color: #666;
     }
   </style>
 </head>
 <body>
   <!-- ヘッダー -->
   <header>
-    <div class="logo">
-      <img src="{{ '/icons/logo.png' | relative_url }}" alt="toapd2022">
+    <!-- 左側：ロゴ（クリックでトップページへ） -->
+    <div class="header-left">
+      <div class="logo">
+        <a href="{{ '/' | relative_url }}">
+          <img src="{{ '/icons/logo.png' | relative_url }}" alt="toapd2022">
+        </a>
+      </div>
     </div>
+    <!-- 右側：ナビ + ハンバーガーメニュー -->
     <div class="header-right">
       <nav>
         <ul>
           <li><a href="{{ '/' | relative_url }}">トップ</a></li>
           <li><a href="{{ '/blog.html' | relative_url }}">ブログ一覧</a></li>
-          <!-- 必要に応じて他ページへのリンクを追加 -->
+          <!-- 必要に応じて他のリンクを追加 -->
         </ul>
       </nav>
       <button class="hamburger" id="hamburgerBtn">
@@ -263,25 +346,26 @@
 
   <!-- メインコンテンツ -->
   <main>
-    <div class="post-header">
-      <!-- 記事タイトル＆日付を表示 -->
+    <div class="post-card fade-in" id="postCard">
+      <!-- タイトル -->
       <h1 class="post-title">{{ page.title }}</h1>
+
+      <!-- 日付がある場合のみ表示 -->
       {% if page.date %}
-        <div class="post-date">
-          {{ page.date | date: "%Y年%m月%d日" }}
-        </div>
+      <div class="post-date">
+        {{ page.date | date: "%Y年%m月%d日" }}
+      </div>
       {% endif %}
-    </div>
 
-    <!-- 記事本文をカード風に -->
-    <div class="post-content">
-      {{ content }}
-    </div>
+      <!-- 記事本文 -->
+      <div class="post-content">
+        {{ content }}
+      </div>
 
-    <!-- 記事末尾のナビゲーション例（任意） -->
-    <div class="post-nav">
-      <a href="{{ '/blog.html' | relative_url }}">← ブログ一覧に戻る</a>
-      <!-- 次の記事 / 前の記事リンクなど作る場合はここに書く -->
+      <!-- 記事末尾のナビゲーション例 -->
+      <div class="post-nav">
+        <a href="{{ '/blog.html' | relative_url }}">← ブログ一覧に戻る</a>
+      </div>
     </div>
   </main>
 
@@ -290,9 +374,9 @@
     <p>© 2025 toapd2022. All Rights Reserved.</p>
   </footer>
 
-  <!-- JS（必要ならハンバーガーや多言語切り替えなど） -->
+  <!-- JS（ハンバーガーメニュー + フェードイン） -->
   <script>
-    // ハンバーガーメニュー(任意)
+    // ハンバーガーメニュー
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const nav = document.querySelector('header nav');
     hamburgerBtn.addEventListener('click', () => {
@@ -302,13 +386,26 @@
         nav.style.display = 'none';
       }
     });
+    // 画面のどこかをクリックしたらメニューを閉じる
     document.addEventListener('click', (e) => {
       if (window.innerWidth <= 900 && nav.style.display === 'block') {
-        if (!nav.contains(e.target) && e.target !== hamburgerBtn) {
+        if (!nav.contains(e.target) && e.target !== hamburgerBtn && !hamburgerBtn.contains(e.target)) {
           nav.style.display = 'none';
         }
       }
     });
+
+    // Intersection Observerによるフェードイン
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const fadeInElement = document.getElementById('postCard');
+    if(fadeInElement) observer.observe(fadeInElement);
   </script>
 </body>
 </html>
