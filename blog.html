@@ -1,5 +1,5 @@
 ---
-layout:  default
+layout: default
 title: "ブログ一覧"
 permalink: /blog.html
 ---
@@ -8,14 +8,31 @@ permalink: /blog.html
   <h1>ブログ一覧</h1>
 
   {% if site.posts.size > 0 %}
-    <ul>
+    <div class="blog-cards">
       {% for post in site.posts %}
-        <li>
-          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-        </li>
+        <article class="blog-card">
+          <!-- タイトル -->
+          <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+          <!-- 日付表示したければ: 
+               <p class="blog-date">{{ post.date | date: "%Y年%m月%d日" }}</p> 
+            など追記もOK -->
+
+          <!-- 抜粋（excerpt）があれば一部表示 -->
+          <p class="blog-excerpt">
+            {{ post.excerpt | strip_html | truncate: 100 }}
+          </p>
+
+          <!-- もっとみるボタン -->
+          <a href="{{ post.url | relative_url }}" class="read-more">もっとみる &raquo;</a>
+        </article>
       {% endfor %}
-    </ul>
+    </div>
   {% else %}
     <p>まだ記事がありません。</p>
   {% endif %}
+
+  <!-- トップページに戻るボタン -->
+  <div class="back-to-top">
+    <a href="{{ '/' | relative_url }}">トップページに戻る</a>
+  </div>
 </main>
