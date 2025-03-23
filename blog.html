@@ -15,31 +15,66 @@ permalink: /blog.html
   <link rel="apple-touch-icon" href="{{ '/icons/top-logo.png' | relative_url }}" />
 
   <style>
-    /* =========================
-       1) ベーススタイル
-       ========================= */
+    /********************************
+     * 全体ベース
+     ********************************/
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
     body {
-      font-family: sans-serif, Arial, "Hiragino Kaku Gothic ProN", Meiryo;
+      font-family: sans-serif, Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
       background: linear-gradient(45deg, #FFEFEF, #E7EFFF, #EFFFFB, #F7FCE8);
       background-size: 300% 300%;
-      animation: bgAnimation 15s ease infinite;
       color: #333;
       line-height: 1.6;
-      /* ▼▼▼ フェードイン用に追加 ▼▼▼ */
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      overflow-x: hidden;
+      animation: bgAnimation 15s ease infinite;
+      position: relative;
     }
     @keyframes bgAnimation {
       0%   { background-position: 0% 50%; }
       50%  { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+
+    /* body背景用のふわふわ円アニメ */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -80px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+      animation: floatCircle 20s linear infinite alternate;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+      animation: floatCircle2 30s linear infinite alternate;
+    }
+    @keyframes floatCircle {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(60vw, 40vh) scale(1.2); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+    @keyframes floatCircle2 {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(-40vw, -30vh) scale(1.1); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
     a {
       color: #333;
       text-decoration: none;
@@ -49,44 +84,14 @@ permalink: /blog.html
       color: #666;
     }
 
-    /* 背景ふわふわ円アニメ */
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      width: 300px; 
-      height: 300px;
-      border-radius: 50%;
-      z-index: -1;
-      opacity: 0.3;
-    }
-    body::before {
-      top: -80px; left: -80px;
-      background: radial-gradient(circle, #fff 0%, transparent 70%);
-      animation: floatCircle 20s linear infinite alternate;
-    }
-    body::after {
-      bottom: -100px; right: -100px;
-      background: radial-gradient(circle, #fff 0%, transparent 70%);
-      animation: floatCircle2 30s linear infinite alternate;
-    }
-    @keyframes floatCircle {
-      0%   { transform: translate(0,0) scale(1); }
-      50%  { transform: translate(60vw, 40vh) scale(1.2); }
-      100% { transform: translate(0,0) scale(1); }
-    }
-    @keyframes floatCircle2 {
-      0%   { transform: translate(0,0) scale(1); }
-      50%  { transform: translate(-40vw, -30vh) scale(1.1); }
-      100% { transform: translate(0,0) scale(1); }
-    }
-
-    /* =========================
-       2) ヘッダー
-       ========================= */
+    /********************************
+     * ヘッダー
+     ********************************/
     header {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 60px;
       display: flex;
       align-items: center;
@@ -96,83 +101,157 @@ permalink: /blog.html
       border-bottom: 1px solid #eee;
       z-index: 999;
     }
-    .logo {
-      margin-right: auto;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      gap: 1rem;
     }
     .logo img {
-      height: 40px;
       margin-top: 8px;
+      height: 40px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
     }
     nav ul {
       display: flex;
       list-style: none;
       gap: 1.5rem;
-      margin: 0; padding: 0;
+      justify-content: flex-end;
+      margin: 0;
+      padding: 0;
+    }
+    nav li {
+      cursor: pointer;
+      font-weight: 500;
     }
     nav li a {
       position: relative;
-      font-weight: 500;
-      padding: 0.5rem 0;
+      padding: 0.5rem 0 4px 0;
     }
     nav li a::after {
       content: "";
       position: absolute;
-      left: 0; bottom: 0;
-      width: 0%; height: 2px;
-      background: orange;
-      transition: 0.3s ease;
+      left: 0;
+      bottom: 0;
+      width: 0%;
+      height: 2px;
+      background-color: orange;
+      transition: width 0.3s ease;
     }
     nav li a:hover::after {
       width: 100%;
     }
+
+    /********************************
+     * ハンバーガーボタン（スマホ専用）
+     ********************************/
     .hamburger {
       display: none;
       flex-direction: column;
+      justify-content: center;
       gap: 4px;
       background: transparent;
       border: none;
       cursor: pointer;
     }
     .hamburger span {
-      width: 25px; height: 3px; background: #333; border-radius: 2px;
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: #333;
+      border-radius: 2px;
     }
-    @media (max-width: 900px) {
-      .hamburger { display: flex; }
+    @media screen and (max-width: 900px) {
+      .hamburger {
+        display: flex; /* ハンバーガーボタンを表示 */
+      }
       nav {
-        position: absolute; 
-        top: 60px; 
+        position: absolute;
+        top: 60px;
         right: 20px;
         background: rgba(255,255,255,0.95);
         backdrop-filter: blur(6px);
-        border-radius: 6px; 
         border: 1px solid #eee;
-        padding: 1rem; 
+        padding: 1rem;
+        border-radius: 6px;
         display: none;
-        flex-direction: column; 
+        flex-direction: column;
         gap: 1rem;
       }
-      nav ul { flex-direction: column; gap: 1rem; }
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav li {
+        text-align: right;
+      }
     }
 
-    /* =========================
-       3) メイン
-       ========================= */
+    /********************************
+     * メインコンテンツ
+     ********************************/
     main {
+      width: 90%;
+      max-width: 900px;
       margin: 0 auto;
       padding: 4rem 1rem;
-      margin-top: 60px; /* ヘッダー分 */
-      max-width: 920px;
-    }
-    h1.page-title {
-      font-size: 2rem;
-      margin-bottom: 2rem;
-      text-align: center;
+      margin-top: 60px; /* ヘッダー分のスペース */
     }
 
-    /* =========================
-       4) ブログ一覧 (PC2列, SP1列)
-       参考: index.html -> #blog
-       ========================= */
+    /* fade-inアニメ用 */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+    .fade-in.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* カード風背景 */
+    .post-card {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(4px);
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+
+    /* 共通タイトル風 */
+    .post-title {
+      font-size: 1.8rem;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+      color: #333;
+      position: relative;
+      display: inline-block;
+      padding-bottom: 0.5rem;
+    }
+    .post-title::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 60px;
+      height: 2px;
+      background-color: #ffcc00;
+    }
+
+    /********************************
+     * ブログ一覧用スタイル
+     ********************************/
+    /* 一覧をカード内にレイアウト */
     .blog-list {
       display: grid;
       grid-template-columns: 1fr 1fr; /* PCで2列 */
@@ -189,9 +268,8 @@ permalink: /blog.html
       backdrop-filter: blur(6px);
       padding: 1rem;
       border-radius: 6px;
-      transition: background 0.3s ease;
+      transition: background 0.3s ease, transform 0.3s ease;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease;
     }
     .blog-item:hover {
       background: rgba(255,255,255,0.6);
@@ -206,7 +284,6 @@ permalink: /blog.html
       font-size: 0.9rem;
       line-height: 1.6;
     }
-    /* サムネイル(16:9) */
     .blog-thumbnail {
       margin: 0.5rem 0;
     }
@@ -236,9 +313,9 @@ permalink: /blog.html
       background: #ffd933;
     }
 
-    /* =========================
-       ページネーション
-       ========================= */
+    /********************************
+     * ページネーション
+     ********************************/
     .pagination {
       text-align: center;
       margin: 2rem auto 0;
@@ -267,27 +344,9 @@ permalink: /blog.html
       font-weight: bold;
     }
 
-    /* =========================
-       フッター
-       ========================= */
-    .footer-nav {
-      margin-top: 3rem;
-      text-align: center;
-    }
-    .footer-nav a {
-      display: inline-block;
-      margin: 0.2rem;
-      padding: 0.5rem 1rem;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      text-decoration: none;
-      color: #333;
-      transition: background 0.3s ease;
-    }
-    .footer-nav a:hover {
-      background: #f0f0f0;
-    }
+    /********************************
+     * フッター
+     ********************************/
     footer {
       text-align: center;
       padding: 2rem;
@@ -296,32 +355,46 @@ permalink: /blog.html
       margin-top: 2rem;
     }
     footer p {
-      color: #666;
       font-size: 0.9rem;
+      color: #666;
     }
 
-    /* =========================
-       フェードイン用追加クラス
-       ========================= */
-    body.page-loaded {
-      opacity: 1;
-      transform: translateY(0);
+    /* 記事末尾などの戻るボタン兼用 */
+    .post-nav {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .post-nav a {
+      display: inline-block;
+      margin: 0.2rem;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      color: #333;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    .post-nav a:hover {
+      background: #f0f0f0;
     }
   </style>
 </head>
 <body>
   <!-- ヘッダー -->
   <header>
-    <div class="logo">
-      <!-- ロゴをクリックでトップページへ -->
-      <a href="{{ '/' | relative_url }}">
-        <img src="{{ '/icons/logo.png' | relative_url }}" alt="toapd2022">
-      </a>
+    <div class="header-left">
+      <!-- ロゴ（クリックでトップページへ） -->
+      <div class="logo">
+        <a href="{{ '/' | relative_url }}">
+          <img src="{{ '/icons/logo.png' | relative_url }}" alt="toapd2022">
+        </a>
+      </div>
     </div>
     <div class="header-right">
       <nav>
         <ul>
-          <!-- トップページのみ -->
+          <!-- トップページリンクなど -->
           <li><a href="{{ '/' | relative_url }}">トップ</a></li>
         </ul>
       </nav>
@@ -333,48 +406,55 @@ permalink: /blog.html
     </div>
   </header>
 
-  <!-- メイン -->
+  <!-- メインコンテンツ -->
   <main>
-    <h1 class="page-title">{{ page.title }}</h1>
+    <!-- カード風コンテナ + フェードイン -->
+    <div class="post-card fade-in" id="blogCard">
+      <!-- ページタイトル -->
+      <h1 class="post-title">{{ page.title }}</h1>
 
-    {% if site.posts.size > 0 %}
-      <div class="blog-list" id="blogList">
-        {% for post in site.posts %}
-        <article class="blog-item">
-          <h3>
-            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-          </h3>
-          <p style="color:#666; font-size:0.85rem;">
-            投稿日: {{ post.date | date: "%Y-%m-%d" }}
-          </p>
+      {% if site.posts.size > 0 %}
+        <div class="blog-list" id="blogList">
+          {% for post in site.posts %}
+          <article class="blog-item">
+            <h3>
+              <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+            </h3>
+            <p style="color:#666; font-size:0.85rem;">
+              投稿日: {{ post.date | date: "%Y-%m-%d" }}
+            </p>
 
-          {% if post.thumbnail %}
-            <div class="blog-thumbnail">
-              <img src="{{ post.thumbnail | relative_url }}" alt="{{ post.title }}">
-            </div>
-          {% else %}
-            <!-- サムネ無い場合 -->
-            <div class="blog-thumbnail">
-              <img src="{{ '/icons/tv1.png' | relative_url }}" alt="{{ post.title }}">
-            </div>
-          {% endif %}
+            {% if post.thumbnail %}
+              <div class="blog-thumbnail">
+                <img src="{{ post.thumbnail | relative_url }}" alt="{{ post.title }}">
+              </div>
+            {% else %}
+              <!-- サムネが無い場合のデフォルト画像 -->
+              <div class="blog-thumbnail">
+                <img src="{{ '/icons/tv1.png' | relative_url }}" alt="{{ post.title }}">
+              </div>
+            {% endif %}
 
-          <p>
-            {{ post.excerpt | strip_html }} ...
-          </p>
-          <p style="text-align: right; margin-top: 1rem;">
-            <a href="{{ post.url | relative_url }}" class="btn-readmore">続きを読む</a>
-          </p>
-        </article>
-        {% endfor %}
+            <p>
+              {{ post.excerpt | strip_html }} ...
+            </p>
+            <p style="text-align: right; margin-top: 1rem;">
+              <a href="{{ post.url | relative_url }}" class="btn-readmore">続きを読む</a>
+            </p>
+          </article>
+          {% endfor %}
+        </div>
+
+        <!-- ページネーション -->
+        <div class="pagination" id="pagination"></div>
+      {% else %}
+        <p>まだ記事がありません。</p>
+      {% endif %}
+
+      <!-- 一覧下部の戻る例 -->
+      <div class="post-nav">
+        <a href="{{ '/' | relative_url }}">← トップページに戻る</a>
       </div>
-      <div class="pagination" id="pagination"></div>
-    {% else %}
-      <p>まだ記事がありません。</p>
-    {% endif %}
-
-    <div class="footer-nav">
-      <a href="{{ '/' | relative_url }}">トップページに戻る</a>
     </div>
   </main>
 
@@ -383,7 +463,7 @@ permalink: /blog.html
     <p>© 2025 toapd2022. All Rights Reserved.</p>
   </footer>
 
-  <!-- ハンバーガー + ページネーションJS -->
+  <!-- ハンバーガーメニュー + フェードイン + ページネーションJS -->
   <script>
     // ハンバーガーメニュー
     const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -395,20 +475,33 @@ permalink: /blog.html
         nav.style.display = 'none';
       }
     });
+    // 画面のどこかをクリックしたらメニューを閉じる
     document.addEventListener('click', (e) => {
       if (window.innerWidth <= 900 && nav.style.display === 'block') {
-        if (!nav.contains(e.target) && e.target !== hamburgerBtn) {
+        if (!nav.contains(e.target) && e.target !== hamburgerBtn && !hamburgerBtn.contains(e.target)) {
           nav.style.display = 'none';
         }
       }
     });
 
+    // Intersection Observer によるフェードイン
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const fadeInTarget = document.getElementById('blogCard');
+    if (fadeInTarget) observer.observe(fadeInTarget);
+
     // ページネーション
     const blogList = document.getElementById('blogList');
-    if (blogList) {
-      const blogItems = Array.from(blogList.querySelectorAll('.blog-item'));
-      const paginationContainer = document.getElementById('pagination');
+    const paginationContainer = document.getElementById('pagination');
 
+    if (blogList && paginationContainer) {
+      const blogItems = Array.from(blogList.querySelectorAll('.blog-item'));
       const postsPerPage = 5;
       let currentPage = 1;
       const totalPosts = blogItems.length;
@@ -462,14 +555,10 @@ permalink: /blog.html
           paginationContainer.appendChild(nextBtn);
         }
       }
-      // 初期ページ
+
+      // 初期表示
       showPage(1);
     }
-
-    // ▼▼▼ ページ読み込み時にフェードインさせる ▼▼▼
-    document.addEventListener('DOMContentLoaded', () => {
-      document.body.classList.add('page-loaded');
-    });
   </script>
 </body>
 </html>
