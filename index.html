@@ -835,7 +835,13 @@ layout: none
       border-radius: 4px;
       display: block;
     }
-
+    #blog {
+  background-color: #f7f7f7; /* 薄いグレー背景 */
+  border-top: 2px solid #ccc;
+  border-bottom: 2px solid #ccc;
+  padding: 2rem 0;          /* セクション内の上下余白を広めに */
+  /* margin-bottom: 2rem;   // 下との距離をさらに空けたい場合は追加 */
+}
     /********************************
      * メディア出演
      ********************************/
@@ -1056,7 +1062,7 @@ layout: none
   display: inline-block;
   padding: 0.5rem 1.0rem; /* 大きさを個別設定 */
   font-size: 1rem;        /* こちらは標準くらい */
-  border-radius: 9999px;
+  border-radius: 0px;
   background: #00AAFF;    /* 背景色も従来通り */
   color: #fff;
   text-decoration: none;
