@@ -410,6 +410,7 @@ layout: none
       align-items: center;
       text-align: center;
       padding: 1rem;
+      margin-bottom: 7rem;
     }
     .mobile-hero-logo {
       width: 200px;
@@ -1018,7 +1019,9 @@ layout: none
     <!-- 左側：ロゴのみ -->
     <div class="header-left">
       <div class="logo">
+      <a href="#" id="logoLink">
         <img src="icons/logo.png" alt="toapd2022">
+      </a>
       </div>
     </div>
 
@@ -1026,7 +1029,7 @@ layout: none
     <div class="header-right">
       <nav>
         <ul>
-          <li><a href="#hero" id="navHome"></a></li>
+          <li><a href="#" id="navHome"></a></li>
           <li><a href="#greeting" id="navGreeting"></a></li>
           <li><a href="#works" id="navWorks"></a></li>
           <li><a href="#sns" id="navSNS"></a></li>
@@ -1093,12 +1096,8 @@ layout: none
       </div>
       <div class="mobile-hero-content">
         <img src="icons/logo.png" alt="toapd2022" class="mobile-hero-logo">
-        <p>
-          防災行政無線や放送設備に魅了され<br>
-          ドローンによる映像制作など幅広く活動しています。<br>
-          <br><br>
-        </p>
-      </div>
+        <p id="mobileHeroSubtitle"></p>
+      </div>        
     </div>
   </div>
 
@@ -1307,17 +1306,24 @@ layout: none
   <section id="contact" class="fade-in">
     <h2 class="fade-in-left" id="sectionContactTitle"></h2>
     <p class="fade-in" id="sectionContactIntro"></p>
-    <div class="contact-form fade-in-up">
+
+    <form
+      class="contact-form fade-in-up"
+      id="contactForm"
+    >
       <label for="name" id="contactLabelName"></label>
-      <input type="text" id="name" placeholder="" required />
+      <input type="text" id="name" name="name" placeholder="" required />
 
       <label for="email" id="contactLabelEmail"></label>
-      <input type="email" id="email" placeholder="" required />
+      <input type="email" id="email" name="email" placeholder="" required />
 
       <label for="message" id="contactLabelMessage"></label>
-      <textarea id="message" rows="5" placeholder=""></textarea>
+      <textarea id="message" name="message" rows="5" placeholder=""></textarea>
 
       <button type="submit" id="contactSubmitBtn"></button>
+    </form>
+    <div id="resultMessage"
+    style="display: none; margin-top: 1rem; border: 1px solid #ddd; padding: 1rem;">
     </div>
   </section>
 
@@ -1326,6 +1332,7 @@ layout: none
     <p id="footerText"></p>
   </footer>
 
+
   <!-- =========================
        JS（自動スライド + ハンバーガーメニュー + 多言語対応 ほか）
   ========================== -->
@@ -1333,7 +1340,7 @@ layout: none
     /********************************
      * 1) 多言語テキスト定義
      ********************************/
-    const translations = {
+     const translations = {
       ja: {
         langSwitchBtn: "言語切り替え",
         navHome: "ホーム",
@@ -1345,6 +1352,9 @@ layout: none
         navHistory: "自分史",
         navContact: "お問い合わせ",
         heroSubtitle: "防災行政無線や放送設備に魅了され<br>ドローンによる映像制作など幅広く活動しています。",
+        // ★ 追加: PC版 heroSubtitle と同じ文字列をコピー
+        mobileHeroSubtitle: "防災行政無線や放送設備に魅了され<br>ドローンによる映像制作など幅広く活動しています。",
+        
         sectionGreetingTitle: "ご挨拶",
         sectionGreetingText:
           `<p>幼少期より放送設備の世界に魅了され、防災無線や屋外拡声子局、校内放送などを収集・研究してきました。</p>
@@ -1445,6 +1455,9 @@ layout: none
         navHistory: "History",
         navContact: "Contact",
         heroSubtitle: "Fascinated by disaster prevention radio systems and broadcast equipment, also involved in drone video production and more.",
+        // ★ 追加: PC版 heroSubtitle と同じ文字列をコピー
+        mobileHeroSubtitle: "Fascinated by disaster prevention radio systems and broadcast equipment, also involved in drone video production and more.",
+        
         sectionGreetingTitle: "Greeting",
         sectionGreetingText:
           `<p>Since childhood, I've been captivated by the world of broadcast equipment, collecting and researching systems like disaster prevention radios, outdoor PA, and school broadcasting setups.</p>
@@ -1542,6 +1555,9 @@ layout: none
         navHistory: "个人历程",
         navContact: "联系我们",
         heroSubtitle: "对防灾行政无线电和广播设备充满热情，并从事无人机影像制作等多方面活动。",
+        // ★ 追加: PC版 heroSubtitle と同じ文字列をコピー
+        mobileHeroSubtitle: "对防灾行政无线电和广播设备充满热情，并从事无人机影像制作等多方面活动。",
+        
         sectionGreetingTitle: "问候",
         sectionGreetingText:
           `<p>从童年开始就对广播设备充满兴趣，收集并研究了防灾无线电、室外扩音系统、校内广播等。</p>
@@ -1915,6 +1931,56 @@ layout: none
       // 画面幅に応じてPC版 or スマホ版を自動再生
       checkScreenSize();
     });
+
+/***********************************************
+ * フォーム送信を fetch() で行う処理
+ ***********************************************/
+ const GAS_ENDPOINT =
+  "https://script.google.com/macros/s/AKfycbxaCCnu0Vf_aD0j4PHv0aMY_UCFt8G7QO8qcIn7yOjnhqk9PNGWrDP3hvDj_StaQGMWng/exec";
+
+const form      = document.getElementById('contactForm');
+const resultDiv = document.getElementById('resultMessage');
+const submitBtn = document.getElementById('contactSubmitBtn');
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault(); // ページ遷移を止める
+
+  // 入力値を取得
+  const nameValue    = document.getElementById('name').value.trim();
+  const emailValue   = document.getElementById('email').value.trim();
+  const messageValue = document.getElementById('message').value.trim();
+
+  // URLエンコード形式で送る
+  const params = new URLSearchParams();
+  params.append('name',    nameValue);
+  params.append('email',   emailValue);
+  params.append('message', messageValue);
+
+  // 連打防止
+  submitBtn.disabled = true;
+  submitBtn.textContent = "送信中...";
+
+  fetch(GAS_ENDPOINT, {
+    method: "POST",
+    body: params
+  })
+  .then(response => response.text())
+  .then(text => {
+    // 成功時
+    resultDiv.style.display = "block";
+    resultDiv.textContent = text;
+    form.reset();
+    submitBtn.disabled = false;
+    submitBtn.textContent = "送信";
+  })
+  .catch(error => {
+    // エラー時
+    resultDiv.style.display = "block";
+    resultDiv.textContent = "エラーが発生しました: " + error;
+    submitBtn.disabled = false;
+    submitBtn.textContent = "送信";
+  });
+});
   </script>
 </body>
 </html>
