@@ -1,7 +1,3 @@
----
-layout: none
----
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -272,12 +268,17 @@ layout: none
       }
     }
 
+    /* ★修正：画像が読み込み終わるまで非表示にし、ロード後にフェードイン */
     .hero-slides {
       display: flex;
       width: 100%;
       height: 100%;
-      transition: transform 0.8s ease;
+      /* ここに追加: 初期は非表示に */
+      opacity: 0;
+      transition: opacity 0.5s ease; /* ロード完了後にふわっと表示 */
+      transform: translateX(0);      /* 初期位置 */
     }
+
     .hero-slide {
       flex: 0 0 100%;
       background-size: cover;
@@ -388,12 +389,16 @@ layout: none
       display: flex;
       flex-direction: column;
     }
+
+    /* ★修正：同様に初期 opacity:0 */
     .mobile-hero-slides {
       flex: 2;
       width: 100%;
       position: relative;
       display: flex;
       transition: transform 0.8s ease;
+      opacity: 0;               /* ここで非表示に */
+      transition: opacity 0.5s ease, transform 0.8s ease;
     }
     .mobile-hero-slide {
       flex: 0 0 100%;
@@ -1047,10 +1052,10 @@ layout: none
 /* 「続きを読む」ボタン - 小さめにする例 */
 .btn-readmore {
   display: inline-block;
-  padding: 0.4rem 1rem;  /* 上下0.4rem / 左右1rem など 少し小さめ */
-  font-size: 0.9rem;     /* 文字サイズも小さめ */
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
   border-radius: 9999px;
-  background: #ffcc00;   /* 背景色は従来通り */
+  background: #ffcc00;
   color: #333;
   text-decoration: none;
   font-weight: bold;
@@ -1059,16 +1064,16 @@ layout: none
 }
 .btn-readmore:hover {
   transform: translateY(-2px);
-  background: #ffd933;   /* ホバー時の色 */
+  background: #ffd933;
 }
 
-/* 「すべての記事を見る」ボタン - 従来どおり、またはお好みで調整 */
+/* 「すべての記事を見る」ボタン */
 .btn-all-posts {
   display: inline-block;
-  padding: 0.5rem 1.0rem; /* 大きさを個別設定 */
-  font-size: 1rem;        /* こちらは標準くらい */
+  padding: 0.5rem 1.0rem;
+  font-size: 1rem;
   border-radius: 0px;
-  background: #00AAFF;    /* 背景色も従来通り */
+  background: #00AAFF;
   color: #fff;
   text-decoration: none;
   font-weight: bold;
@@ -1077,7 +1082,7 @@ layout: none
 }
 .btn-all-posts:hover {
   transform: translateY(-2px);
-  background: #00ceff;    /* ホバー時の色 */
+  background: #00ceff;
 }
 
 
@@ -1095,7 +1100,6 @@ layout: none
 
     /********************************
      * Fix link style for blog title & readmore
-     * （青文字と下線を外す）
      ********************************/
     .blog-item h3 a {
       color: #333 !important;
@@ -1121,9 +1125,9 @@ layout: none
     <!-- 左側：ロゴのみ -->
     <div class="header-left">
       <div class="logo">
-      <a href="#" id="logoLink">
-        <img src="icons/logo.png" alt="toapd2022">
-      </a>
+        <a href="#" id="logoLink">
+          <img src="icons/logo.png" alt="toapd2022">
+        </a>
       </div>
     </div>
 
@@ -1304,7 +1308,6 @@ layout: none
             <p style="text-align: right;">
               <a href="{{ post.url | relative_url }}" class="btn-readmore">
                 続きを読む
-
               </a>
             </p>
           </article>
@@ -1835,8 +1838,14 @@ layout: none
     let originalSlides = [];
     let allSlides = [];
 
+    // ★ 連打対策フラグを追加
+    let isTransitioning = false;
+
     function goToSlide(index) {
-      if (!heroSlides) return;
+      // 連打対策：transition中は処理しない
+      if (!heroSlides || isTransitioning) return;
+      isTransitioning = true;
+
       heroSlides.style.transition = 'transform 0.8s ease';
       currentIndex = index;
       heroSlides.style.transform = `translateX(-${currentIndex * 100}%)`;
@@ -1891,6 +1900,8 @@ layout: none
           currentIndex = allSlides.length - 2;
           heroSlides.style.transform = `translateX(-${currentIndex * 100}%)`;
         }
+        // ★ トランジション終了でフラグオフ
+        isTransitioning = false;
       });
 
       // 矢印
@@ -1920,8 +1931,13 @@ layout: none
     let mobileOriginalSlides = [];
     let allSlides_m = [];
 
+    // ★ 連打対策フラグ（スマホ用）
+    let isTransitioning_m = false;
+
     function goToSlide_m(index) {
-      if (!mobileHeroSlides) return;
+      if (!mobileHeroSlides || isTransitioning_m) return;
+      isTransitioning_m = true;
+
       mobileHeroSlides.style.transition = 'transform 0.8s ease';
       currentIndex_m = index;
       mobileHeroSlides.style.transform = `translateX(-${currentIndex_m * 100}%)`;
@@ -1966,6 +1982,8 @@ layout: none
           currentIndex_m = allSlides_m.length - 2;
           mobileHeroSlides.style.transform = `translateX(-${currentIndex_m * 100}%)`;
         }
+        // ★ トランジション終了でスマホフラグオフ
+        isTransitioning_m = false;
       });
     }
 
@@ -2024,7 +2042,7 @@ layout: none
     applyTranslations("ja");
 
     /********************************
-     * 9) ページロード時のアニメ・自動再生
+     * 9) ページロード時のアニメ
      ********************************/
     window.addEventListener("DOMContentLoaded", () => {
       // PC版ヒーローアニメ
@@ -2038,13 +2056,25 @@ layout: none
       if (mobileHeroAnimationWrapper) {
         mobileHeroAnimationWrapper.classList.add("hero-fadein");
       }
+    });
 
-      // 画面幅に応じてPC版 or スマホ版を自動再生
+    /********************************
+     * 10) 画像ロード完了後にスライドを可視化
+     ********************************/
+    window.addEventListener("load", () => {
+      // 全ての画像がロードされたら、PC版/スマホ版スライドをフェードイン
+      if (heroSlides) {
+        heroSlides.style.opacity = "1";
+      }
+      if (mobileHeroSlides) {
+        mobileHeroSlides.style.opacity = "1";
+      }
+      // 画面幅に応じて自動再生開始
       checkScreenSize();
     });
 
     /***********************************************
-     * フォーム送信を fetch() で行う処理
+     * 11) フォーム送信を fetch() で行う処理
      ***********************************************/
      const GAS_ENDPOINT =
       "https://script.google.com/macros/s/AKfycbxaCCnu0Vf_aD0j4PHv0aMY_UCFt8G7QO8qcIn7yOjnhqk9PNGWrDP3hvDj_StaQGMWng/exec";
@@ -2092,6 +2122,64 @@ layout: none
         submitBtn.textContent = "送信";
       });
     });
+
+
+    /***********************************************
+     * 12) タブ移動 & スクロール対策
+     ***********************************************/
+
+    // ①PC/スマホ両方のスライドをまとめて停止・開始できるヘルパー
+    function stopAllSlides() {
+      stopHeroAutoPlay();
+      stopMobileAutoPlay();
+    }
+    function startAllSlides() {
+      checkScreenSize(); // 画面幅に応じてPCかスマホのスライドを開始
+    }
+
+    // --- A) タブが非アクティブになったら停止・再アクティブになったら再開 ---
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        // タブが非アクティブになった
+        stopAllSlides();
+      } else {
+        // タブに戻ってきた
+        startAllSlides();
+      }
+    });
+
+    // --- B) ヒーローセクションが画面外へ出たら停止・入ったら再開 (IntersectionObserver) ---
+    const heroSection = document.getElementById('hero');
+    const mobileHeroSection = document.querySelector('.mobile-hero');
+    const observerOptions = { threshold: 0.2 };
+
+    if (heroSection) {
+      const heroObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // 画面内に入った
+            startAllSlides();
+          } else {
+            // 画面外に出た
+            stopAllSlides();
+          }
+        });
+      }, observerOptions);
+      heroObserver.observe(heroSection);
+    }
+
+    if (mobileHeroSection) {
+      const mobileObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            startAllSlides();
+          } else {
+            stopAllSlides();
+          }
+        });
+      }, observerOptions);
+      mobileObserver.observe(mobileHeroSection);
+    }
   </script>
 </body>
 </html>
