@@ -268,17 +268,12 @@
       }
     }
 
-    /* ★修正：画像が読み込み終わるまで非表示にし、ロード後にフェードイン */
     .hero-slides {
       display: flex;
       width: 100%;
       height: 100%;
-      /* ここに追加: 初期は非表示に */
-      opacity: 0;
-      transition: opacity 0.5s ease; /* ロード完了後にふわっと表示 */
-      transform: translateX(0);      /* 初期位置 */
+      transition: transform 0.8s ease;
     }
-
     .hero-slide {
       flex: 0 0 100%;
       background-size: cover;
@@ -389,16 +384,12 @@
       display: flex;
       flex-direction: column;
     }
-
-    /* ★修正：同様に初期 opacity:0 */
     .mobile-hero-slides {
       flex: 2;
       width: 100%;
       position: relative;
       display: flex;
       transition: transform 0.8s ease;
-      opacity: 0;               /* ここで非表示に */
-      transition: opacity 0.5s ease, transform 0.8s ease;
     }
     .mobile-hero-slide {
       flex: 0 0 100%;
@@ -2042,7 +2033,7 @@
     applyTranslations("ja");
 
     /********************************
-     * 9) ページロード時のアニメ
+     * 9) ページロード時のアニメ・自動再生開始
      ********************************/
     window.addEventListener("DOMContentLoaded", () => {
       // PC版ヒーローアニメ
@@ -2056,25 +2047,13 @@
       if (mobileHeroAnimationWrapper) {
         mobileHeroAnimationWrapper.classList.add("hero-fadein");
       }
-    });
 
-    /********************************
-     * 10) 画像ロード完了後にスライドを可視化
-     ********************************/
-    window.addEventListener("load", () => {
-      // 全ての画像がロードされたら、PC版/スマホ版スライドをフェードイン
-      if (heroSlides) {
-        heroSlides.style.opacity = "1";
-      }
-      if (mobileHeroSlides) {
-        mobileHeroSlides.style.opacity = "1";
-      }
-      // 画面幅に応じて自動再生開始
+      // 画面幅に応じてPC版 or スマホ版を自動再生
       checkScreenSize();
     });
 
     /***********************************************
-     * 11) フォーム送信を fetch() で行う処理
+     * 10) フォーム送信を fetch() で行う処理
      ***********************************************/
      const GAS_ENDPOINT =
       "https://script.google.com/macros/s/AKfycbxaCCnu0Vf_aD0j4PHv0aMY_UCFt8G7QO8qcIn7yOjnhqk9PNGWrDP3hvDj_StaQGMWng/exec";
@@ -2125,7 +2104,7 @@
 
 
     /***********************************************
-     * 12) タブ移動 & スクロール対策
+     * 11) タブ移動 & スクロール対策
      ***********************************************/
 
     // ①PC/スマホ両方のスライドをまとめて停止・開始できるヘルパー
