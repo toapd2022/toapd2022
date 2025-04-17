@@ -2,30 +2,31 @@ name: Build and Deploy Jekyll site
 
 on:
   push:
-    branches: [ main ]  # あなたのデフォルトブランチ名
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v3
 
-      - name: Set up Ruby
+      - name: Ruby をセットアップ
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.x'
+          ruby-version: "3.1.7"
 
-      - name: Install Bundler
+      - name: Bundler をインストール
         run: gem install bundler
 
-      - name: Install dependencies
+      - name: 依存をインストール
         run: bundle install
 
-      - name: Build site with Jekyll
+      - name: Jekyll サイトをビルド
         run: bundle exec jekyll build --destination public
 
-      - name: Deploy to GitHub Pages
+      - name: GitHub Pages にデプロイ
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
