@@ -24,6 +24,52 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
+        /* --- ここから追加・修正したCSS --- */
+
+        /* 背景シェイプの浮遊アニメーション */
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(15deg);
+            }
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+        }
+
+        /* 既存のスタイルにアニメーションを適用 */
+        .shape1 {
+            animation: float 15s ease-in-out infinite;
+        }
+        .shape2 {
+            animation: float 20s ease-in-out infinite reverse;
+        }
+
+        /* スクロールアニメーションの初期状態 */
+        .scroll-animation {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        /* 画面に表示されたときの状態 */
+        .scroll-animation.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 特徴セクションの各アイテムに時間差をつける */
+        .feature-item:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+        .feature-item:nth-child(3) {
+            transition-delay: 0.4s;
+        }
+
+        /* --- ここまで追加・修正したCSS --- */
+
         /* モーダルウィンドウのスタイル */
         .modal {
             display: none; /* 初期状態では非表示 */
@@ -125,17 +171,17 @@
 
         <section class="features">
             <div class="container">
-                <div class="feature-item">
+                <div class="feature-item scroll-animation">
                     <i class="fas fa-columns"></i>
                     <h3>直感的なダッシュボード</h3>
                     <p>時間割や締切が迫った課題が一目瞭然。毎日の学習計画をスムーズに立てられます。</p>
                 </div>
-                <div class="feature-item">
+                <div class="feature-item scroll-animation">
                     <i class="fas fa-archive"></i>
                     <h3>ファイル管理からの解放</h3>
                     <p>「あのノートどこだっけ？」は、もうありません。科目を選ぶだけで、関連ノートが瞬時に見つかります。</p>
                 </div>
-                <div class="feature-item">
+                <div class="feature-item scroll-animation">
                     <i class="fas fa-tasks"></i>
                     <h3>科目・課題の一元管理</h3>
                     <p>シラバス情報から講義資料フォルダまで紐づけ可能。Excelからの科目一括登録にも対応しています。</p>
@@ -144,9 +190,11 @@
         </section>
         <section class="preview">
             <div class="container">
-                <h2>あなたの学習を、あらゆる面からサポート</h2>
-                <p>Digital Campusは、あなたの「知りたい」「まとめたい」に応える多彩な機能を搭載しています。</p>
-                <div class="preview-content">
+                <div class="scroll-animation">
+                    <h2>あなたの学習を、あらゆる面からサポート</h2>
+                    <p>Digital Campusは、あなたの「知りたい」「まとめたい」に応える多彩な機能を搭載しています。</p>
+                </div>
+                <div class="preview-content scroll-animation">
                     <img src="images/noteeditor.png" alt="ノート編集画面">
                     <div class="text-content">
                         <h3>講義ノートを、もっと自由に</h3>
@@ -157,9 +205,9 @@
         </section>
         <section class="requirements">
             <div class="container">
-                <h2>システム要件</h2>
+                <h2 class="scroll-animation">システム要件</h2>
                 <div class="os-requirements">
-                    <div class="os-item">
+                    <div class="os-item scroll-animation">
                         <i class="fab fa-windows"></i>
                         <h4>Windows</h4>
                         <ul>
@@ -167,7 +215,7 @@
                             <li>Windows 10</li>
                         </ul>
                     </div>
-                    <div class="os-item">
+                    <div class="os-item scroll-animation">
                         <i class="fab fa-apple"></i>
                         <h4>macOS</h4>
                         <ul>
@@ -271,6 +319,36 @@
                 submitBtn.click(); // 認証ボタンのクリックイベントを発火
             }
         });
+
+        // --- ここから追加したJavaScript ---
+
+        // スクロールアニメーションのロジック
+        const scrollAnimationTargets = document.querySelectorAll('.scroll-animation');
+
+        const observerCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                // entry.isIntersecting が true なら画面内に入ったと判定
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // 一度表示されたら、監視を停止してパフォーマンスを向上
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+
+        const observerOptions = {
+            root: null, // ビューポートを基準にする
+            rootMargin: '0px',
+            threshold: 0.1 // 対象が10%見えたらトリガー
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        scrollAnimationTargets.forEach(target => {
+            observer.observe(target);
+        });
+        // --- ここまで追加したJavaScript ---
+
     </script>
 </body>
 </html>
