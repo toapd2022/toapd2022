@@ -22,6 +22,65 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* モーダルウィンドウのスタイル */
+        .modal {
+            display: none; /* 初期状態では非表示 */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* 背景を少し暗くする */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        }
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-btn:hover {
+            color: black;
+        }
+        #password-input {
+            width: 80%;
+            padding: 12px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        .error-text {
+            color: red;
+            display: none; /* 初期状態では非表示 */
+            margin-top: 10px;
+        }
+        /* ダウンロード中メッセージのスタイル */
+        #download-indicator {
+            display: none;
+            margin-top: 15px;
+            color: #1a73e8;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
@@ -52,6 +111,8 @@
                             <i class="fab fa-apple"></i> Mac版
                         </button>
                     </div>
+
+                    <p id="download-indicator">ダウンロードを開始しました...</p>
 
                     <p class="version-info">有料版</p>
                 </div>
@@ -118,6 +179,17 @@
         </section>
     </main>
 
+    <div id="password-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>パスワードを入力してください</h3>
+            <p>ファイルをダウンロードするにはパスワードの入力が必要です。</p>
+            <input type="password" id="password-input" placeholder="Password">
+            <button id="password-submit-btn" class="btn">認証</button>
+            <p id="error-message" class="error-text"></p>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
             <p>&copy; 2025 Narita Hiro All Rights Reserved.</p>
@@ -125,17 +197,79 @@
     </footer>
 
     <script>
-        // 頂いた正しいURLに修正しました
+        // --- モーダルとボタン要素の取得 ---
+        const modal = document.getElementById('password-modal');
+        const closeBtn = document.querySelector('.close-btn');
+        const submitBtn = document.getElementById('password-submit-btn');
+        const passwordInput = document.getElementById('password-input');
+        const errorMessage = document.getElementById('error-message');
+        const downloadIndicator = document.getElementById('download-indicator');
+        const winDownloadBtn = document.getElementById('win-download-btn');
+        const macDownloadBtn = document.getElementById('mac-download-btn');
+
+        // --- ダウンロードファイルのURL ---
         const windowsFile = "https://github.com/toapd2022/toapd2022/releases/download/V0.15/win__.zip";
         const macFile = "https://github.com/toapd2022/toapd2022/releases/download/V0.15/mac__.zip";
+        
+        // --- ダウンロード対象のURLを一時的に保存する変数 ---
+        let targetFileUrl = '';
 
-        // ボタンがクリックされたら、指定したファイルのダウンロードを開始する
-        document.getElementById('win-download-btn').addEventListener('click', () => {
-            window.location.href = windowsFile;
+        // --- モーダルを開く関数 ---
+        const openModal = (fileUrl) => {
+            targetFileUrl = fileUrl; // ダウンロードしたいファイルのURLをセット
+            passwordInput.value = ''; // 入力欄をクリア
+            errorMessage.style.display = 'none'; // エラーメッセージを非表示に
+            modal.style.display = 'block'; // モーダルを表示
+        };
+
+        // --- モーダルを閉じる関数 ---
+        const closeModal = () => {
+            modal.style.display = 'none';
+        };
+
+        // --- ダウンロードボタンのクリックイベント ---
+        winDownloadBtn.addEventListener('click', () => {
+            openModal(windowsFile);
         });
 
-        document.getElementById('mac-download-btn').addEventListener('click', () => {
-            window.location.href = macFile;
+        macDownloadBtn.addEventListener('click', () => {
+            openModal(macFile);
+        });
+
+        // --- モーダルを閉じる操作のイベント ---
+        closeBtn.addEventListener('click', closeModal); // 閉じるボタン
+        window.addEventListener('click', (event) => { // モーダル外のクリック
+            if (event.target == modal) {
+                closeModal();
+            }
+        });
+
+        // --- パスワード認証ボタンのクリックイベント ---
+        submitBtn.addEventListener('click', () => {
+            if (passwordInput.value === 'dc2025') {
+                // パスワードが正しい場合
+                closeModal(); // モーダルを閉じる
+                downloadIndicator.style.display = 'block'; // 「ダウンロード中」メッセージ表示
+                window.location.href = targetFileUrl; // ダウンロードを開始
+
+                // 5秒後にメッセージを非表示にする
+                setTimeout(() => {
+                    downloadIndicator.style.display = 'none';
+                }, 5000);
+            } else {
+                // パスワードが間違っている場合
+                errorMessage.textContent = 'パスワードが正しくありません。';
+                errorMessage.style.display = 'block'; // エラーメッセージ表示
+                passwordInput.value = ''; // 入力欄をクリア
+            }
+        });
+
+        // Enterキーでも認証できるようにする
+        passwordInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // デフォルトの送信動作をキャンセル
+                submitBtn.click(); // 認証ボタンのクリックイベントを発火
+            }
         });
     </script>
 </body>
