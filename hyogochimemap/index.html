@@ -144,18 +144,15 @@
     word-break: break-word;
   }
   tbody tr:hover { background: #fffdf0; }
-  thead th:nth-child(1) { width: 9%; }
-  thead th:nth-child(2) { width: 16%; }
-  thead th:nth-child(3) { width: 10%; }
+  thead th:nth-child(1) { width: 8%; }
+  thead th:nth-child(2) { width: 17%; }
+  thead th:nth-child(3) { width: 9%; }
   thead th:nth-child(4) { width: 7%; }
   thead th:nth-child(5) { width: 7%; }
   thead th:nth-child(6) { width: 12%; }
   thead th:nth-child(7) { width: 12%; }
   thead th:nth-child(8) { width: 9%; }
-  thead th:nth-child(9) { width: 18%; }
-  tbody td:nth-child(1) {
-    white-space: nowrap;
-  }
+  thead th:nth-child(9) { width: 19%; }
 
   /* Print-specific Styles */
   @media print {
@@ -164,7 +161,7 @@
       color: #000;
     }
     header,
-    .grid > section:first-child, /* Hide Map Card */
+    .grid > section:first-child,
     .toolbar,
     .notice,
     #tooltip {
@@ -175,7 +172,7 @@
       padding: 0;
     }
     .grid {
-      display: block; /* Remove grid layout for print */
+      display: block;
     }
     .card {
       box-shadow: none;
@@ -187,7 +184,7 @@
       border-bottom: 2px solid #000;
     }
     .result-header .badge, .result-header .muted {
-      display: none; /* Hide badge and status message on print */
+      display: none;
     }
     .result-header h3 {
       font-size: 14pt;
@@ -203,14 +200,14 @@
       border-collapse: collapse;
     }
     thead {
-      background-color: #eee !important; /* Ensure header background prints */
+      background-color: #eee !important;
     }
     th, td {
       border: 1px solid #888;
       padding: 4px 6px;
     }
     tbody tr {
-      page-break-inside: avoid; /* Avoid breaking a single row across pages */
+      page-break-inside: avoid;
     }
   }
 </style>
@@ -230,9 +227,6 @@
     <div class="card-body">
       <div class="map-wrap" id="mapWrap">
         <div class="map-placeholder">
-          <p>
-
-            
 <?xml version="1.0"?>
 <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="800" height="999" viewBox="0 0 800 999" stroke-linecap="round" stroke-linejoin="round">
 <g id="N03-20250101_28">
@@ -2404,10 +2398,6 @@
 <path d="M 82.2 41.88 82.19 41.88 82.19 41.87 82.18 41.87 82.19 41.86 82.21 41.86 82.2 41.87 82.2 41.88 Z" id="新温泉町"/>
 </g>
 </svg>
-
-
-
-          </p>
         </div>
       </div>
     </div>
@@ -2483,21 +2473,38 @@ async function loadData() {
   const header = rows[0].map(s => s.trim());
   const dataRows = rows.slice(1);
   const idx = (names) => header.findIndex(h => names.some(n => h.includes(n)));
-  const cols = { A: idx(["番号"]), B: idx(["市区町村"]), C: idx(["メーカー"]), D: idx(["運用方式"]), E: idx(["地域"]), F: idx(["時刻"]), G: idx(["時期"]), H: idx(["音種"]), I: idx(["曲名"]), J: idx(["備考"]) };
-  let lastCity = "";
+  const cols = {
+    A: idx(["番号"]), B: idx(["市区町村"]), C: idx(["メーカー"]), D: idx(["運用方式"]),
+    E: idx(["地域"]), F: idx(["時刻"]), G: idx(["時期"]), H: idx(["音種"]),
+    I: idx(["曲名"]), J: idx(["備考"])
+  };
+
+  let lastValues = {};
+  const colKeys = { B: 'city', C: 'maker', D: 'method', E: 'area', F: 'time', G: 'season', H: 'kind', I: 'title', J: 'note' };
+
   dataRows.forEach(r => {
     const pick = (i) => (i >= 0 && i < r.length ? (r[i]||"").trim() : "");
-    const cityInRow = pick(cols.B);
-    if (cityInRow) {
-      lastCity = cityInRow;
+    let rec = { number: pick(cols.A) };
+    
+    // Read current row values, filling down from lastValues if blank
+    for (const [col, key] of Object.entries(colKeys)) {
+      const val = pick(cols[col]);
+      rec[key] = val || (lastValues[key] || "");
+      if (val) {
+        lastValues[key] = val;
+      }
     }
-    const rec = {
-      number: pick(cols.A), city: lastCity, maker: pick(cols.C), method: pick(cols.D),
-      area: pick(cols.E), time: pick(cols.F), season: pick(cols.G), kind: pick(cols.H),
-      title: pick(cols.I), note: pick(cols.J)
-    };
+    
+    // When new city appears, reset lastValues for other fields to avoid carry-over
+    if (pick(cols.B)) {
+        for (const key of Object.values(colKeys)) {
+            if (key !== 'city') lastValues[key] = rec[key];
+        }
+    }
+
     const isNoticeByArea = rec.area && !rec.time && !rec.title;
     const isNoticeByMaker = rec.maker && !rec.method && !rec.time && !rec.title;
+
     if (isNoticeByArea || isNoticeByMaker) {
       const noticeText = rec.area || rec.maker;
       NOTICES.push({ city: rec.city, text: noticeText });
@@ -2544,8 +2551,9 @@ function linkify(s){ return s.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" targ
 function setupMapClicks() {
   const group = document.querySelector("#N03-20250101_28");
   if (!group) return;
+
   const placeholder = document.querySelector(".map-placeholder");
-  if(placeholder) placeholder.style.display = 'none';
+  if(placeholder) placeholder.remove();
 
   const tooltip = document.getElementById("tooltip");
   const mapWrap = document.getElementById("mapWrap");
