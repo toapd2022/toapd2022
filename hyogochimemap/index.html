@@ -2,11 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale-1" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>兵庫チャイムMAP</title>
 
 <style>
-  /* ====== ベース ====== */
+  /* Base Styles */
   * { box-sizing: border-box; }
   body {
     margin: 0;
@@ -23,6 +23,7 @@
     100%{ background-position: 0% 50%;}
   }
 
+  /* Header */
   header {
     position: sticky;
     top: 0;
@@ -38,18 +39,18 @@
   header img { height: 36px; }
   header h1 { font-size: 1.1rem; font-weight: 700; margin: 0; }
 
+  /* Layout */
   main { max-width: 1200px; margin: 1rem auto; padding: 0 1rem 2rem; }
-
   .grid {
     display: grid;
-    grid-template-columns: minmax(280px, 0.9fr) 1.7fr; /* 表側をさらに広く */
+    grid-template-columns: minmax(280px, 0.9fr) 1.7fr;
     gap: 1.5rem;
   }
   @media (max-width: 900px) {
     .grid { grid-template-columns: 1fr; }
   }
 
-  /* ====== 地図カード ====== */
+  /* Card */
   .card {
     background: rgba(255,255,255,.75);
     backdrop-filter: blur(6px);
@@ -64,9 +65,18 @@
   }
   .card-body { padding: .8rem; }
 
+  /* Map Area */
   .map-wrap { width: 100%; overflow: auto; position: relative; }
   .map-wrap svg { width: 100%; height: auto; display: block; }
-
+  .map-placeholder {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #888;
+    background-color: #f9f9f9;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    margin: .5rem;
+  }
   #N03-20250101_28 path {
     fill: #43a047;
     stroke: #ffffff;
@@ -84,7 +94,6 @@
     fill: #2e7d32 !important;
     filter: drop-shadow(0 0 6px rgba(0,0,0,.25));
   }
-
   #tooltip {
     position: fixed;
     display: none;
@@ -98,30 +107,31 @@
     white-space: nowrap;
   }
 
-
-  /* ====== 検索＆結果カード ====== */
+  /* Search & Results Area */
   .toolbar {
     display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: .6rem;
   }
   .toolbar input {
-    flex: 1 1 240px;
+    flex: 1 1 200px;
     padding: .55rem .7rem; border: 1px solid #ddd; border-radius: 8px; background: #fff;
   }
   .toolbar button {
     padding:.55rem .9rem; border:1px solid #ddd; border-radius:8px; background:#fff; cursor: pointer;
   }
   .toolbar button.primary { background: #337ab7; color: #fff; border-color: #2e6da4; }
-
+  .result-header { display: flex; align-items: center; gap: .5rem; margin-bottom: .3rem; }
+  .result-header h3 { margin: 0; font-size: 1.05rem; }
   .badge {
     display: inline-block; padding: .2rem .5rem; border-radius: 9999px; font-size: .75rem;
     background: #ffcc00; color: #333; font-weight: 700; vertical-align: middle;
   }
-  .result-header { display: flex; align-items: center; gap: .5rem; margin-bottom: .3rem; }
-  .result-header h3 { margin: 0; font-size: 1.05rem; }
   .muted { color: #666; font-size: .9rem; }
+  .notice {
+    background: #fffce6; border: 1px dashed #e6d04f; padding: .7rem .8rem; border-radius: 8px; margin: .4rem 0;
+  }
 
+  /* Table */
   .table-container { overflow:auto; max-height: 65vh; border:1px solid #eee; border-radius:10px; }
-
   table {
     width: 100%; border-collapse: collapse; background: #fff;
   }
@@ -131,28 +141,78 @@
   }
   tbody td {
     border-bottom: 1px solid #f0f0f0; padding: .5rem .4rem; vertical-align: top; font-size: 0.85rem;
-    /* ▼▼▼ 変更点2: 長い単語でも折り返すように設定 ▼▼▼ */
     word-break: break-word;
   }
   tbody tr:hover { background: #fffdf0; }
-
-  /* ▼▼▼ 変更点2: 各列の幅をCSSで指定 ▼▼▼ */
-  thead th:nth-child(1) { width: 7%; }   /* 時刻 */
-  thead th:nth-child(2) { width: 16%; }  /* 曲名 */
-  thead th:nth-child(3) { width: 10%; }  /* 市区町村 */
-  thead th:nth-child(4) { width: 7%; }   /* 時期 */
-  thead th:nth-child(5) { width: 7%; }   /* 音種 */
-  thead th:nth-child(6) { width: 12%; }  /* メーカー */
-  thead th:nth-child(7) { width: 12%; }  /* 運用方式 */
-  thead th:nth-child(8) { width: 9%; }   /* 地域 */
-  thead th:nth-child(9) { width: 20%; }  /* 備考 */
-
-
-  .notice {
-    background: #fffce6; border: 1px dashed #e6d04f; padding: .7rem .8rem; border-radius: 8px; margin: .4rem 0;
+  thead th:nth-child(1) { width: 9%; }
+  thead th:nth-child(2) { width: 16%; }
+  thead th:nth-child(3) { width: 10%; }
+  thead th:nth-child(4) { width: 7%; }
+  thead th:nth-child(5) { width: 7%; }
+  thead th:nth-child(6) { width: 12%; }
+  thead th:nth-child(7) { width: 12%; }
+  thead th:nth-child(8) { width: 9%; }
+  thead th:nth-child(9) { width: 18%; }
+  tbody td:nth-child(1) {
+    white-space: nowrap;
   }
 
-  .small { font-size: .82rem; color: #555; }
+  /* Print-specific Styles */
+  @media print {
+    body {
+      background: none;
+      color: #000;
+    }
+    header,
+    .grid > section:first-child, /* Hide Map Card */
+    .toolbar,
+    .notice,
+    #tooltip {
+      display: none;
+    }
+    main {
+      margin: 1rem;
+      padding: 0;
+    }
+    .grid {
+      display: block; /* Remove grid layout for print */
+    }
+    .card {
+      box-shadow: none;
+      border: none;
+    }
+    .result-header {
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #000;
+    }
+    .result-header .badge, .result-header .muted {
+      display: none; /* Hide badge and status message on print */
+    }
+    .result-header h3 {
+      font-size: 14pt;
+    }
+    .table-container {
+      max-height: none;
+      overflow: visible;
+      border: none;
+    }
+    table {
+      width: 100%;
+      font-size: 9pt;
+      border-collapse: collapse;
+    }
+    thead {
+      background-color: #eee !important; /* Ensure header background prints */
+    }
+    th, td {
+      border: 1px solid #888;
+      padding: 4px 6px;
+    }
+    tbody tr {
+      page-break-inside: avoid; /* Avoid breaking a single row across pages */
+    }
+  }
 </style>
 </head>
 <body>
@@ -166,10 +226,13 @@
 
 <main class="grid">
   <section class="card">
-    <h2>兵庫県の自治体地図（クリックして絞り込み）</h2>
+    <h2>兵庫県の自治体地図</h2>
     <div class="card-body">
       <div class="map-wrap" id="mapWrap">
+        <div class="map-placeholder">
+          <p>
 
+            
 <?xml version="1.0"?>
 <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="800" height="999" viewBox="0 0 800 999" stroke-linecap="round" stroke-linejoin="round">
 <g id="N03-20250101_28">
@@ -2344,8 +2407,9 @@
 
 
 
+          </p>
         </div>
-      <p class="small muted">※ポリゴンの <code>id</code> または <code>data-name</code> を市区町村名にしてください。</p>
+      </div>
     </div>
   </section>
 
@@ -2356,16 +2420,14 @@
         <input id="q" type="search" placeholder="市区町村・曲名などで検索">
         <button id="searchBtn" type="button" class="primary">検索</button>
         <button id="clearBtn" type="button">クリア</button>
+        <button id="printBtn" type="button">帳票を印刷</button>
       </div>
-
       <div class="result-header">
         <h3 id="currentArea">全自治体</h3>
         <span class="badge" id="hitCount">--</span>
         <span class="muted" id="statusMsg"></span>
       </div>
-
       <div id="noticeBox"></div>
-
       <div class="table-container">
         <table>
           <thead>
@@ -2389,15 +2451,9 @@
 </main>
 
 <script>
-/* ===============================
-  1) 設定：スプレッドCSVのURL
-  =============================== */
 const SHEET_CSV =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf5GMF-hBxFCzXD0zYFGzDinO1ZUV2r8kpoAvObCYV0UCtOR__eSb-JJP7EYioAzPGyiAHTmS8bypz/pub?output=csv";
 
-/* ===============================
-  2) CSVパーサ（変更なし）
-  =============================== */
 function parseCSV(text) {
   const rows = []; let row = []; let field = ""; let inQuotes = false;
   for (let i = 0; i < text.length; i++) {
@@ -2418,9 +2474,6 @@ function parseCSV(text) {
   return rows;
 }
 
-/* ===============================
-  3) データの取り込みと正規化（変更なし）
-  =============================== */
 let ALL = []; let NOTICES = [];
 async function loadData() {
   const res = await fetch(SHEET_CSV);
@@ -2431,96 +2484,80 @@ async function loadData() {
   const dataRows = rows.slice(1);
   const idx = (names) => header.findIndex(h => names.some(n => h.includes(n)));
   const cols = { A: idx(["番号"]), B: idx(["市区町村"]), C: idx(["メーカー"]), D: idx(["運用方式"]), E: idx(["地域"]), F: idx(["時刻"]), G: idx(["時期"]), H: idx(["音種"]), I: idx(["曲名"]), J: idx(["備考"]) };
+  let lastCity = "";
   dataRows.forEach(r => {
     const pick = (i) => (i >= 0 && i < r.length ? (r[i]||"").trim() : "");
-    const rec = { number: pick(cols.A), city: pick(cols.B), maker: pick(cols.C), method: pick(cols.D), area: pick(cols.E), time: pick(cols.F), season: pick(cols.G), kind: pick(cols.H), title: pick(cols.I), note: pick(cols.J) };
-    const hasNotice = rec.area && !rec.time && !rec.season && !rec.kind && !rec.title && !rec.note;
-    if (hasNotice) { NOTICES.push({ city: rec.city, text: rec.area }); }
-    else { ALL.push(rec); }
+    const cityInRow = pick(cols.B);
+    if (cityInRow) {
+      lastCity = cityInRow;
+    }
+    const rec = {
+      number: pick(cols.A), city: lastCity, maker: pick(cols.C), method: pick(cols.D),
+      area: pick(cols.E), time: pick(cols.F), season: pick(cols.G), kind: pick(cols.H),
+      title: pick(cols.I), note: pick(cols.J)
+    };
+    const isNoticeByArea = rec.area && !rec.time && !rec.title;
+    const isNoticeByMaker = rec.maker && !rec.method && !rec.time && !rec.title;
+    if (isNoticeByArea || isNoticeByMaker) {
+      const noticeText = rec.area || rec.maker;
+      NOTICES.push({ city: rec.city, text: noticeText });
+    } else {
+      ALL.push(rec);
+    }
   });
 }
 
-/* ===============================
-  4) 描画（変更なし）
-  =============================== */
 const tbody = document.getElementById("tbody");
 const currentAreaEl = document.getElementById("currentArea");
 const hitCountEl = document.getElementById("hitCount");
 const statusMsgEl = document.getElementById("statusMsg");
 const noticeBox = document.getElementById("noticeBox");
-
 let currentCity = "";
 let qEl = null;
 
 function render() {
   const q = (qEl.value || "").trim().toLowerCase();
   let rows = ALL.slice();
-
   if (currentCity) rows = rows.filter(x => x.city === currentCity);
-
   if (q) {
     rows = rows.filter(x =>
-      (x.city||"").toLowerCase().includes(q) ||
-      (x.title||"").toLowerCase().includes(q) ||
-      (x.maker||"").toLowerCase().includes(q) ||
-      (x.note||"").toLowerCase().includes(q)
+      (x.city||"").toLowerCase().includes(q) || (x.title||"").toLowerCase().includes(q) ||
+      (x.maker||"").toLowerCase().includes(q) || (x.note||"").toLowerCase().includes(q)
     );
   }
-
   tbody.innerHTML = rows.map(r => `
     <tr>
-      <td>${esc(r.time)}</td>
-      <td>${esc(r.title)}</td>
-      <td>${esc(r.city)}</td>
-      <td>${esc(r.season)}</td>
-      <td>${esc(r.kind)}</td>
-      <td>${esc(r.maker)}</td>
-      <td>${esc(r.method)}</td>
-      <td>${esc(r.area)}</td>
-      <td>${esc(r.note)}</td>
+      <td>${esc(r.time)}</td><td>${esc(r.title)}</td><td>${esc(r.city)}</td>
+      <td>${esc(r.season)}</td><td>${esc(r.kind)}</td><td>${esc(r.maker)}</td>
+      <td>${esc(r.method)}</td><td>${esc(r.area)}</td><td>${esc(r.note)}</td>
     </tr>
   `).join("");
-
   currentAreaEl.textContent = currentCity ? currentCity : "全自治体";
   hitCountEl.textContent = `${rows.length}件`;
   statusMsgEl.textContent = q ? "（検索中）" : "";
-
   const notices = NOTICES.filter(n => currentCity ? (n.city === currentCity) : true);
   noticeBox.innerHTML = notices.length ? notices.map(n => `<div class="notice"><strong>${esc(n.city || "")}：</strong> ${linkify(esc(n.text))}</div>`).join("") : "";
 }
-
 function esc(s){ return (s||"").replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); }
 function linkify(s){ return s.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'); }
 
-/* ===============================
-  5) 地図イベント（変更なし）
-  =============================== */
 function setupMapClicks() {
   const group = document.querySelector("#N03-20250101_28");
   if (!group) return;
+  const placeholder = document.querySelector(".map-placeholder");
+  if(placeholder) placeholder.style.display = 'none';
 
   const tooltip = document.getElementById("tooltip");
   const mapWrap = document.getElementById("mapWrap");
-
   mapWrap.addEventListener("mousemove", (e) => {
     tooltip.style.left = `${e.clientX + 15}px`;
     tooltip.style.top = `${e.clientY + 15}px`;
   });
-
   const paths = group.querySelectorAll("path");
   paths.forEach(p => {
     const name = p.getAttribute("data-name") || p.getAttribute("id") || "";
-
-    p.addEventListener("mouseover", () => {
-      if (name) {
-        tooltip.textContent = name;
-        tooltip.style.display = "block";
-      }
-    });
-    p.addEventListener("mouseout", () => {
-      tooltip.style.display = "none";
-    });
-
+    p.addEventListener("mouseover", () => { if (name) { tooltip.textContent = name; tooltip.style.display = "block"; } });
+    p.addEventListener("mouseout", () => { tooltip.style.display = "none"; });
     p.addEventListener("click", () => {
       currentCity = name;
       paths.forEach(x => x.classList.remove("is-active"));
@@ -2528,39 +2565,27 @@ function setupMapClicks() {
            .forEach(x => x.classList.add("is-active"));
       render();
     });
-
     p.setAttribute("tabindex", "0");
-    p.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); p.click(); }
-    });
+    p.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); p.click(); } });
   });
 }
 
-/* ===============================
-  6) 起動（変更なし）
-  =============================== */
 window.addEventListener("DOMContentLoaded", async () => {
   qEl = document.getElementById("q");
-
   document.getElementById("searchBtn").addEventListener("click", render);
-  qEl.addEventListener("keydown", (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      render();
-    }
+  document.getElementById("printBtn").addEventListener("click", () => {
+    window.print();
   });
-
+  qEl.addEventListener("keydown", (e) => { if (e.key === 'Enter') { e.preventDefault(); render(); } });
   document.getElementById("clearBtn").addEventListener("click", () => {
-    qEl.value = "";
-    currentCity = "";
+    qEl.value = ""; currentCity = "";
     document.querySelectorAll("#N03-20250101_28 path.is-active").forEach(x => x.classList.remove("is-active"));
     render();
   });
-
   try {
     await loadData();
-    setupMapClicks();
     render();
+    setTimeout(setupMapClicks, 100);
   } catch (e) {
     document.getElementById("statusMsg").textContent = "データ取得エラー：" + e.message;
   }
