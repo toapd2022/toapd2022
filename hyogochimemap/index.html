@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>兵庫チャイムMAP</title>
+<title>兵庫県 防災行政無線チャイム 検索マップシステム</title>
 
 <style>
   /* Base Styles */
@@ -23,12 +23,11 @@
     100%{ background-position: 0% 50%;}
   }
 
-  /* --- [MODIFIED] Loading Screen Styles --- */
+  /* --- Loading Screen Styles --- */
   .loader-overlay {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    /* MODIFIED: 背景を半透明の白にし、ぼかし効果を追加 */
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(5px);
     z-index: 9999;
@@ -46,13 +45,10 @@
     width: 80%;
     max-width: 400px;
   }
-  /* .loader-content p は不要になったため削除 */
   .loader-bar-container {
     width: 100%;
-    /* MODIFIED: バーを太くする */
     height: 18px;
     background: #e0e0e0;
-    /* MODIFIED: 角丸を調整 */
     border-radius: 9px;
     overflow: hidden;
     box-shadow: inset 0 2px 4px rgba(0,0,0,.1);
@@ -61,14 +57,13 @@
     width: 0%;
     height: 100%;
     background: linear-gradient(90deg, #42a5f5, #1e88e5);
-    /* MODIFIED: 角丸を調整 */
     border-radius: 9px;
     transition: width 0.2s ease-out;
   }
   .loader-text {
-    margin-top: 0.75rem; /* 微調整 */
+    margin-top: 0.75rem;
     font-size: 0.9rem;
-    color: #555; /* 少し濃くして視認性を上げる */
+    color: #555;
     font-family: monospace;
     font-weight: bold;
   }
@@ -158,38 +153,7 @@
     white-space: nowrap;
   }
 
-  /* --- Municipality List Styles --- */
-  .municipality-list {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
-  }
-  .municipality-list-item {
-    display: inline-block;
-    padding: 4px 10px;
-    margin: 4px;
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: background-color .2s, border-color .2s;
-  }
-  .municipality-list-item:hover {
-    background: #e0e0e0;
-    border-color: #ccc;
-  }
-  .municipality-list-item.is-active {
-    background: #2e7d32;
-    color: #fff;
-    border-color: #2e7d32;
-    font-weight: bold;
-  }
-  @media (max-width: 900px) {
-    .municipality-list {
-      display: none;
-    }
-  }
+  /* --- [DELETED] Municipality List Styles removed --- */
 
 
   /* Search & Results Area */
@@ -215,7 +179,7 @@
     background: #fffce6; border: 1px dashed #e6d04f; padding: .7rem .8rem; border-radius: 8px; margin: .4rem 0;
   }
   #noticeBox {
-    margin-top: 1rem;
+    margin-top: 1rem; /* テーブルとの間隔を調整 */
   }
 
   /* Table */
@@ -267,7 +231,7 @@
       <div id="loaderBar" class="loader-bar"></div>
     </div>
     <div id="loaderText" class="loader-text">Loading 0%</div>
-    </div>
+  </div>
 </div>
 
 <div id="tooltip"></div>
@@ -2488,6 +2452,7 @@
   </section>
 </main>
 
+
 <script>
 const SHEET_CSV =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf5GMF-hBxFCzXD0zYFGzDinO1ZUV2r8kpoAvObCYV0UCtOR__eSb-JJP7EYioAzPGyiAHTmS8bypz/pub?output=csv";
@@ -2592,10 +2557,10 @@ function render() {
 function esc(s){ return (s||"").replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); }
 function linkify(s){ return s.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'); }
 
+// [MODIFIED] Simplified function, no longer interacts with the list
 function selectCity(cityName) {
   currentCity = cityName;
   const mapPaths = document.querySelectorAll("#N03-20250101_28 path");
-  const listItems = document.querySelectorAll(".municipality-list-item");
   
   mapPaths.forEach(p => {
     if ((p.getAttribute("data-name") || p.getAttribute("id") || "") === cityName) {
@@ -2605,17 +2570,10 @@ function selectCity(cityName) {
     }
   });
 
-  listItems.forEach(item => {
-    if (item.getAttribute("data-name") === cityName) {
-      item.classList.add("is-active");
-    } else {
-      item.classList.remove("is-active");
-    }
-  });
-
   render();
 }
 
+// [MODIFIED] Simplified function, no longer generates the list
 function setupMapClicks() {
   const group = document.querySelector("#N03-20250101_28");
   if (!group) return;
@@ -2637,13 +2595,8 @@ function setupMapClicks() {
   });
 
   const paths = group.querySelectorAll("path");
-  const municipalityListContainer = document.getElementById("municipalityList");
-  const cityNames = new Set();
-
   paths.forEach(p => {
     const name = p.getAttribute("data-name") || p.getAttribute("id") || "";
-    if (name) cityNames.add(name);
-
     p.addEventListener("mouseover", () => { if (name) { tooltip.textContent = name; tooltip.style.display = "block"; } });
     p.addEventListener("mouseout", () => { tooltip.style.display = "none"; });
     p.addEventListener("click", () => {
@@ -2651,18 +2604,6 @@ function setupMapClicks() {
     });
     p.setAttribute("tabindex", "0");
     p.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); p.click(); } });
-  });
-
-  const sortedCityNames = Array.from(cityNames).sort((a, b) => a.localeCompare(b, 'ja'));
-  sortedCityNames.forEach(name => {
-    const item = document.createElement("span");
-    item.className = "municipality-list-item";
-    item.textContent = name;
-    item.setAttribute("data-name", name);
-    item.addEventListener("click", () => {
-      selectCity(name);
-    });
-    municipalityListContainer.appendChild(item);
   });
 }
 
@@ -2708,5 +2649,3 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 </body>
 </html>
-
-
