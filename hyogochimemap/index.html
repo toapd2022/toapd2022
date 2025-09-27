@@ -82,6 +82,11 @@
     align-items: center;
     gap: 1rem;
   }
+  /* [NEW] Style for the header logo link */
+  header a {
+    display: inline-block;
+    line-height: 0; /* Ensures the link doesn't add extra space */
+  }
   header img { height: 36px; }
   header h1 { font-size: 1.1rem; font-weight: 700; margin: 0; }
 
@@ -153,9 +158,6 @@
     white-space: nowrap;
   }
 
-  /* --- [DELETED] Municipality List Styles removed --- */
-
-
   /* Search & Results Area */
   .toolbar {
     display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: .6rem;
@@ -179,7 +181,7 @@
     background: #fffce6; border: 1px dashed #e6d04f; padding: .7rem .8rem; border-radius: 8px; margin: .4rem 0;
   }
   #noticeBox {
-    margin-top: 1rem; /* テーブルとの間隔を調整 */
+    margin-top: 1rem;
   }
 
   /* Table */
@@ -204,11 +206,40 @@
   thead th:nth-child(4),
   thead th:nth-child(5) { width: 8%; }
 
+  /* --- [NEW] Footer Styles --- */
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid #eee;
+  }
+  .footer-link-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    transition: all .2s ease;
+  }
+  .footer-link-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+    border-color: #aaa;
+  }
+  .footer-link-button img {
+    height: 24px;
+  }
 
   /* Print-specific Styles */
   @media print {
     body { background: none; color: #000; }
-    header, .grid > section:first-child, .toolbar, .notice, #tooltip, .loader-overlay { display: none; }
+    header, .grid > section:first-child, .toolbar, .notice, #tooltip, .loader-overlay, footer { display: none; }
     main { margin: 1rem; padding: 0; }
     .grid { display: block; }
     .card { box-shadow: none; border: none; }
@@ -237,8 +268,10 @@
 <div id="tooltip"></div>
 
 <header>
-  <img src="icons/logo.png" alt="logo">
-  <h1>兵庫県 防災行政無線チャイム 検索マップシステム/h1>
+  <a href="https://toapd2022.github.io/toapd2022/">
+    <img src="icons/logo.png" alt="logo">
+  </a>
+  <h1>兵庫県 防災行政無線チャイム 検索マップシステム</h1>
 </header>
 
 <main class="grid">
@@ -2452,6 +2485,12 @@
   </section>
 </main>
 
+<footer>
+  <a href="https://toapd2022.github.io/toapd2022/" class="footer-link-button" target="_blank" rel="noopener noreferrer">
+    <img src="icons/logo.png" alt="logo">
+    <span>toapd2022公式HPへ</span>
+  </a>
+</footer>
 
 <script>
 const SHEET_CSV =
@@ -2557,7 +2596,6 @@ function render() {
 function esc(s){ return (s||"").replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); }
 function linkify(s){ return s.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'); }
 
-// [MODIFIED] Simplified function, no longer interacts with the list
 function selectCity(cityName) {
   currentCity = cityName;
   const mapPaths = document.querySelectorAll("#N03-20250101_28 path");
@@ -2573,7 +2611,6 @@ function selectCity(cityName) {
   render();
 }
 
-// [MODIFIED] Simplified function, no longer generates the list
 function setupMapClicks() {
   const group = document.querySelector("#N03-20250101_28");
   if (!group) return;
