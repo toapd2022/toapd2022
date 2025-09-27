@@ -23,6 +23,57 @@
     100%{ background-position: 0% 50%;}
   }
 
+  /* --- [MODIFIED] Loading Screen Styles --- */
+  .loader-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    /* MODIFIED: 背景を半透明の白にし、ぼかし効果を追加 */
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity .5s ease;
+  }
+  .loader-overlay.loaded {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .loader-content {
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
+  }
+  /* .loader-content p は不要になったため削除 */
+  .loader-bar-container {
+    width: 100%;
+    /* MODIFIED: バーを太くする */
+    height: 18px;
+    background: #e0e0e0;
+    /* MODIFIED: 角丸を調整 */
+    border-radius: 9px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.1);
+  }
+  .loader-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #42a5f5, #1e88e5);
+    /* MODIFIED: 角丸を調整 */
+    border-radius: 9px;
+    transition: width 0.2s ease-out;
+  }
+  .loader-text {
+    margin-top: 0.75rem; /* 微調整 */
+    font-size: 0.9rem;
+    color: #555; /* 少し濃くして視認性を上げる */
+    font-family: monospace;
+    font-weight: bold;
+  }
+
+
   /* Header */
   header {
     position: sticky;
@@ -95,7 +146,7 @@
     filter: drop-shadow(0 0 6px rgba(0,0,0,.25));
   }
   #tooltip {
-    position: fixed;
+    position: absolute;
     display: none;
     background: rgba(0,0,0,.75);
     color: #fff;
@@ -106,6 +157,40 @@
     z-index: 100;
     white-space: nowrap;
   }
+
+  /* --- Municipality List Styles --- */
+  .municipality-list {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+  }
+  .municipality-list-item {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 4px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color .2s, border-color .2s;
+  }
+  .municipality-list-item:hover {
+    background: #e0e0e0;
+    border-color: #ccc;
+  }
+  .municipality-list-item.is-active {
+    background: #2e7d32;
+    color: #fff;
+    border-color: #2e7d32;
+    font-weight: bold;
+  }
+  @media (max-width: 900px) {
+    .municipality-list {
+      display: none;
+    }
+  }
+
 
   /* Search & Results Area */
   .toolbar {
@@ -129,6 +214,9 @@
   .notice {
     background: #fffce6; border: 1px dashed #e6d04f; padding: .7rem .8rem; border-radius: 8px; margin: .4rem 0;
   }
+  #noticeBox {
+    margin-top: 1rem;
+  }
 
   /* Table */
   .table-container { overflow:auto; max-height: 65vh; border:1px solid #eee; border-radius:10px; }
@@ -136,7 +224,7 @@
     width: 100%;
     border-collapse: collapse;
     background: #fff;
-    table-layout: fixed; /* Use fixed layout algorithm */
+    table-layout: fixed;
   }
   thead th {
     position: sticky; top: 0; background: #fafafa; z-index: 1;
@@ -148,18 +236,15 @@
   }
   tbody tr:hover { background: #fffdf0; }
 
-  /* Adjusting column widths */
-  thead th:nth-child(1) { width: 60px; } /* 時刻: Fixed width */
-  thead th:nth-child(4), /* 時期 */
-  thead th:nth-child(5) { width: 8%; } /* 音種 */
-
-  /* The rest of the columns (2,3,6,7,8,9) will auto-adjust */
+  thead th:nth-child(1) { width: 60px; }
+  thead th:nth-child(4),
+  thead th:nth-child(5) { width: 8%; }
 
 
   /* Print-specific Styles */
   @media print {
     body { background: none; color: #000; }
-    header, .grid > section:first-child, .toolbar, .notice, #tooltip { display: none; }
+    header, .grid > section:first-child, .toolbar, .notice, #tooltip, .loader-overlay { display: none; }
     main { margin: 1rem; padding: 0; }
     .grid { display: block; }
     .card { box-shadow: none; border: none; }
@@ -175,6 +260,15 @@
 </style>
 </head>
 <body>
+
+<div id="loader" class="loader-overlay">
+  <div class="loader-content">
+    <div class="loader-bar-container">
+      <div id="loaderBar" class="loader-bar"></div>
+    </div>
+    <div id="loaderText" class="loader-text">Loading 0%</div>
+    </div>
+</div>
 
 <div id="tooltip"></div>
 
@@ -2488,11 +2582,39 @@ function render() {
   currentAreaEl.textContent = currentCity ? currentCity : "全自治体";
   hitCountEl.textContent = `${rows.length}件`;
   statusMsgEl.textContent = q ? "（検索中）" : "";
-  const notices = NOTICES.filter(n => currentCity ? (n.city === currentCity) : true);
+  const notices = NOTICES.filter(n => {
+    if (currentCity) return n.city === currentCity;
+    if (q) return (n.city || "").toLowerCase().includes(q) || (n.text || "").toLowerCase().includes(q);
+    return true;
+  });
   noticeBox.innerHTML = notices.length ? notices.map(n => `<div class="notice"><strong>${esc(n.city || "")}：</strong> ${linkify(esc(n.text))}</div>`).join("") : "";
 }
 function esc(s){ return (s||"").replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); }
 function linkify(s){ return s.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'); }
+
+function selectCity(cityName) {
+  currentCity = cityName;
+  const mapPaths = document.querySelectorAll("#N03-20250101_28 path");
+  const listItems = document.querySelectorAll(".municipality-list-item");
+  
+  mapPaths.forEach(p => {
+    if ((p.getAttribute("data-name") || p.getAttribute("id") || "") === cityName) {
+      p.classList.add("is-active");
+    } else {
+      p.classList.remove("is-active");
+    }
+  });
+
+  listItems.forEach(item => {
+    if (item.getAttribute("data-name") === cityName) {
+      item.classList.add("is-active");
+    } else {
+      item.classList.remove("is-active");
+    }
+  });
+
+  render();
+}
 
 function setupMapClicks() {
   const group = document.querySelector("#N03-20250101_28");
@@ -2503,36 +2625,66 @@ function setupMapClicks() {
 
   const tooltip = document.getElementById("tooltip");
   const mapWrap = document.getElementById("mapWrap");
+  const mapWrapRect = mapWrap.getBoundingClientRect();
+
   mapWrap.addEventListener("mousemove", (e) => {
-    tooltip.style.left = `${e.clientX + 15}px`;
-    tooltip.style.top = `${e.clientY + 15}px`;
+    const scrollLeft = mapWrap.scrollLeft;
+    const scrollTop = mapWrap.scrollTop;
+    const x = e.pageX - mapWrapRect.left - window.scrollX + scrollLeft;
+    const y = e.pageY - mapWrapRect.top - window.scrollY + scrollTop;
+    tooltip.style.left = `${x + 15}px`;
+    tooltip.style.top = `${y + 15}px`;
   });
+
   const paths = group.querySelectorAll("path");
+  const municipalityListContainer = document.getElementById("municipalityList");
+  const cityNames = new Set();
+
   paths.forEach(p => {
     const name = p.getAttribute("data-name") || p.getAttribute("id") || "";
+    if (name) cityNames.add(name);
+
     p.addEventListener("mouseover", () => { if (name) { tooltip.textContent = name; tooltip.style.display = "block"; } });
     p.addEventListener("mouseout", () => { tooltip.style.display = "none"; });
     p.addEventListener("click", () => {
-      currentCity = name;
-      paths.forEach(x => x.classList.remove("is-active"));
-      Array.from(paths).filter(x => (x.getAttribute("data-name") || x.getAttribute("id") || "") === name)
-           .forEach(x => x.classList.add("is-active"));
-      render();
+      selectCity(name);
     });
     p.setAttribute("tabindex", "0");
     p.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); p.click(); } });
   });
+
+  const sortedCityNames = Array.from(cityNames).sort((a, b) => a.localeCompare(b, 'ja'));
+  sortedCityNames.forEach(name => {
+    const item = document.createElement("span");
+    item.className = "municipality-list-item";
+    item.textContent = name;
+    item.setAttribute("data-name", name);
+    item.addEventListener("click", () => {
+      selectCity(name);
+    });
+    municipalityListContainer.appendChild(item);
+  });
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
+  const loader = document.getElementById('loader');
+  const loaderBar = document.getElementById('loaderBar');
+  const loaderText = document.getElementById('loaderText');
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += Math.random() * 5;
+    if (progress > 95) progress = 95;
+    loaderBar.style.width = progress + '%';
+    loaderText.textContent = `Loading ${Math.round(progress)}%`;
+  }, 100);
+
   qEl = document.getElementById("q");
   document.getElementById("searchBtn").addEventListener("click", render);
   document.getElementById("printBtn").addEventListener("click", () => { window.print(); });
   qEl.addEventListener("keydown", (e) => { if (e.key === 'Enter') { e.preventDefault(); render(); } });
   document.getElementById("clearBtn").addEventListener("click", () => {
-    qEl.value = ""; currentCity = "";
-    document.querySelectorAll("#N03-20250101_28 path.is-active").forEach(x => x.classList.remove("is-active"));
-    render();
+    qEl.value = "";
+    selectCity("");
   });
   try {
     await loadData();
@@ -2540,9 +2692,21 @@ window.addEventListener("DOMContentLoaded", async () => {
     setupMapClicks();
   } catch (e) {
     document.getElementById("statusMsg").textContent = "データ取得エラー：" + e.message;
+  } finally {
+    clearInterval(interval);
+    loaderBar.style.width = '100%';
+    loaderText.textContent = 'Complete 100%';
+    setTimeout(() => {
+        loader.classList.add('loaded');
+    }, 300);
+    setTimeout(() => {
+        loader.style.display = 'none';
+    }, 800);
   }
 });
 </script>
 
 </body>
 </html>
+
+
