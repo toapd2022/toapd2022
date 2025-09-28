@@ -690,6 +690,8 @@ layout: none
     }
     .works-content {
       flex: 1;
+      display: flex; 
+      flex-direction: column; 
     }
     .works-item h3 {
       margin-bottom: 0.5rem;
@@ -734,6 +736,51 @@ layout: none
         flex-direction: column;
       }
     }
+    .works-images-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  /* ボタンを囲むコンテナのスタイル（右下に配置） */
+    .works-button-container {
+      margin-top: auto;   /* 上の要素を押し上げて一番下に配置 */
+      padding-top: 1rem;  /* テキストとの間に余白を確保 */
+      text-align: left;  /* 右寄せ */
+    }
+  /* 検索システムへアクセスのボタンデザイン */
+    .btn-chime-system {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none !important;
+      border-radius: 5px;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .btn-chime-system:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+      color: white;
+    }
+  /* 検索システムへアクセスのボタンデザイン */
+    .works-item a.btn-chime-system {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background-color: #007bff;
+      color: white !important; /* 文字色を白に指定 */
+      text-decoration: none !important;
+      border-radius: 5px;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .works-item a.btn-chime-system:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+      color: white !important; /* ホバー時も白 */
+    }   
 
     /********************************
      * 関連SNS
@@ -1243,8 +1290,12 @@ layout: none
         <div class="works-content">
           <h3 id="worksItem4Title"></h3>
           <p id="worksItem4Text"></p>
+          <div id="worksItem4Button" class="works-button-container"></div>
         </div>
-        <img class="works-img" src="icons/防災無線チャイムの世界.jpg" alt="防災無線チャイムの世界">
+        <div class="works-images-vertical">
+          <img class="works-img" src="icons/防災無線チャイムの世界.jpg" alt="防災無線チャイムの世界">
+          <img class="works-img" src="icons/hyogo_kensaku.png" alt="兵庫県防災無線チャイム鳴動表検索システム">
+        </div>
       </div>
     </div>
   </section>
@@ -1493,8 +1544,10 @@ layout: none
            安全管理を徹底し、高品質な映像を提供します。`,
         worksItem4Title: "防災無線チャイムの世界",
         worksItem4Text:
-          `全国各地の防災無線チャイムがいつ、どこで、どのメロディを奏でるのかを紹介する
-           「防災無線チャイム鳴動表サークル」にて、兵庫県の鳴動表を担当しています。`,
+          `全国各地の防災無線チャイムがいつ、どこで、どのメロディを奏でるのかを紹介する 「防災無線チャイム鳴動表サークル」にて、兵庫県の鳴動表を担当しています。<br><br>
+           防災無線チャイムの世界の一員として初めて、画期的な「防災無線チャイム鳴動表検索システム」を開発しました。<br><br>
+           このシステムでは、地図上の地域を直感的にクリックするだけで、その地域の防災無線チャイムの鳴動情報を簡単に確認することができます。`,
+        worksItem4Button: `<a href="https://toapd2022.github.io/toapd2022/hyogochimemap" target="_blank" rel="noopener noreferrer" class="btn-chime-system">検索システムへアクセス</a>`,
         sectionSNSTitle: "関連SNS",
         sectionSNSIntro: "各種SNSでも最新情報を随時配信しています。ぜひフォローをお願いいたします。",
         snsLabelYoutube: "YouTube",
@@ -1592,9 +1645,12 @@ layout: none
         worksItem3Text:
           `We capture tourist sites and events dynamically from above using drones.
            With thorough safety management, we provide high-quality footage.`,
-        worksItem4Title: "Disaster Prevention Radio Chimes",
-        worksItem4Text:
-          `We participate in the "Disaster Prevention Radio Chime Timetable Circle," introducing when and where chimes play nationwide, handling Hyogo Prefecture's schedule.`,
+      worksItem4Title: "Disaster Prevention Radio Chimes",
+      worksItem4Text:
+        `We participate in the "Disaster Prevention Radio Chime Timetable Circle," which introduces when, where, and what melodies disaster prevention radio chimes play across the country, and we are in charge of the timetable for Hyogo Prefecture.<br><br>
+         As a member of the Disaster Prevention Radio Chime World, we have developed a groundbreaking "Disaster Prevention Radio Chime Timetable Search System" for the first time.<br><br>
+         This system allows you to easily check the chime information for a specific area by intuitively clicking on the map.`,
+      worksItem4Button: `<a href="https://toapd2022.github.io/toapd2022/hyogochimemap" target="_blank" rel="noopener noreferrer" class="btn-chime-system">Access the Search System</a>`,
         sectionSNSTitle: "SNS",
         sectionSNSIntro: "We regularly share the latest updates on various SNS. Please follow us!",
         snsLabelYoutube: "YouTube",
@@ -1690,10 +1746,12 @@ layout: none
         worksItem3Text:
           `利用无人机从空中拍摄，为观光地和活动创造更多动感的视觉冲击。<br>
            我们严格注重安全管理，力求提供高质量的航拍视频。`,
-        worksItem4Title: "防灾无线电报时乐曲的世界",
-        worksItem4Text:
-          `在「防灾无线电报时乐曲鸣动表」组织中介绍各地何时何地演奏何种旋律，<br>
-           并负责兵库县的鸣动表管理。`,
+      worksItem4Title: "防灾无线电报时乐曲的世界",
+      worksItem4Text:
+        `我们参与「防灾无线电报时乐曲鸣动表圈」，介绍全国各地的防灾无线电报时乐曲在何时、何地、以何种旋律播放，并负责兵库县的鸣动表。<br><br>
+         作为防灾无线电报时乐曲世界的一员，我们首次开发了划时代的“防灾无线电报时乐曲检索系统”。<br><br>
+         通过该系统，只需直观地点击地图上的区域，即可轻松查询该地区的防灾无线电报时乐曲鸣动信息。`,
+      worksItem4Button: `<a href="https://toapd2022.github.io/toapd2022/hyogochimemap" target="_blank" rel="noopener noreferrer" class="btn-chime-system">访问检索系统</a>`,
         sectionSNSTitle: "相关SNS",
         sectionSNSIntro: "我们在各类SNS上都会不定期发布最新消息，欢迎关注！",
         snsLabelYoutube: "YouTube",
