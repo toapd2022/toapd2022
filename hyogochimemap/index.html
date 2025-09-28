@@ -117,7 +117,11 @@
   .card-body { padding: .8rem; }
 
   /* Map Area */
-  .map-wrap { width: 100%; overflow: auto; position: relative; }
+  .map-wrap {
+    width: 100%;
+    overflow: auto;
+    position: relative; 
+  }
   .map-wrap svg { width: 100%; height: auto; display: block; }
   .map-placeholder-text {
     padding: 3rem 1rem;
@@ -265,13 +269,11 @@
   </div>
 </div>
 
-<div id="tooltip"></div>
-
 <header>
   <a href="https://toapd2022.github.io/toapd2022/">
     <img src="icons/logo.png" alt="logo">
   </a>
-  <h1>兵庫県 防災無線チャイム 楽々検索システム</h1>
+  <h1>兵庫県 防災行政無線チャイム 検索マップシステム</h1>
 </header>
 
 <main class="grid">
@@ -279,6 +281,7 @@
     <h2>兵庫県の自治体地図</h2>
     <div class="card-body">
       <div class="map-wrap" id="mapWrap">
+        <div id="tooltip"></div> 
 
 <?xml version="1.0"?>
 <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="800" height="999" viewBox="0 0 800 999" stroke-linecap="round" stroke-linejoin="round">
