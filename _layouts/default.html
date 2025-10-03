@@ -1,13 +1,62 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <!-- ページタイトルは記事タイトル＋サイト名など -->
-  <title>{{ page.title }} | toapd2022</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  
+    <title>{{ page.title }} | toapd2022</title>
+  <meta name="description" content="{{ page.excerpt | strip_html | truncate: 120 }}">
 
-  <link rel="icon" type="image/png" href="{{ '/icons/top-logo.png' | relative_url }}" />
-  <link rel="apple-touch-icon" href="{{ '/icons/top-logo.png' | relative_url }}" />
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:description" content="{{ page.excerpt | strip_html | truncate: 120 }}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  {% if page.thumbnail %}
+    <meta property="og:image" content="{{ page.thumbnail | absolute_url }}">
+  {% else %}
+    <meta property="og:image" content="{{ '/icons/top.jpeg' | absolute_url }}"> {% endif %}
+  <meta property="og:site_name" content="toapd2022">
+  <meta property="og:locale" content="ja_JP">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@himarin015">
+  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:description" content="{{ page.excerpt | strip_html | truncate: 120 }}">
+  {% if page.thumbnail %}
+    <meta name="twitter:image" content="{{ page.thumbnail | absolute_url }}">
+  {% else %}
+    <meta name="twitter:image" content="{{ '/icons/top.jpeg' | absolute_url }}"> {% endif %}
+
+  <meta name="robots" content="max-image-preview:large">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{ page.title }}",
+    "author": {
+      "@type": "Person",
+      "name": "toapd2022"
+    },
+    "datePublished": "{{ page.date | date_to_iso8601 }}",
+    {% if page.thumbnail %}
+    "image": {
+      "@type": "ImageObject",
+      "url": "{{ page.thumbnail | absolute_url }}"
+    },
+    {% endif %}
+    "publisher": {
+      "@type": "Organization",
+      "name": "toapd2022",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ '/icons/top-logo.png' | absolute_url }}"
+      }
+    }
+  }
+  </script>
+
+    <link rel="icon" type="image/png" href="{{ '/icons/top-logo.png' | relative_url }}" />
+  <link rel="apple-touch-icon" href="{{ '/icons/top-logo.png' | relative_url }}" />
 
   <style>
     /********************************
