@@ -12,18 +12,6 @@ layout: none
   <meta name="description" content="toapd2022の公式サイトです。防災行政無線や放送設備に魅了され、YouTubeでの動画配信、ドローン空撮、映像制作など幅広く活動しています。" />
   <meta name="google-site-verification" content="eQ3wGrcbTuPMh4LtFkkPUoq04KIb-ANymCiSxJkTNwc" />
   
-  <meta property="og:title" content="toapd2022 - 公式サイト" />
-  <meta property="og:description" content="toapd2022の公式サイトです。防災行政無線や放送設備に魅了され、YouTubeでの動画配信、ドローン空撮、映像制作など幅広く活動しています。" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://toapd2022.github.io/toapd2022/" />
-  <meta property="og:image" content="https://toapd2022.github.io/toapd2022/icons/top.jpeg" />
-  <meta property="og:site_name" content="toapd2022" />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="toapd2022 - 公式サイト" />
-  <meta name="twitter:description" content="toapd2022の公式サイトです。防災行政無線や放送設備に魅了され、YouTubeでの動画配信、ドローン空撮、映像制作など幅広く活動しています。" />
-  <meta name="twitter:image" content="https://toapd2022.github.io/toapd2022/icons/top.jpeg" />
-
   <link rel="icon" type="image/png" href="icons/top-logo.png" />
   <link rel="apple-touch-icon" href="icons/top-logo.png" />
 
@@ -1010,7 +998,7 @@ layout: none
       border: 3px solid #ffcc00;
       background: #fff;
       border-radius: 50%;
-  _    box-sizing: border-box;
+      box-sizing: border-box;
       z-index: 2;
     }
     .timeline-desc {
@@ -1177,8 +1165,10 @@ layout: none
 
 <body>
 
-    <header>
-        <div class="header-left">
+  <!-- ヘッダー -->
+  <header>
+    <!-- 左側：ロゴのみ -->
+    <div class="header-left">
       <div class="logo">
         <a href="#" id="logoLink">
           <img src="icons/logo.png" alt="toapd2022">
@@ -1186,14 +1176,16 @@ layout: none
       </div>
     </div>
 
-        <div class="header-right">
+    <!-- 右側：ナビ + 言語切り替えボタン + ハンバーガーメニュー -->
+    <div class="header-right">
       <nav>
         <ul>
           <li><a href="#" id="navHome"></a></li>
           <li><a href="#greeting" id="navGreeting"></a></li>
           <li><a href="#works" id="navWorks"></a></li>
           <li><a href="#sns" id="navSNS"></a></li>
-                    <li><a href="#blog" id="navGallery"></a></li>
+          <!-- ★ ギャラリー -> ブログへ差し替え -->
+          <li><a href="#blog" id="navGallery"></a></li>
           <li><a href="#media" id="navMedia"></a></li>
           <li><a href="#history" id="navHistory"></a></li>
           <li><a href="#contact" id="navContact"></a></li>
@@ -1207,7 +1199,8 @@ layout: none
           <li data-lang="zh">中文</li>
         </ul>
       </div>
-            <button class="hamburger" id="hamburgerBtn">
+      <!-- ハンバーガーメニュー（右寄せ） -->
+      <button class="hamburger" id="hamburgerBtn">
         <span></span>
         <span></span>
         <span></span>
@@ -1215,7 +1208,8 @@ layout: none
     </div>
   </header>
 
-    <section id="hero">
+  <!-- PC用スライドショー #hero -->
+  <section id="hero">
     <div class="hero-animation-wrapper" id="heroAnimationWrapper">
       <div class="hero-slides" id="heroSlides">
         <div class="hero-slide" style="background-image: url('icons/slide1.png');"></div>
@@ -1243,7 +1237,8 @@ layout: none
     </div>
   </section>
 
-    <div class="mobile-hero">
+  <!-- スマホ用 .mobile-hero -->
+  <div class="mobile-hero">
     <div class="mobile-hero-animation-wrapper" id="mobileHeroAnimationWrapper">
       <div class="mobile-hero-slides" id="mobileHeroSlides">
         <div class="mobile-hero-slide" style="background-image: url('icons/slide1.png');"></div>
@@ -1257,7 +1252,8 @@ layout: none
     </div>
   </div>
 
-    <section id="greeting">
+  <!-- ご挨拶 -->
+  <section id="greeting">
     <h2 class="fade-in-left" id="sectionGreetingTitle"></h2>
     <div class="greeting-section">
       <img class="greeting-img fade-in-left" src="icons/profile.png" alt="プロフィール画像">
@@ -1265,7 +1261,8 @@ layout: none
     </div>
   </section>
 
-    <section id="works">
+  <!-- 活動内容 -->
+  <section id="works">
     <h2 class="fade-in-up" id="sectionWorksTitle"></h2>
     <div class="works-list">
       <div class="works-item fade-in">
@@ -1314,7 +1311,8 @@ layout: none
     </div>
   </section>
 
-    <section id="sns" class="fade-in">
+  <!-- 関連SNS -->
+  <section id="sns" class="fade-in">
     <h2 class="fade-in-left" id="sectionSNSTitle"></h2>
     <div class="sns-container fade-in-up">
       <p id="sectionSNSIntro"></p>
@@ -1339,7 +1337,8 @@ layout: none
     </div>
   </section>
 
-    <section id="blog" class="fade-in">
+  <!-- ★ ブログ (旧ギャラリー) -->
+  <section id="blog" class="fade-in">
     <h2 class="fade-in-right" id="sectionGalleryTitle"></h2>
 
     <div class="fade-in">
@@ -1362,7 +1361,8 @@ layout: none
               {{ post.excerpt | strip_html }} ...
             </p>
 
-                        <p style="text-align: right;">
+            <!-- 「続きを読む」ボタン（右寄せ） -->
+            <p style="text-align: right;">
               <a href="{{ post.url | relative_url }}" class="btn-readmore">
                 続きを読む
               </a>
@@ -1371,7 +1371,8 @@ layout: none
           {% endfor %}
         </div>
 
-                <p style="margin-top:1rem; text-align: center;">
+        <!-- 「過去のブログ記事を見る」ボタン（中央揃え） -->
+        <p style="margin-top:1rem; text-align: center;">
           <a href="{{ 'blog.html' | relative_url }}" class="btn-all-posts">
             過去のブログ記事を見る
           </a>
@@ -1383,7 +1384,8 @@ layout: none
     </div>
   </section>
 
-    <section id="media">
+  <!-- メディア出演 -->
+  <section id="media">
     <h2 class="fade-in-up" id="sectionMediaTitle"></h2>
     <p class="fade-in" id="sectionMediaIntro"></p>
     <div class="media-grid fade-in-up">
@@ -1425,7 +1427,8 @@ layout: none
     </div>
   </section>
 
-    <section id="history" class="fade-in">
+  <!-- 自分史（History） -->
+  <section id="history" class="fade-in">
     <h2 class="fade-in-up" id="sectionHistoryTitle"></h2>
     <div class="timeline fade-in">
       <div class="timeline-item">
@@ -1476,7 +1479,8 @@ layout: none
     </div>
   </section>
 
-    <section id="contact" class="fade-in">
+  <!-- お問い合わせ -->
+  <section id="contact" class="fade-in">
     <h2 class="fade-in-left" id="sectionContactTitle"></h2>
     <p class="fade-in" id="sectionContactIntro"></p>
 
@@ -1500,12 +1504,16 @@ layout: none
     </div>
   </section>
 
-    <footer>
+  <!-- フッター -->
+  <footer>
     <p id="footerText"></p>
   </footer>
 
 
-    <script>
+  <!-- =========================
+       JS（自動スライド + ハンバーガーメニュー + 多言語対応 ほか）
+  ========================== -->
+  <script>
     /********************************
      * 1) 多言語テキスト定義
      ********************************/
