@@ -1,20 +1,14 @@
 {
   "name": "toapd2022 - 公式サイト",
   "short_name": "toapd2022",
-  "icons": [
-    {
-      "src": "/toapd2022/icons/top-logo.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "/toapd2022/icons/top-logo.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
   "start_url": "/toapd2022/",
+  "scope": "/toapd2022/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff"
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "icons/top-logo.png?v=20251003", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/top-logo.png?v=20251003", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/top-logo.png?v=20251003", "sizes": "any",     "type": "image/png", "purpose": "maskable" }
+  ]
 }
