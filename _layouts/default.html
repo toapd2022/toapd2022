@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  
-    <title>{{ page.title }} | toapd2022</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  
+    <title>{{ page.title }} | toapd2022</title>
   <meta name="description" content="{{ page.excerpt | strip_html | truncate: 120 }}">
 
   <meta property="og:title" content="{{ page.title }}">
@@ -60,8 +60,8 @@
 
   <style>
     /********************************
-     * 1) 全体ベース
-     ********************************/
+      * 1) 全体ベース
+      ********************************/
     * {
       margin: 0;
       padding: 0;
@@ -109,8 +109,8 @@
     }
 
     /********************************
-     * リンク
-     ********************************/
+      * リンク
+      ********************************/
     a {
       color: #333;
       text-decoration: none;
@@ -121,8 +121,8 @@
     }
 
     /********************************
-     * 2) ヘッダー
-     ********************************/
+      * 2) ヘッダー
+      ********************************/
     header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -227,8 +227,8 @@
     }
 
     /********************************
-     * 3) メインコンテンツ
-     ********************************/
+      * 3) メインコンテンツ
+      ********************************/
     main {
       width: 90%;
       max-width: 900px;
@@ -330,8 +330,8 @@
     }
 
     /********************************
-     * 4) フッター
-     ********************************/
+      * 4) フッター
+      ********************************/
     footer {
       text-align: center;
       padding: 2rem;
@@ -345,13 +345,11 @@
   </style>
 </head>
 <body>
-  <!-- ★ 静止円を配置する要素 -->
   <div class="bg-circles">
     <div class="circle1"></div>
     <div class="circle2"></div>
   </div>
 
-  <!-- ヘッダー -->
   <header>
     <div class="header-left">
       <div class="logo">
@@ -365,8 +363,7 @@
         <ul>
           <li><a href="{{ '/' | relative_url }}">トップ</a></li>
           <li><a href="{{ '/blog.html' | relative_url }}">ブログ一覧</a></li>
-          <!-- 必要に応じて他のリンクを追加 -->
-        </ul>
+          </ul>
       </nav>
       <button class="hamburger" id="hamburgerBtn">
         <span></span>
@@ -376,36 +373,29 @@
     </div>
   </header>
 
-  <!-- メイン -->
   <main>
     <div class="post-card fade-in" id="postCard">
-      <!-- 記事タイトル -->
       <h1 class="post-title">{{ page.title }}</h1>
-      <!-- 日付がある場合のみ表示 -->
       {% if page.date %}
       <div class="post-date">
         {{ page.date | date: "%Y年%m月%d日" }}
       </div>
       {% endif %}
 
-      <!-- 記事本文 -->
       <div class="post-content">
         {{ content }}
       </div>
 
-      <!-- 記事末尾のナビ -->
       <div class="post-nav">
         <a href="{{ '/blog.html' | relative_url }}">← ブログ一覧に戻る</a>
       </div>
     </div>
   </main>
 
-  <!-- フッター -->
   <footer>
     <p>© 2025 toapd2022. All Rights Reserved.</p>
   </footer>
 
-  <!-- スクリプト（ハンバーガーメニュー + フェードイン） -->
   <script>
     // ハンバーガーメニュー
     const hamburgerBtn = document.getElementById('hamburgerBtn');
