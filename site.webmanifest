@@ -1,0 +1,20 @@
+{
+  "name": "toapd2022 - 公式サイト",
+  "short_name": "toapd2022",
+  "icons": [
+    {
+      "src": "/toapd2022/icons/top-logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/toapd2022/icons/top-logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/toapd2022/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff"
+}
