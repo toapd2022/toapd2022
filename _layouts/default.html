@@ -424,7 +424,7 @@
             entry.target.classList.add('active');
           }
         });
-      }, { threshold: 0.1 });
+      }, { threshold: 0 });
       observer.observe(target);
     } else {
       // IntersectionObserver非対応 or 要素なしなら、すぐに表示
