@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "TOA製デスク型放送設備を購入した話"
-date: "2026-05-08"
+date: "2026-04-25"
 thumbnail: "/assets/toa_desk_thumbnail.jpeg"
 description: "小学生の頃からの憧れだったTOA製のデスク型放送設備（DA-101-20）を新品で購入し、自宅アパートに導入した記録です。"
 ---
